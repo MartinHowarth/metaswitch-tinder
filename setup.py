@@ -43,5 +43,10 @@ setup(
         'munch',
         'requests',
         'schematics',
+        'alembic',
+        'Flask-Migrate',
+        'Flask-Script',
+        'Flask-SQLAlchemy',
+        'psycopg2',
     ],
 )

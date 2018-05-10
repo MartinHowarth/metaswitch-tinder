@@ -10,9 +10,10 @@ import sys
 
 from dash.dependencies import Input, Output
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 
 from metaswitch_tinder.config_model import MetaswitchTinder
-from metaswitch_tinder import pages, tabs, example_config
+from metaswitch_tinder import pages, tabs, example_config, global_config
 from metaswitch_tinder.tinder_email import send_email
 
 log = logging.getLogger(__name__)
@@ -54,7 +55,10 @@ config = MetaswitchTinder(example_config.config, partial=False)
 config.validate()
 
 server = Flask(__name__)
+
 server.secret_key = os.environ.get('secret_key', 'secret')
+server.config['SQLALCHEMY_DATABASE_URI'] = config.DATABASE_URL
+global_config.DATABASE = SQLAlchemy(server)
 
 app = dash.Dash(name=__name__, server=server)
 
