@@ -3,11 +3,10 @@ import dash_html_components as html
 
 from flask import session
 
-from metaswitch_tinder.config_model import MetaswitchTinder
 from metaswitch_tinder.components.grid import create_equal_row
 
 
-def home(config: MetaswitchTinder):
+def home():
     if 'username' in session:
         # Already logged in, skip the signin page
         mentor_href = '/mentor-menu'

@@ -25,6 +25,7 @@ def add_callbacks(app):
         [Event('logout', 'click')]
     )
     def handle_logout():
+        print("log out")
         del session['username']
         del session['is_mentee']
         return

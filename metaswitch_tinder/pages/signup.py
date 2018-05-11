@@ -4,7 +4,6 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State, Event
 from flask import session
 
-from metaswitch_tinder.config_model import MetaswitchTinder
 from metaswitch_tinder import global_config
 from metaswitch_tinder.components.grid import create_equal_row
 from metaswitch_tinder import database
@@ -14,31 +13,37 @@ NAME = __name__.replace('.', '')
 
 
 def signup_redirected(next_page):
-    def signup(config: MetaswitchTinder=None):
+    def signup():
         session['is_mentee'] = False
         return html.Div([
             html.H1("Metaswitch Tinder", className="text-center"),
             html.Br(),
             create_equal_row([
-                html.Label('Username:', className="text-center"),
+                html.Label('Username:', ),
                 dcc.Input(value='', type='text', id='username-{}'.format(NAME)),
             ]),
             html.Br(),
             create_equal_row([
-                html.Label('Email:', className="text-center"),
+                html.Label('Email:'),
                 dcc.Input(value='@metaswitch.com', type='text', id='email-{}'.format(NAME)),
             ]),
             html.Br(),
             create_equal_row([
-                html.Label('Biography:', className="text-center"),
+                html.Label('Biography:'),
                 dcc.Input(value='Loves ducks', type='text', id='biography-{}'.format(NAME)),
             ]),
             html.Br(),
+            create_equal_row([html.Label('Mentoring topics:')]),
+            create_equal_row([dcc.Input(value='', type='text', id='details-{}'.format(NAME))]),
+            html.Br(),
+            create_equal_row([html.Label('Additional topic tags:')]),
+            create_equal_row([dcc.Input(value='', type='text', id='details-{}'.format(NAME))]),
+            html.Br(),
             html.A(html.Button("Submit!", id='submit-{}'.format(NAME),
                                n_clicks=0, className="btn btn-lg btn-primary btn-block"),
-                   href=next_page)
-        ],
-            className="container", id='signup')
+                   href=next_page),
+            html.Br(),
+        ], className="container", id='signup')
     return signup
 
 

@@ -16,7 +16,6 @@ from flask_sqlalchemy import SQLAlchemy
 from metaswitch_tinder.config_model import MetaswitchTinder
 from metaswitch_tinder import example_config, global_config
 from metaswitch_tinder.components import widgets
-from metaswitch_tinder.tinder_email import send_email
 
 log = logging.getLogger(__name__)
 
@@ -64,7 +63,7 @@ server.secret_key = os.environ.get('secret_key', 'secret')
 server.config['SQLALCHEMY_DATABASE_URI'] = config.DATABASE_URL
 global_config.DATABASE = SQLAlchemy(server)
 
-from metaswitch_tinder import tabs,pages
+from metaswitch_tinder import tabs, pages
 
 app = dash.Dash(name=__name__, server=server)
 global_config.APP = app
@@ -88,13 +87,13 @@ app.title = "Metaswitch Tinder"
 @app.callback(dash.dependencies.Output('page-content', 'children'),
               [dash.dependencies.Input('url', 'pathname')])
 def display_page(pathname):
-    return pages.pages.get(pathname, pages.home)(config)
+    return pages.pages.get(pathname, pages.home)()
 
 
 @app.callback(dash.dependencies.Output('tab-content', 'children'),
               [dash.dependencies.Input('tabs', 'value')])
 def display_tab(value):
-    return tabs.tabs[value](config)
+    return tabs.tabs[value]()
 
 
 pages.mentee_landing_page.add_callbacks(app)
@@ -116,6 +115,7 @@ for script in os.listdir('javascript'):
 @app.server.route('/static/<filename>.js')
 def serve_script(filename):
     return flask.send_from_directory('javascript', '{}.js'.format(filename))
+
 
 if __name__ == "__main__":
     configure_logging()

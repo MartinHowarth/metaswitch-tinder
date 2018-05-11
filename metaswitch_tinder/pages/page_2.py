@@ -4,7 +4,7 @@ import dash_html_components as html
 from metaswitch_tinder.config_model import MetaswitchTinder
 
 
-def page_2(config: MetaswitchTinder):
+def page_2():
     return html.Div(
         children=[
             html.H1("Metaswitch Tinder loves you!")

@@ -6,7 +6,7 @@ function result(user_choice) {
     return;
   }
   // Load a new image but report result.
-  console.log("Event done")
+  document.getElementById(user_choice).click()
 }
 // On click and drag
 document.addEventListener('dragstart', handleDragStart, false);
@@ -22,7 +22,6 @@ var xDown = null;
 
 function handleDragStart(evt) {
   xDown = evt.clientX;
-  console.log('Drag started: ' + xDown);
 };
 
 function handleTouchStart(evt) {
@@ -39,15 +38,13 @@ function handleDragOver(evt) {
 
 function handleDragEnd(evt) {
   evt.preventDefault();
-  xUp = evt.clientX
-  console.log('Drag finished: ' + xUp)
-  handleEnd(xUp);
+  handleEnd(evt.clientX);
 }
 
 function handleEnd(xUp) {
   if ( !xDown ) { return; }
   var xDiff = xDown - xUp;
-  if ( xDiff > 2 ) result('left');
-  if ( xDiff < -2 ) result('right');
+  if ( xDiff > 2 ) result('reject-match');
+  if ( xDiff < -2 ) result('accept-match');
   xDown = null;
 };

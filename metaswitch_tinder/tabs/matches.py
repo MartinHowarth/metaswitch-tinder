@@ -5,9 +5,9 @@ import random
 from dash.dependencies import Input, Output, State, Event
 from flask import session
 
-from metaswitch_tinder.config_model import MetaswitchTinder
 from metaswitch_tinder import global_config, matches, database
 from metaswitch_tinder.components.grid import create_magic_three_row
+
 
 def children_no_matches():
     return [
@@ -26,6 +26,7 @@ def children_no_matches():
             html.Div(0, id='accept-match', style={'display': 'none'}),
             html.Div(0, id='reject-match', style={'display': 'none'}),
             html.Div(None, id='completed-users', style={'display': 'none'}),
+            html.Div(None, id='matched-tags', style={'display': 'none'}),
         ]
 
 
@@ -64,7 +65,7 @@ def children_for_match(match: matches.Match, completed_users):
         ]
 
 
-def get_matches_children(completed_users=[]):
+def get_matches_children(completed_users=list()):
     current_matches = matches.generate_matches()
     print(current_matches)
     for user in completed_users:
@@ -93,7 +94,8 @@ def matches_done():
     ]
 
 
-def matches_tab(config: MetaswitchTinder=None):
+def matches_tab():
+    print('matches', session)
     return html.Div(
         children=get_matches_children(),
         className="container text-center",

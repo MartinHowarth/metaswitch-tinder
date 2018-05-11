@@ -1,6 +1,10 @@
+from .manage import User
+
+
 def handle_mentee_added_request(username, email, categories, details):
     print("Mentee submitted:", username, email, categories, details)
-    # TODO this should actually put it in the database somehow
+    mentee = User(username, email, '', '')
+    mentee.add()
 
 
 def handle_mentee_reject_match(matched_user):
