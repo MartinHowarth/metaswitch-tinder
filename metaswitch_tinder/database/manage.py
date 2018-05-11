@@ -76,14 +76,17 @@ def get_user(match_name):
     return User.query.filter_by(name=match_name).first()
 
 def get_request_by_user(match_name):
+    # Return list of all Requests made by "match_name"
     return Request.query.filter_by(maker=match_name).all()
 
 def purge_table(table):
+    # Delete all rows in specified table
     table.query.delete()
     db.session.commit()
     return
 
 def delete_table(table):
+    # Delete specified table
     table.__table__.drop(db.session.bind)
     db.session.commit()
     return
