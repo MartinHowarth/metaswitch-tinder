@@ -88,5 +88,5 @@ def delete_table(table):
     db.session.commit()
     return
 
-db.create_all()
+#db.create_all()
 
