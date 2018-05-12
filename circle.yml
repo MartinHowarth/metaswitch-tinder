@@ -71,4 +71,5 @@ workflows:
   all_tests:
     jobs:
       - tests
-      - linters
+      - flake8
+      - mypy
