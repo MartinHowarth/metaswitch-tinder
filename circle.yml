@@ -1,6 +1,14 @@
 version: 2
+
+workflows:
+  version: 2
+  all_tests:
+    - linters
+    - tests
+
+
 jobs:
-  flake8:
+  linters:
     docker:
     # Image to run the tests in
       - image: circleci/python:3.6.5-stretch-browsers
@@ -21,7 +29,7 @@ jobs:
           path: flake8-report
           destination: flake8-report
 
-  test:
+  tests:
     docker:
     # Image to run the tests in
       - image: circleci/python:3.6.5-stretch-browsers
