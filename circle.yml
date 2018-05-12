@@ -1,28 +1,7 @@
 version: 2
 
 jobs:
-  linters:
-    docker:
-    # Image to run the tests in
-      - image: circleci/python:3.6.5-stretch-browsers
-        environment:
-          DATABASE_URL: postgresql://root@localhost/circle_test
-
-    steps:
-      - checkout
-
-      - run: # run linters
-          name: run linting and metrics
-          command: |
-            . venv/bin/activate
-            flake8 metaswitch_tinder --output-file flake8-report
-            mypy metaswitch_tinder --ignore-missing-imports
-
-      - store_artifacts:
-          path: flake8-report
-          destination: flake8-report
-
-  tests:
+  build:  # Actually tests
     docker:
     # Image to run the tests in
       - image: circleci/python:3.6.5-stretch-browsers
@@ -59,8 +38,29 @@ jobs:
             . venv/bin/activate
             python setup.py test
 
+  linters:
+    docker:
+    # Image to run the tests in
+      - image: circleci/python:3.6.5-stretch-browsers
+        environment:
+          DATABASE_URL: postgresql://root@localhost/circle_test
+
+    steps:
+      - checkout
+
+      - run: # run linters
+          name: run linting and metrics
+          command: |
+            . venv/bin/activate
+            flake8 metaswitch_tinder --output-file flake8-report
+            mypy metaswitch_tinder --ignore-missing-imports
+
+      - store_artifacts:
+          path: flake8-report
+          destination: flake8-report
+
 workflows:
   version: 2
   all_tests:
+    - build
     - linters
-    - tests
