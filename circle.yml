@@ -38,41 +38,33 @@ jobs:
             . venv/bin/activate
             python setup.py test
 
-  linters:
+  flake8:
     docker:
     # Image to run the tests in
       - image: circleci/python:3.6.5-stretch-browsers
 
     steps:
       - checkout
-
-      - restore_cache: # restores saved dependency cache if the Branch key template or setup.py files have not changed since the previous run
-          key: deps1-{{ .Branch }}-{{ checksum "lint_requirements.txt" }}
       - run: # install and activate virtual environment with pip
           command: |
             python3 -m venv venv
             . venv/bin/activate
-            pip install -r lint_requirements.txt
-      - save_cache: # special step to save dependency cache
-          key: deps1-{{ .Branch }}-{{ checksum "lint_requirements.txt" }}
-          paths:
-            - "venv"
+            pip install flake8
+            flake8 metaswitch_tinder
 
-      - run: # flake8
-          name: run linting and metrics
-          command: |
-            . venv/bin/activate
-            flake8 metaswitch_tinder --output-file flake8-report
+  mypy:
+    docker:
+    # Image to run the tests in
+      - image: circleci/python:3.6.5-stretch-browsers
 
-      - run: # mypy
-          name: run linting and metrics
+    steps:
+      - checkout
+      - run: # install and activate virtual environment with pip
           command: |
+            python3 -m venv venv
             . venv/bin/activate
+            pip install mypy
             mypy metaswitch_tinder --ignore-missing-imports
-
-      - store_artifacts:
-          path: flake8-report
-          destination: flake8-report
 
 workflows:
   version: 2
