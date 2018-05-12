@@ -1,7 +1,7 @@
 version: 2
 
 jobs:
-  build:  # Actually tests
+  tests:
     docker:
     # Image to run the tests in
       - image: circleci/python:3.6.5-stretch-browsers
@@ -62,5 +62,6 @@ jobs:
 workflows:
   version: 2
   all_tests:
-    - build
-    - linters
+    jobs:
+      - tests
+      - linters
