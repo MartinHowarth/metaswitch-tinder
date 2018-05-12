@@ -1,12 +1,5 @@
 version: 2
 
-workflows:
-  version: 2
-  all_tests:
-    - linters
-    - tests
-
-
 jobs:
   linters:
     docker:
@@ -65,3 +58,9 @@ jobs:
           command: |
             . venv/bin/activate
             python setup.py test
+
+workflows:
+  version: 2
+  all_tests:
+    - linters
+    - tests
