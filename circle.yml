@@ -22,7 +22,7 @@ jobs:
           command: |
             python3 -m venv venv
             . venv/bin/activate
-            pip install -r test_requirements.txt
+            python setup.py test
       - save_cache: # special step to save dependency cache
           key: deps1-{{ .Branch }}-{{ checksum "setup.py" }}
           paths:
@@ -42,17 +42,32 @@ jobs:
     docker:
     # Image to run the tests in
       - image: circleci/python:3.6.5-stretch-browsers
-        environment:
-          DATABASE_URL: postgresql://root@localhost/circle_test
 
     steps:
       - checkout
 
-      - run: # run linters
+      - restore_cache: # restores saved dependency cache if the Branch key template or setup.py files have not changed since the previous run
+          key: deps1-{{ .Branch }}-{{ checksum "lint_requirements.txt" }}
+      - run: # install and activate virtual environment with pip
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r lint_requirements.txt
+      - save_cache: # special step to save dependency cache
+          key: deps1-{{ .Branch }}-{{ checksum "lint_requirements.txt" }}
+          paths:
+            - "venv"
+
+      - run: # flake8
           name: run linting and metrics
           command: |
             . venv/bin/activate
             flake8 metaswitch_tinder --output-file flake8-report
+
+      - run: # mypy
+          name: run linting and metrics
+          command: |
+            . venv/bin/activate
             mypy metaswitch_tinder --ignore-missing-imports
 
       - store_artifacts:
