@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/MartinHowarth/metaswitch-tinder.svg?style=shield)](https://circleci.com/gh/MartinHowarth/metaswitch-tinder)
+
 # Metaswitch Tinder
 
 Metaswitch Tinder is a match-making service for informal mentoring and unofficial pastoral support at Metaswitch.
