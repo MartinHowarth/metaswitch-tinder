@@ -7,7 +7,7 @@ from typing import List
 
 from metaswitch_tinder import database
 from metaswitch_tinder.app import app
-from metaswitch_tinder.components.auth import current_username, current_user
+from metaswitch_tinder.components.session import current_username, current_user
 from metaswitch_tinder.components.grid import create_equal_row
 from metaswitch_tinder.components.inputs import multi_dropdown_with_tags
 

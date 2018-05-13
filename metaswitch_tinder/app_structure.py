@@ -4,7 +4,7 @@ import sys
 from typing import Any, Callable
 
 from metaswitch_tinder import app_globals
-from metaswitch_tinder.components.auth import is_logged_in
+from metaswitch_tinder.components.session import is_logged_in
 
 
 def if_logged_in_else(logged_in_target: str, other_target: str) -> Callable:

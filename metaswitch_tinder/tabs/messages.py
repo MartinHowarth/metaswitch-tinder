@@ -1,6 +1,6 @@
 import dash_html_components as html
 
-from metaswitch_tinder.components.auth import is_logged_in, current_username
+from metaswitch_tinder.components.session import is_logged_in, current_username
 
 
 def layout():

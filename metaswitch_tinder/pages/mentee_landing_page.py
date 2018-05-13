@@ -8,7 +8,7 @@ import metaswitch_tinder.database.matches
 
 from metaswitch_tinder.app import app
 from metaswitch_tinder.app_structure import href
-from metaswitch_tinder.components.auth import is_logged_in, set_current_usename, current_username
+from metaswitch_tinder.components.session import is_logged_in, set_current_usename, current_username
 from metaswitch_tinder.components.grid import create_equal_row
 
 from . import mentee_request

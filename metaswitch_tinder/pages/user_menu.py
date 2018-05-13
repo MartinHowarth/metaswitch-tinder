@@ -2,11 +2,10 @@ import logging
 import dash_html_components as html
 
 from dash.dependencies import Input, Output
-from flask import session
 
 from metaswitch_tinder import tabs
 from metaswitch_tinder.app import app
-from metaswitch_tinder.components.auth import wait_for_login
+from metaswitch_tinder.components.session import wait_for_login, set_on_mentee_tab
 from metaswitch_tinder.components.tabs import generate_tabs
 
 
@@ -49,10 +48,8 @@ def display_tab(tab_name):
     :return: Dash html object to display as the children of the 'tab-content' Div.
     """
     if tab_name == 'mentee':
-        session['is_mentee'] = True
-    elif tab_name == 'mentor':
-        session['is_mentee'] = False
+        set_on_mentee_tab(True)
     else:
-        del session['is_mentee']
+        set_on_mentee_tab(False)
 
     return tabs.tabs[tab_name]()

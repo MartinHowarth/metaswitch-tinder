@@ -3,13 +3,12 @@ import logging
 import random
 
 from dash.dependencies import Output, State, Event
-from flask import session
 
 from metaswitch_tinder import matches
 from metaswitch_tinder.database.manage import get_request_by_id, get_user
 from metaswitch_tinder.app import app, config
-from metaswitch_tinder.components.auth import is_logged_in
 from metaswitch_tinder.components.grid import create_magic_three_row
+from metaswitch_tinder.components.session import is_logged_in, on_mentee_tab
 
 
 log = logging.getLogger(__name__)
@@ -36,7 +35,7 @@ def children_for_match(match: matches.Match, completed_users):
     your_tags = match.your_tags
     their_tags = match.their_tags
 
-    if session.get('is_mentee', None):
+    if on_mentee_tab():
         mentor = get_user(match.other_user)
         table_rows = [
             html.Tr([
@@ -103,9 +102,7 @@ def get_matches_children(completed_users=list()):
 
 
 def layout():
-    print('matches', session)
     if not is_logged_in():
-        print('not logged in', session)
         return html.Div([html.Br(),
                          html.H1("You must be logged in to do this")])
     return html.Div(
@@ -134,12 +131,12 @@ def layout():
 def submit_mentee_information(other_user, n_accept_clicked, n_reject_clicked, completed_users,
                               matched_tags, match_request_id):
     if n_accept_clicked:
-        if session['is_mentee']:
+        if on_mentee_tab():
             matches.handle_mentee_accept_match(other_user, matched_tags, match_request_id)
         else:
             matches.handle_mentor_accept_match(other_user, matched_tags, match_request_id)
     else:
-        if session['is_mentee']:
+        if on_mentee_tab():
             matches.handle_mentee_reject_match(other_user, match_request_id)
         else:
             matches.handle_mentor_reject_match(other_user, match_request_id)

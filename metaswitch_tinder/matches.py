@@ -3,11 +3,10 @@
 import itertools
 
 from collections import defaultdict
-from flask import session
 from typing import Dict, List
 
 from metaswitch_tinder import database, tinder_email
-from metaswitch_tinder.components.auth import is_logged_in, current_username
+from metaswitch_tinder.components.session import is_logged_in, current_username, on_mentee_tab
 from metaswitch_tinder.database.manage import get_request_by_id
 
 
@@ -74,7 +73,7 @@ def generate_matches() -> List[Match]:
     if not is_logged_in():
         return []
 
-    if 'is_mentee' in session and session['is_mentee']:
+    if on_mentee_tab():
         matches = matches_for_mentee(mentor_tag_map, database.manage.get_user(current_username()))
     else:
         matches = matches_for_mentor(request_tag_map, database.manage.get_user(current_username()))

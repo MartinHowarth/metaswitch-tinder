@@ -3,10 +3,9 @@ import dash_html_components as html
 import logging
 
 from dash.dependencies import Event, Output, State
-from flask import session
 
 from metaswitch_tinder.app import app
-from metaswitch_tinder.components.auth import is_logged_in, current_username, current_user
+from metaswitch_tinder.components.session import is_logged_in, current_username, current_user
 from metaswitch_tinder.components.grid import create_equal_row
 
 
@@ -20,7 +19,6 @@ submit_id = 'submit-{}'.format(NAME)
 
 
 def layout():
-    print('settings', session)
     if is_logged_in():
         username = current_username()
     else:
