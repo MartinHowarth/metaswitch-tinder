@@ -10,6 +10,7 @@ import metaswitch_tinder.database.matches
 from metaswitch_tinder import database
 from metaswitch_tinder.app import app
 from metaswitch_tinder.app_structure import href
+from metaswitch_tinder.components.auth import is_logged_in, set_current_usename, current_username
 from metaswitch_tinder.components.grid import create_equal_row
 from metaswitch_tinder.components.inputs import multi_dropdown_with_tags
 
@@ -24,13 +25,13 @@ submit_request = 'submit_request'
 
 def layout():
     session['is_mentee'] = True
-    if 'username' in session:
+    if is_logged_in():
         is_signed_in_fields = [
-            html.H3("Welcome {}!".format(session['username']),
+            html.H3("Welcome {}!".format(current_username()),
                     className="text-center"),
             # Must include something with the id `email-NAME`, but hidden in this case
-            dcc.Input(value='', type='text', id='email-{}'.format(NAME), hidden=True),
-            dcc.Input(value='', type='text', id='username-{}'.format(NAME), hidden=True),
+            dcc.Input(value='', type='text', id='email-{}'.format(NAME), style={'display': 'none'}),
+            dcc.Input(value='', type='text', id='username-{}'.format(NAME), style={'display': 'none'}),
             html.Br(),
             html.Br(),
             html.H3('New mentoring request', className="text-center"),
@@ -90,11 +91,10 @@ def layout():
     [Event('submit-{}'.format(NAME), 'click')]
 )
 def submit_mentee_information(username, email, categories, details):
-    print('mentee submit', session)
     print('submit_mentee_information', username, email, categories, details)
-    if 'username' not in session:
-        session['username'] = username
+    if not is_logged_in():
+        set_current_usename(username)
         metaswitch_tinder.database.matches.handle_mentee_signup_and_request(username, email, categories, details)
     else:
         # If already signed in, only add the request
-        metaswitch_tinder.database.matches.handle_mentee_add_request(session['username'], categories, details)
+        metaswitch_tinder.database.matches.handle_mentee_add_request(current_username(), categories, details)

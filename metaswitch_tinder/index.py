@@ -97,7 +97,7 @@ def serve_script(filename):
 
 
 if __name__ == "__main__":
-    app.run_server(port=int(os.environ.get('PORT', 80)), debug=True)
+    app.run_server(port=int(os.environ.get('PORT', 80)), debug=True, threaded=True)
 else:
     # The `server` is imported here so that gunicorn's entry point is this file. That forces load of
     # all the layouts and callbacks in this file.

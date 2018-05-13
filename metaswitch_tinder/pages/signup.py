@@ -8,6 +8,7 @@ import logging
 from metaswitch_tinder import database
 from metaswitch_tinder.app import app
 from metaswitch_tinder.app_structure import href
+from metaswitch_tinder.components.auth import set_current_usename
 from metaswitch_tinder.components.grid import create_equal_row
 from metaswitch_tinder.components.inputs import multi_dropdown_with_tags
 
@@ -72,4 +73,4 @@ def layout():
 )
 def submit_signup_information(username, email, biography, categories, details):
     database.identity.handle_signup_submit(username, email, biography, categories, details)
-    session['username'] = username
+    set_current_usename(username)

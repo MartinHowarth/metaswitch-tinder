@@ -1,15 +1,15 @@
 """Module that defines how app pages link to other app pages."""
 import sys
 
-from flask import session
 from typing import Any, Callable
 
 from metaswitch_tinder import app_globals
+from metaswitch_tinder.components.auth import is_logged_in
 
 
 def if_logged_in_else(logged_in_target: str, other_target: str) -> Callable:
     def decide_later() -> str:
-        if 'username' in session:
+        if is_logged_in():
             # Already logged in, skip the signin page
             return logged_in_target
         return other_target

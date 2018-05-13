@@ -7,6 +7,7 @@ from flask import session
 from typing import Dict, List
 
 from metaswitch_tinder import database, tinder_email
+from metaswitch_tinder.components.auth import is_logged_in, current_username
 from metaswitch_tinder.database.manage import get_request_by_id
 
 
@@ -52,7 +53,7 @@ def matches_for_mentee(mentor_tag_map: Dict[str, List[database.manage.User]],
 
 
 def matches_for_mentor(request_tag_map, mentor: database.manage.User):
-    user = database.manage.get_user(session.get('username', 'Not logged in!'))
+    user = database.manage.get_user(current_username())
     matches = []  # type: List[Match]
     print(user.mentor_matches)
     if user.mentor_matches == '':
@@ -70,13 +71,13 @@ def generate_matches() -> List[Match]:
     request_tag_map = tag_to_request_mapping(all_users)
     mentor_tag_map = tag_to_mentor_mapping(all_users)
 
-    if 'username' not in session:
+    if not is_logged_in():
         return []
 
     if 'is_mentee' in session and session['is_mentee']:
-        matches = matches_for_mentee(mentor_tag_map, database.manage.get_user(session['username']))
+        matches = matches_for_mentee(mentor_tag_map, database.manage.get_user(current_username()))
     else:
-        matches = matches_for_mentor(request_tag_map, database.manage.get_user(session['username']))
+        matches = matches_for_mentor(request_tag_map, database.manage.get_user(current_username()))
 
     unique_users = list(set([match.other_user for match in matches]))
 
@@ -95,7 +96,7 @@ def handle_mentee_reject_match(matched_user: str, request_id: str):
 
 def handle_mentee_accept_match(matched_user: str, matched_tags: List[str], request_id: str):
     print("mentee accepted match:", matched_user, request_id)
-    current_user = database.manage.get_user(session['username'])
+    current_user = database.manage.get_user(current_username())
     other_user = database.manage.get_user(matched_user)
     database.matches.handle_mentee_accept_match(request_id, current_user, other_user)
 
@@ -109,7 +110,7 @@ def handle_mentor_accept_match(matched_user: str, matched_tags: List[str], reque
     print("mentor accepted match:", matched_user, request_id)
     database.matches.handle_mentor_accept_match(request_id)
     request = get_request_by_id(request_id)
-    current_user = database.manage.get_user(session['username'])
+    current_user = database.manage.get_user(current_username())
     other_user = database.manage.get_user(matched_user)
 
     email_text = "You've matched on " + (','.join(matched_tags))

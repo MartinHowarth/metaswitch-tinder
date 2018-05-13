@@ -4,8 +4,9 @@ import logging
 
 from flask import session
 
-from metaswitch_tinder.components.grid import create_equal_row
 from metaswitch_tinder import database
+from metaswitch_tinder.components.auth import is_logged_in, current_username
+from metaswitch_tinder.components.grid import create_equal_row
 from metaswitch_tinder.components.inputs import multi_dropdown_with_tags
 
 
@@ -16,8 +17,8 @@ NAME = __name__.replace('.', '')
 
 def layout():
     print('settings', session)
-    if 'username' in session:
-        username = session['username']
+    if is_logged_in():
+        username = current_username()
     else:
         return html.Div([html.Br(),
                          html.H1("You must be logged in to do this")])
