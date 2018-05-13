@@ -60,6 +60,9 @@ def display_page(pathname: str):
         I.e. "http://my-app.com/page-1" would be passed in here as "/page-1"
     :return: Dash html object to display as the children of the 'page-content' Div in the main layout.
     """
+    if app_globals.structure is None:
+        raise RuntimeError("`generate_structure` has not been called.")
+
     return {
         href: getattr(details['module'], 'layout') for href, details in app_globals.structure.items()
     }.get(pathname, lambda: '404: Not found!')()

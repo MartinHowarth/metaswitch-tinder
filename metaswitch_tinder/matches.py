@@ -11,7 +11,7 @@ from metaswitch_tinder.database.manage import get_request_by_id
 
 
 class Match:
-    def __init__(self, other_user: str, their_tags: List[str], bio: str, your_tags: List[str], request_id: str):
+    def __init__(self, other_user: str, their_tags: List[str], bio: str, your_tags: List[str], request_id: str) -> None:
         self.other_user = other_user
         self.their_tags = their_tags
         self.bio = bio
@@ -24,7 +24,7 @@ class Match:
 
 
 def tag_to_mentor_mapping(mentors: List[database.manage.User]) -> Dict[str, List[database.manage.User]]:
-    tag_map = defaultdict(list)
+    tag_map = defaultdict(list)  # type: Dict[str, List[database.manage.User]]
     for mentor in mentors:
         for tag in mentor.get_tags():
             tag_map[tag].append(mentor)
@@ -32,7 +32,7 @@ def tag_to_mentor_mapping(mentors: List[database.manage.User]) -> Dict[str, List
 
 
 def tag_to_request_mapping(mentees: List[database.manage.User]) -> Dict[str, List[database.manage.Request]]:
-    tag_map = defaultdict(list)
+    tag_map = defaultdict(list)  # type: Dict[str, List[database.manage.Request]]
     for mentee in mentees:
         for request in mentee.get_requests():
             for tag in request.get_tags():
@@ -53,7 +53,7 @@ def matches_for_mentee(mentor_tag_map: Dict[str, List[database.manage.User]],
 
 def matches_for_mentor(request_tag_map, mentor: database.manage.User):
     user = database.manage.get_user(session.get('username', 'Not logged in!'))
-    matches = []
+    matches = []  # type: List[Match]
     print(user.mentor_matches)
     if user.mentor_matches == '':
         return matches

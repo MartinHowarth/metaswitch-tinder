@@ -2,11 +2,12 @@
 import sys
 
 from flask import session
+from typing import Any, Callable, Dict
 
 from metaswitch_tinder import app_globals
 
 
-def if_logged_in_else(logged_in_target, other_target) -> callable:
+def if_logged_in_else(logged_in_target, other_target) -> Callable:
     def decide_later() -> str:
         if 'username' in session:
             # Already logged in, skip the signin page
@@ -15,7 +16,7 @@ def if_logged_in_else(logged_in_target, other_target) -> callable:
     return decide_later
 
 
-def module_href(module: object) -> str:
+def module_href(module: Any) -> str:
     if 'home' in module.__name__:
         return '/'
     return '/' + module.__name__.split('.')[-1].replace('_', '-')
@@ -25,6 +26,9 @@ def href(module_name: str, ref: str=None) -> str:
     _module_href = module_href(sys.modules[module_name])
     if ref is None:
         return _module_href
+
+    if app_globals.structure is None:
+        raise RuntimeError("`generate_structure` has not been called.")
 
     href_or_func = app_globals.structure[_module_href]['links'][ref]
 
