@@ -1,4 +1,4 @@
-from .manage import User, Request, get_request_by_id, get_user, list_all_users, list_all_requests, list_whole_table
+from .manage import User, Request, get_request_by_id
 
 
 def handle_mentee_add_request(username, categories, details):

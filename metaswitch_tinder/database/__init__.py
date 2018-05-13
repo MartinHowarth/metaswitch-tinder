@@ -1,1 +1,1 @@
-from . import identity, tags, matches, manage
+from . import identity, tags, matches, manage  # noqa

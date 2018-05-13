@@ -2,7 +2,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 import logging
 
-from dash.dependencies import Input, Output, State, Event
+from dash.dependencies import Output, State, Event
 from flask import session
 
 import metaswitch_tinder.database.matches

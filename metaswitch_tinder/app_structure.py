@@ -42,9 +42,10 @@ def generate_structure():
     All `href`s should be define here in the `links` section for that page.
     """
     # This function must be called before the app is started up.
+    # All modules that define callbacks must be imported here.
 
     # These imports happen here to avoid an infinite loop.
-    from metaswitch_tinder.pages import (
+    from metaswitch_tinder.pages import (  # noqa
         easter,
         page_1,
         page_2,
@@ -56,7 +57,7 @@ def generate_structure():
         report,
         home,
     )
-    from metaswitch_tinder.tabs import (
+    from metaswitch_tinder.tabs import (  # noqa
         matches,
         messages,
         settings,

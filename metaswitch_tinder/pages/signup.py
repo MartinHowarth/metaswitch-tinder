@@ -1,7 +1,7 @@
 import dash_core_components as dcc
 import dash_html_components as html
 
-from dash.dependencies import Input, Output, State, Event
+from dash.dependencies import Output, State, Event
 from flask import session
 import logging
 
@@ -40,14 +40,17 @@ def layout():
         ]),
         html.Br(),
         create_equal_row([html.Label('Biography:')]),
-        dcc.Textarea(placeholder='Enter a biography', value='Loves ducks', id='biography-{}'.format(NAME), style={'width':'100%'}),
+        dcc.Textarea(placeholder='Enter a biography', value='Loves ducks',
+                     id='biography-{}'.format(NAME), style={'width': '100%'}),
         html.Br(),
         create_equal_row([html.Label('Mentoring topics:')]),
         multi_dropdown_with_tags(database.tags.get_tags(), 'categories-{}'.format(NAME)),
         html.Br(),
         create_equal_row([html.Label('Additional topic tags:')]),
-        create_equal_row([dcc.Input(placeholder='e.g. \"python\", \"object-oriented design\", \"session-based testing\"',
-                                    value='', type='text', id='details-{}'.format(NAME))]),
+        create_equal_row([
+            dcc.Input(placeholder='e.g. \"python\", \"object-oriented design\", \"session-based testing\"',
+                      value='', type='text', id='details-{}'.format(NAME))
+        ]),
         html.Br(),
         dcc.Link(html.Button("Submit!", id='submit-{}'.format(NAME),
                              n_clicks=0, className="btn btn-lg btn-primary btn-block"),

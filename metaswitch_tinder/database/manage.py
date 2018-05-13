@@ -87,8 +87,8 @@ class User(db.Model):
     def __repr__(self):
         return """
         Name - %s
-          Email - %s      
-          Bio - %s    
+          Email - %s
+          Bio - %s
           Tags - %s
           Requests - %s
         """ % (self.name, self.email, self.bio, self.tags, self.requests)
@@ -156,5 +156,3 @@ def delete_table(table):
     table.__table__.drop(db.session.bind)
     db.session.commit()
     return
-
-#db.create_all()

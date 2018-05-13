@@ -3,7 +3,7 @@ import dash_html_components as html
 import logging
 import random
 
-from dash.dependencies import Input, Output, State, Event
+from dash.dependencies import Output, State, Event
 from flask import session
 
 from metaswitch_tinder import matches
@@ -94,9 +94,7 @@ def get_matches_children(completed_users=list()):
 
 def layout():
     print('matches', session)
-    if 'username' in session:
-        username = session['username']
-    else:
+    if 'username' not in session:
         print('not logged in', session)
         return html.Div([html.Br(),
                          html.H1("You must be logged in to do this")])

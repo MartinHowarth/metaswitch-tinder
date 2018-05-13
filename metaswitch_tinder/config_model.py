@@ -1,6 +1,6 @@
 """Definition of the app configuration model that handles parsing and validation."""
 from schematics.models import Model
-from schematics.types import ModelType, URLType, ListType, StringType, EmailType
+from schematics.types import URLType, ListType, StringType, EmailType
 
 
 class MetaswitchTinder(Model):

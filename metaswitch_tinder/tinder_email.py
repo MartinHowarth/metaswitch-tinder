@@ -1,13 +1,17 @@
 """Module to handle sending emails."""
 
+import logging
 import os
 import sendgrid
 import smtplib
 
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from sendgrid.helpers.mail import *
+from sendgrid.helpers.mail import Content, Email, Mail
 from typing import List
+
+
+log = logging.getLogger(__name__)
 
 
 def send_email(recipients: List[str], email_text: str, subject: str):
@@ -31,6 +35,7 @@ def send_email(recipients: List[str], email_text: str, subject: str):
         for recip in recipients[1:]:
             _mail.personalizations[0].add_to(Email(recip))
         response = sg.client.mail.send.post(request_body=_mail.get())
+        log.info("Sendgrid response: %s", response)
     else:
         # For sending emails from local machine
         msg = MIMEMultipart()
