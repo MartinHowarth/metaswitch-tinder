@@ -16,13 +16,16 @@ jobs:
 
     steps:
       - checkout
+
+      # Cache `python setup.py install` if setup.py hasn't changed - this will handle the majority of cases where the dependencies haven't changed.
+      # We re-run the install method in the tests to catch changes in the app, but this cache should prevent the need for re-installing every dependency on every build.
       - restore_cache: # restores saved dependency cache if the Branch key template or setup.py files have not changed since the previous run
           key: deps1-{{ .Branch }}-{{ checksum "setup.py" }}
       - run: # install and activate virtual environment with pip
           command: |
             python3 -m venv venv
             . venv/bin/activate
-            python setup.py test
+            python setup.py install
       - save_cache: # special step to save dependency cache
           key: deps1-{{ .Branch }}-{{ checksum "setup.py" }}
           paths:
@@ -31,6 +34,7 @@ jobs:
       - run: # initialise database
           command: |
             . venv/bin/activate
+            python setup.py install
             python tests/init_database.py
 
       - run: # run tests
