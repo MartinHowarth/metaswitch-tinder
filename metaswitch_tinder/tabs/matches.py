@@ -30,12 +30,12 @@ def children_no_matches():
             dcc.Link(html.Button("Make a request", className="btn btn-primary btn-lg btn-block"),
                      href=href(__name__, make_a_request)),
             html.Br(),
-            html.Div(None, id='current-other-user', style={'display': 'none'}),
-            html.Div(0, id='accept-match', style={'display': 'none'}),
-            html.Div(0, id='reject-match', style={'display': 'none'}),
-            html.Div(None, id='completed-users', style={'display': 'none'}),
-            html.Div(None, id='matched-tags', style={'display': 'none'}),
-            html.Div("", id='matched-request-id', style={'display': 'none'}),
+            html.Div(None, id='current-other-user', hidden=True),
+            html.Div(0, id='accept-match', hidden=True),
+            html.Div(0, id='reject-match', hidden=True),
+            html.Div(None, id='completed-users', hidden=True),
+            html.Div(None, id='matched-tags', hidden=True),
+            html.Div("", id='matched-request-id', hidden=True),
         ]
 
 
@@ -70,10 +70,10 @@ def children_for_match(match: matches.Match, completed_users):
                ], className="table table-condensed"),
             dcc.Link(html.Button("Find a mentor - Make a request", className="btn btn-primary btn-lg btn-block"),
                      href=href(__name__, make_a_request)),
-            html.Div(match.other_user, id='current-other-user', style={'display': 'none'}),
-            html.Div(completed_users, id='completed-users', style={'display': 'none'}),
-            html.Div(list(set(their_tags) & set(your_tags)), id='matched-tags', style={'display': 'none'}),
-            html.Div(match.request_id, id='matched-request-id', style={'display': 'none'}),
+            html.Div(match.other_user, id='current-other-user', hidden=True),
+            html.Div(completed_users, id='completed-users', hidden=True),
+            html.Div(list(set(their_tags) & set(your_tags)), id='matched-tags', hidden=True),
+            html.Div(match.request_id, id='matched-request-id', hidden=True),
         ]
 
 

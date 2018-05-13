@@ -24,7 +24,7 @@ def set_page_content() -> Output:
 
 def set_hidden_information(key: str, value: str) -> html.Div:
     """Define a html element to store a value by key. The element is invisible."""
-    return html.Div(value, id=key, style={'display': 'none'})
+    return html.Div(value, id=key, hidden=True)
 
 
 def get_hidden_information(key: str) -> State:

@@ -29,8 +29,8 @@ def layout():
             html.H3("Welcome {}!".format(session['username']),
                     className="text-center"),
             # Must include something with the id `email-NAME`, but hidden in this case
-            dcc.Input(value='', type='text', id='email-{}'.format(NAME), style={'display': 'none'}),
-            dcc.Input(value='', type='text', id='username-{}'.format(NAME), style={'display': 'none'}),
+            dcc.Input(value='', type='text', id='email-{}'.format(NAME), hidden=True),
+            dcc.Input(value='', type='text', id='username-{}'.format(NAME), hidden=True),
             html.Br(),
             html.Br(),
             html.H3('New mentoring request', className="text-center"),
