@@ -2,12 +2,12 @@
 import sys
 
 from flask import session
-from typing import Any, Callable, Dict
+from typing import Any, Callable
 
 from metaswitch_tinder import app_globals
 
 
-def if_logged_in_else(logged_in_target, other_target) -> Callable:
+def if_logged_in_else(logged_in_target: str, other_target: str) -> Callable:
     def decide_later() -> str:
         if 'username' in session:
             # Already logged in, skip the signin page
