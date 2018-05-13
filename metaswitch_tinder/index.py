@@ -9,7 +9,7 @@ import flask
 
 import metaswitch_tinder.pages.report
 
-from metaswitch_tinder import tabs, app_structure, app_globals
+from metaswitch_tinder import app_structure, app_globals
 from metaswitch_tinder.app import app
 from metaswitch_tinder.app_config import config
 from metaswitch_tinder.components import widgets
@@ -43,7 +43,6 @@ app.layout = html.Div([
     html.Div([html.Div(widgets.logout_button()),
               html.Div(metaswitch_tinder.pages.report.report_button())],
              className="d-flex flex-row justify-content-between"),
-    html.Br(),
     # The 'page-content' is where all content appears
     html.Div(id='page-content'),
 ])
@@ -66,19 +65,6 @@ def display_page(pathname: str):
     return {
         href: getattr(details['module'], 'layout') for href, details in app_globals.structure.items()
     }.get(pathname, lambda: '404: Not found!')()
-
-
-@app.callback(dash.dependencies.Output('tab-content', 'children'),
-              [dash.dependencies.Input('tabs', 'value')])
-def display_tab(tab_name):
-    """
-    Callback that gets called when a tab is clicked.
-
-    It is used to determine what html to display for the new url.
-    :param tab_name: Name of the tab what was selected.
-    :return: Dash html object to display as the children of the 'tab-content' Div.
-    """
-    return tabs.tabs[tab_name]()
 
 
 # Add each script to the app from the JAVASCRIPT_DIR

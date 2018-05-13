@@ -7,10 +7,15 @@ def handle_mentee_add_request(username, categories, details):
     request.add()
 
 
-def handle_mentee_signup_and_request(username, email, categories, details):
-    print("Mentee signup and request:", username, email, categories, details)
+def handle_mentee_signup(username, email):
+    print("Mentee signup:", username, email)
     mentee = User(username, email, '', '', '')
     mentee.add()
+
+
+def handle_mentee_signup_and_request(username, email, categories, details):
+    print("Mentee signup and request:", username, email, categories, details)
+    handle_mentee_signup(username, email)
     handle_mentee_add_request(username, categories, details)
 
 

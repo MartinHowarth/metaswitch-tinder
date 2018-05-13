@@ -57,6 +57,7 @@ def generate_structure():
         signin,
         signup,
         mentee_landing_page,
+        mentee_request,
         signin_or_signup,
         report,
         home,
@@ -87,7 +88,12 @@ def generate_structure():
             'module': mentee_landing_page,
             'links': {
                 mentee_landing_page.sign_in: module_href(signin),
-                mentee_landing_page.submit_request: module_href(user_menu),
+            }
+        },
+        module_href(mentee_request): {
+            'module': mentee_request,
+            'links': {
+                mentee_request.submit_request: module_href(user_menu),
             }
         },
         module_href(signin_or_signup): {
@@ -118,12 +124,6 @@ def generate_structure():
         module_href(user_menu): {
             'module': user_menu,
             'links': {
-            }
-        },
-        module_href(matches): {
-            'module': matches,
-            'links': {
-                matches.make_a_request: module_href(mentee_landing_page),
             }
         },
     }

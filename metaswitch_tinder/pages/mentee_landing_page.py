@@ -7,12 +7,12 @@ from flask import session
 
 import metaswitch_tinder.database.matches
 
-from metaswitch_tinder import database
 from metaswitch_tinder.app import app
 from metaswitch_tinder.app_structure import href
 from metaswitch_tinder.components.auth import is_logged_in, set_current_usename, current_username
 from metaswitch_tinder.components.grid import create_equal_row
-from metaswitch_tinder.components.inputs import multi_dropdown_with_tags
+
+from . import mentee_request
 
 
 log = logging.getLogger(__name__)
@@ -20,7 +20,6 @@ log = logging.getLogger(__name__)
 NAME = __name__.replace('.', '')
 
 sign_in = 'sign_in'
-submit_request = 'submit_request'
 
 
 def layout():
@@ -63,18 +62,7 @@ def layout():
         html.Br(),
         *is_signed_in_fields,
         html.Br(),
-        html.Label('Mentoring topic:'),
-        html.Br(),
-        multi_dropdown_with_tags(database.tags.get_tags(), 'categories-{}'.format(NAME)),
-        html.Br(),
-        html.Label('Additional topic tags:', className="text-center"),
-        html.Br(),
-        create_equal_row([dcc.Input(value='', type='text', id='details-{}'.format(NAME))]),
-        html.Br(),
-        dcc.Link(html.Button("Submit my request!",
-                             id='submit-{}'.format(NAME),
-                             className="btn btn-lg btn-success btn-block"),
-                 href=href(__name__, submit_request)),
+        mentee_request.layout(),
     ],
         className="container", id='my-div')
 
@@ -85,16 +73,11 @@ def layout():
     [
         State('username-{}'.format(NAME), 'value'),
         State('email-{}'.format(NAME), 'value'),
-        State('categories-{}'.format(NAME), 'value'),
-        State('details-{}'.format(NAME), 'value'),
     ],
-    [Event('submit-{}'.format(NAME), 'click')]
+    [Event(mentee_request.submit_button, 'click')]
 )
-def submit_mentee_information(username, email, categories, details):
-    print('submit_mentee_information', username, email, categories, details)
+def submit_mentee_information(username, email):
+    log.info('signin (as part of initial mentee request): %s - %s', username, email)
     if not is_logged_in():
         set_current_usename(username)
-        metaswitch_tinder.database.matches.handle_mentee_signup_and_request(username, email, categories, details)
-    else:
-        # If already signed in, only add the request
-        metaswitch_tinder.database.matches.handle_mentee_add_request(current_username(), categories, details)
+        metaswitch_tinder.database.matches.handle_mentee_signup(username, email)

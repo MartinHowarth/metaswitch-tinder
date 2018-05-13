@@ -1,4 +1,3 @@
-import dash_core_components as dcc
 import dash_html_components as html
 import logging
 import random
@@ -8,14 +7,10 @@ from flask import session
 
 from metaswitch_tinder import matches
 from metaswitch_tinder.app import app, config
-from metaswitch_tinder.app_structure import href
 from metaswitch_tinder.components.grid import create_magic_three_row
 
 
 log = logging.getLogger(__name__)
-
-
-make_a_request = 'make_a_request'
 
 
 def children_no_matches():
@@ -26,10 +21,6 @@ def children_no_matches():
             html.Br(),
             html.Br(),
             html.P("Aw shucks! You're out of matches!", className="lead"),
-            html.Br(),
-            dcc.Link(html.Button("Make a request", className="btn btn-primary btn-lg btn-block"),
-                     href=href(__name__, make_a_request)),
-            html.Br(),
             html.Div(None, id='current-other-user', hidden=True),
             html.Div(0, id='accept-match', hidden=True),
             html.Div(0, id='reject-match', hidden=True),
@@ -68,8 +59,6 @@ def children_for_match(match: matches.Match, completed_users):
                     html.Td(match.bio)
                 ], className="table-success"),
                ], className="table table-condensed"),
-            dcc.Link(html.Button("Find a mentor - Make a request", className="btn btn-primary btn-lg btn-block"),
-                     href=href(__name__, make_a_request)),
             html.Div(match.other_user, id='current-other-user', hidden=True),
             html.Div(completed_users, id='completed-users', hidden=True),
             html.Div(list(set(their_tags) & set(your_tags)), id='matched-tags', hidden=True),

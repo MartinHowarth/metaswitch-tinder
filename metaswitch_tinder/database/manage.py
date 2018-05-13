@@ -96,7 +96,6 @@ class User(db.Model):
     def add(self):
         db.session.add(self)
         db.session.commit()
-        return
 
     def commit(self):
         db.session.commit()
@@ -117,6 +116,12 @@ class User(db.Model):
     def get_tags(self):
         return self.tags.split(',')
 
+    def set_tags(self, tags):
+        if isinstance(tags, list):
+            tags = ','.join(tags)
+        self.tags = tags
+        db.session.commit()
+
 
 def list_whole_table(table):
     return table.query.all()
@@ -130,7 +135,7 @@ def list_all_requests():
     return Request.query.all()
 
 
-def get_user(match_name) -> User:
+def get_user(match_name: str) -> User:
     return User.query.filter_by(name=match_name).first()
 
 
