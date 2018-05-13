@@ -3,7 +3,6 @@ import dash_html_components as html
 import logging
 
 from dash.dependencies import Output, State, Event
-from flask import session
 
 import metaswitch_tinder.database.matches
 
@@ -23,7 +22,6 @@ sign_in = 'sign_in'
 
 
 def layout():
-    session['is_mentee'] = True
     if is_logged_in():
         is_signed_in_fields = [
             html.H3("Welcome {}!".format(current_username()),

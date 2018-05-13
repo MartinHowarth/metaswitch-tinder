@@ -1,9 +1,8 @@
 import dash_core_components as dcc
 import dash_html_components as html
+import logging
 
 from dash.dependencies import Output, State, Event
-from flask import session
-import logging
 
 from metaswitch_tinder import database
 from metaswitch_tinder.app import app
@@ -21,7 +20,6 @@ submit = 'submit'
 
 
 def layout():
-    session['is_mentee'] = False
     return html.Div([
         html.H1("Metaswitch Tinder", className="text-center"),
         html.Br(),

@@ -2,6 +2,7 @@ import logging
 import dash_html_components as html
 
 from dash.dependencies import Input, Output
+from flask import session
 
 from metaswitch_tinder import tabs
 from metaswitch_tinder.app import app
@@ -47,4 +48,11 @@ def display_tab(tab_name):
     :param tab_name: Name of the tab what was selected.
     :return: Dash html object to display as the children of the 'tab-content' Div.
     """
+    if tab_name == 'mentee':
+        session['is_mentee'] = True
+    elif tab_name == 'mentor':
+        session['is_mentee'] = False
+    else:
+        del session['is_mentee']
+
     return tabs.tabs[tab_name]()

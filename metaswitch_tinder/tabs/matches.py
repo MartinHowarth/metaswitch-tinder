@@ -6,7 +6,9 @@ from dash.dependencies import Output, State, Event
 from flask import session
 
 from metaswitch_tinder import matches
+from metaswitch_tinder.database.manage import get_request_by_id, get_user
 from metaswitch_tinder.app import app, config
+from metaswitch_tinder.components.auth import is_logged_in
 from metaswitch_tinder.components.grid import create_magic_three_row
 
 
@@ -33,6 +35,32 @@ def children_no_matches():
 def children_for_match(match: matches.Match, completed_users):
     your_tags = match.your_tags
     their_tags = match.their_tags
+
+    if session.get('is_mentee', None):
+        mentor = get_user(match.other_user)
+        table_rows = [
+            html.Tr([
+                html.Td("Mentor skills"),
+                html.Td(', '.join(mentor.get_tags()))
+            ], className="table-success"),
+            html.Tr([
+                html.Td("Mentor bio"),
+                html.Td(mentor.bio)
+            ], className="table-success"),
+        ]
+    else:
+        request = get_request_by_id(match.request_id)
+        table_rows = [
+            html.Tr([
+                html.Td("Requested skills"),
+                html.Td(', '.join(request.get_tags()))
+            ], className="table-success"),
+            html.Tr([
+                html.Td("Comment"),
+                html.Td(request.comment)
+            ], className="table-success"),
+        ]
+
     return [
             html.Br(),
             create_magic_three_row([
@@ -50,14 +78,7 @@ def children_for_match(match: matches.Match, completed_users):
                     html.Td("Name"),
                     html.Td(match.other_user)
                 ], className="table-success"),
-                html.Tr([
-                    html.Td("Tags"),
-                    html.Td(', '.join(match.their_tags))
-                ], className="table-success"),
-                html.Tr([
-                    html.Td("Bio"),
-                    html.Td(match.bio)
-                ], className="table-success"),
+                *table_rows
                ], className="table table-condensed"),
             html.Div(match.other_user, id='current-other-user', hidden=True),
             html.Div(completed_users, id='completed-users', hidden=True),
@@ -83,7 +104,7 @@ def get_matches_children(completed_users=list()):
 
 def layout():
     print('matches', session)
-    if 'username' not in session:
+    if not is_logged_in():
         print('not logged in', session)
         return html.Div([html.Br(),
                          html.H1("You must be logged in to do this")])

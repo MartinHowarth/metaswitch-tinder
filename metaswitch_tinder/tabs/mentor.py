@@ -19,7 +19,7 @@ def layout():
     return generate_tabs(
         {
             'Record some skills': 'mentor_skills',
-            'Your matches': 'mentor_matches',
+            'Your matches - mentees who have asked to learn from you': 'mentor_matches',
         },
         default_tab='mentor_matches',
         tabs_id=tabs_id,

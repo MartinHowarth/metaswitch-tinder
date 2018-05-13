@@ -2,8 +2,6 @@ import dash_core_components as dcc
 import dash_html_components as html
 import logging
 
-from flask import session
-
 from metaswitch_tinder.app_structure import href
 from metaswitch_tinder.components.grid import create_equal_row
 
@@ -15,7 +13,6 @@ signup = 'signup'
 
 
 def layout():
-    session['is_mentee'] = False
     return html.Div([
         html.H1("Metaswitch Tinder", className="cover-heading"),
         create_equal_row([
