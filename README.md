@@ -10,9 +10,6 @@ For more information (specifically for contributors/developers), see the [wiki](
 
 ## Quickstart development instructions
 
-You will need a postgres database to test against and set the DATABASE_URL environment variable to be its URI.
-If you work out how to do that, please submit an MR to document it in this README.
-
 On Linux, with live updates when you save changes to the source files:
 ```
 yum install -y python36
