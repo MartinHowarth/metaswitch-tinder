@@ -24,3 +24,8 @@ or, to run the app using gunicorn (as it should be when deployed live):
 ```
 gunicorn -w 4 metaswitch_tinder.index:server
 ```
+
+## Test Database
+Test apps use an in-memory postgres database.
+
+It is auto-populated with the test data is defined in `metaswitch_tinder/populate_test_database.py`.

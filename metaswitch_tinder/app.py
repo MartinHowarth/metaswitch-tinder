@@ -17,8 +17,12 @@ app.config.suppress_callback_exceptions = True
 
 server = app.server
 server.secret_key = os.environ.get('SECRET_KEY', 'secret')
-server.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
-# server.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+server.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///:memory:')
 server.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(server)
+
+if 'DATABASE_URL' not in os.environ:
+    # Populate the in-memory test database.
+    from metaswitch_tinder import populate_test_database
+    populate_test_database.populate()
