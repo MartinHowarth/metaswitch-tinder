@@ -1,0 +1,34 @@
+{
+  "name": "metaswitch-tinder",
+  "scripts": {
+    "postdeploy": "bin/populate_test_database.py"
+  },
+  "env": {
+    "SECRET_KEY": {
+      "generator": "secret"
+    },
+    "SENDGRID_API_KEY": {
+      "required": true
+    },
+    "SENDGRID_PASSWORD": {
+      "required": true
+    },
+    "SENDGRID_USERNAME": {
+      "required": true
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "addons": [
+    "heroku-postgresql",
+    "sendgrid"
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ]
+}
