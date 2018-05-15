@@ -1,4 +1,4 @@
-#! python3
+#! python
 """
 This is run as part of the heroku pipelines for staging apps.
 
