@@ -29,3 +29,5 @@ gunicorn -w 4 metaswitch_tinder.index:server
 Test apps use an in-memory postgres database.
 
 It is auto-populated with the test data is defined in `metaswitch_tinder/populate_test_database.py`.
+
+Note: This in-memory database will not be auto-populated when running with gunicorn.
