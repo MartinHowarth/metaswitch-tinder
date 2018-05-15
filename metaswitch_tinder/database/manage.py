@@ -2,7 +2,7 @@ import time
 
 from enum import Enum
 from random import randint
-from typing import List
+from typing import List, Optional
 
 from metaswitch_tinder.app import db
 
@@ -135,7 +135,7 @@ def list_all_requests():
     return Request.query.all()
 
 
-def get_user(match_name: str) -> User:
+def get_user(match_name: Optional[str]) -> User:
     return User.query.filter_by(name=match_name).first()
 
 
@@ -153,11 +153,9 @@ def purge_table(table):
     # Delete all rows in specified table
     table.query.delete()
     db.session.commit()
-    return
 
 
 def delete_table(table):
     # Delete specified table
     table.__table__.drop(db.session.bind)
     db.session.commit()
-    return
