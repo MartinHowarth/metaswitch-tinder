@@ -1,10 +1,11 @@
 import random
 
+from metaswitch_tinder.app import db
 from metaswitch_tinder.database import manage
 
 
 def populate():
-    manage.db.create_all()
+    db.create_all()
 
     for i in range(10):
         user = manage.User(
