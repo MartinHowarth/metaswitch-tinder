@@ -8,7 +8,7 @@ import metaswitch_tinder.database.matches
 
 from metaswitch_tinder.app import app
 from metaswitch_tinder.app_structure import href
-from metaswitch_tinder.components.session import is_logged_in, set_current_usename, current_username
+from metaswitch_tinder.components import session
 from metaswitch_tinder.components.grid import create_equal_row
 
 from . import mentee_request
@@ -16,15 +16,15 @@ from . import mentee_request
 
 log = logging.getLogger(__name__)
 
-NAME = __name__.replace('.', '')
+NAME = __name__.replace('.', '_')
 
 sign_in = 'sign_in'
 
 
 def layout():
-    if is_logged_in():
+    if session.is_logged_in():
         is_signed_in_fields = [
-            html.H3("Welcome {}!".format(current_username()),
+            html.H3("Welcome {}!".format(session.current_username()),
                     className="text-center"),
             # Must include something with the id `email-NAME`, but hidden in this case
             dcc.Input(value='', type='text', id='email-{}'.format(NAME), style={'display': 'none'}),
@@ -76,6 +76,6 @@ def layout():
 )
 def submit_mentee_information(username, email):
     log.info('signin (as part of initial mentee request): %s - %s', username, email)
-    if not is_logged_in():
-        set_current_usename(username)
+    if not session.is_logged_in():
+        session.login(username)
         metaswitch_tinder.database.matches.handle_mentee_signup(username, email)

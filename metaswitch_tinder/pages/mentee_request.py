@@ -13,7 +13,7 @@ from metaswitch_tinder.components.grid import create_equal_row
 from metaswitch_tinder.components.inputs import multi_dropdown_with_tags
 
 
-NAME = __name__.replace('.', '')
+NAME = __name__.replace('.', '_')
 submit_request = 'submit_request'
 
 categories_id = 'categories-{}'.format(NAME)

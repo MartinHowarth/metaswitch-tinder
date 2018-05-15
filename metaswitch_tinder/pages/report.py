@@ -12,7 +12,7 @@ from metaswitch_tinder.app_structure import href
 log = logging.getLogger(__name__)
 
 
-NAME = __name__.replace('.', '')
+NAME = __name__.replace('.', '_')
 
 submit = "submit"
 

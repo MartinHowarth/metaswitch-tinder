@@ -7,13 +7,13 @@ from dash.dependencies import Output, State, Event
 from metaswitch_tinder import database
 from metaswitch_tinder.app import app
 from metaswitch_tinder.app_structure import href
-from metaswitch_tinder.components.session import set_current_usename
+from metaswitch_tinder.components import session
 from metaswitch_tinder.components.grid import create_equal_row
 
 
 log = logging.getLogger(__name__)
 
-NAME = __name__.replace('.', '')
+NAME = __name__.replace('.', '_')
 
 submit = 'submit'
 
@@ -43,5 +43,6 @@ def layout():
     [Event('submit-{}'.format(NAME), 'click')]
 )
 def submit_signup_information(username):
+    log.info("%s - Signin clicked: %s", NAME, username)
     database.identity.handle_signin_submit(username)
-    set_current_usename(username)
+    session.login(username)

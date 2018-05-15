@@ -18,6 +18,7 @@ app.config.suppress_callback_exceptions = True
 server = app.server
 server.secret_key = os.environ.get('SECRET_KEY', 'secret')
 server.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+# server.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
 server.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(server)

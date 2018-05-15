@@ -11,7 +11,7 @@ from metaswitch_tinder.components.grid import create_equal_row
 
 log = logging.getLogger(__name__)
 
-NAME = __name__.replace('.', '')
+NAME = __name__.replace('.', '_')
 
 biography_id = 'biography-{}'.format(NAME)
 email_id = 'email-{}'.format(NAME)

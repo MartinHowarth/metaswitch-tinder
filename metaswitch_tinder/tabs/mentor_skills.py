@@ -14,7 +14,7 @@ from metaswitch_tinder.components.inputs import multi_dropdown_with_tags
 
 log = logging.getLogger(__name__)
 
-NAME = __name__.replace('.', '')
+NAME = __name__.replace('.', '_')
 
 categories_id = 'categories-{}'.format(NAME)
 

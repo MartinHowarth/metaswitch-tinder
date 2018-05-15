@@ -11,7 +11,7 @@ from metaswitch_tinder.components.tabs import generate_tabs
 
 log = logging.getLogger(__name__)
 
-NAME = __name__.replace('.', '')
+NAME = __name__.replace('.', '_')
 
 tabs_id = 'tabs-{}'.format(NAME)
 display_id = 'tab-display-{}'.format(NAME)
@@ -19,6 +19,7 @@ display_id = 'tab-display-{}'.format(NAME)
 
 def layout():
     cached_tab = session.get_last_tab_on(NAME) or 'mentee'
+
     session.wait_for_login()
     return html.Div([generate_tabs(
         {
