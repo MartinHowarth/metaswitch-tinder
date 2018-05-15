@@ -1,7 +1,7 @@
 {
   "name": "metaswitch-tinder",
   "scripts": {
-    "postdeploy": "bin/populate_test_database.py"
+    "postdeploy": "python metaswitch_tinder/populate_test_database.py"
   },
   "env": {
     "SECRET_KEY": {
