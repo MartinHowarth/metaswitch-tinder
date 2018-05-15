@@ -1,7 +1,13 @@
+import logging
+
 from flask import session as flask_session
+from typing import Optional
 
 from .utils import wait_for
 from metaswitch_tinder.database.manage import get_user, User
+
+
+log = logging.getLogger(__name__)
 
 
 def current_username() -> str:
@@ -14,6 +20,13 @@ def current_user() -> User:
 
 def set_current_usename(username: str):
     flask_session['username'] = username
+
+
+def logout():
+    log.info("Logout: %s", flask_session)
+    keys = list(flask_session.keys())
+    for key in keys:
+        del flask_session[key]
 
 
 def is_logged_in() -> bool:
@@ -30,3 +43,11 @@ def on_mentee_tab() -> bool:
 
 def set_on_mentee_tab(status: bool):
     flask_session['on_mentee_tab'] = status
+
+
+def get_last_tab_on(page: str) -> Optional[str]:
+    return flask_session.get('tab-{}'.format(page), None)
+
+
+def set_last_tab_on(page: str, last_tab: str):
+    flask_session['tab-{}'.format(page)] = last_tab

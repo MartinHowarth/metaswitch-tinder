@@ -5,7 +5,7 @@ from dash.dependencies import Input, Output
 
 from metaswitch_tinder import tabs
 from metaswitch_tinder.app import app
-from metaswitch_tinder.components.session import wait_for_login, set_on_mentee_tab
+from metaswitch_tinder.components import session
 from metaswitch_tinder.components.tabs import generate_tabs
 
 
@@ -18,7 +18,8 @@ display_id = 'tab-display-{}'.format(NAME)
 
 
 def layout():
-    wait_for_login()
+    cached_tab = session.get_last_tab_on(NAME) or 'mentee'
+    session.wait_for_login()
     return html.Div([generate_tabs(
         {
             'Messages': 'messages',
@@ -26,7 +27,7 @@ def layout():
             'Be a mentor': 'mentor',
             'Settings': 'settings'
         },
-        default_tab='mentee',
+        default_tab=cached_tab,
         tabs_id=tabs_id,
         display_id=display_id
     )],
@@ -48,8 +49,11 @@ def display_tab(tab_name):
     :return: Dash html object to display as the children of the 'tab-content' Div.
     """
     if tab_name == 'mentee':
-        set_on_mentee_tab(True)
+        session.set_on_mentee_tab(True)
     else:
-        set_on_mentee_tab(False)
+        session.set_on_mentee_tab(False)
+
+    # Cache the last tab we were on so the user returns to where they left off if they navigate away and come back
+    session.set_last_tab_on(NAME, tab_name)
 
     return tabs.tabs[tab_name]()

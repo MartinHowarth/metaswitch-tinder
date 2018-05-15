@@ -3,10 +3,10 @@ import dash_html_components as html
 import logging
 
 from dash.dependencies import Output, State, Event
-from flask import session
 from typing import List, Tuple
 
 from metaswitch_tinder.app import app
+from metaswitch_tinder.components import session
 
 
 log = logging.getLogger(__name__)
@@ -60,7 +60,4 @@ def choose_page(btn_click_list: List[Tuple[int, str]]) -> str:
     [Event('logout', 'click')]
 )
 def handle_logout():
-    log.info("Logout: %s", session)
-    keys = list(session.keys())
-    for key in keys:
-        del session[key]
+    session.logout()

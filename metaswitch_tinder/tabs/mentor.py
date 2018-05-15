@@ -4,6 +4,7 @@ from dash.dependencies import Input, Output
 
 from metaswitch_tinder import tabs
 from metaswitch_tinder.app import app
+from metaswitch_tinder.components import session
 from metaswitch_tinder.components.tabs import generate_tabs
 
 
@@ -16,12 +17,14 @@ display_id = 'tab-display-{}'.format(NAME)
 
 
 def layout():
+    cached_tab = session.get_last_tab_on(NAME) or 'mentor_matches'
+
     return generate_tabs(
         {
             'Record some skills': 'mentor_skills',
             'Your matches - mentees who have asked to learn from you': 'mentor_matches',
         },
-        default_tab='mentor_matches',
+        default_tab=cached_tab,
         tabs_id=tabs_id,
         display_id=display_id
     )
@@ -37,4 +40,7 @@ def display_tab(tab_name: str):
     :param tab_name: Name of the tab what was selected.
     :return: Dash html object to display as the children of the 'tab-content' Div.
     """
+
+    # Cache the last tab we were on so the user returns to where they left off if they navigate away and come back
+    session.set_last_tab_on(NAME, tab_name)
     return tabs.tabs[tab_name]()
