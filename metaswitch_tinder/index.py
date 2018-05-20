@@ -85,8 +85,8 @@ def serve_script(filename):
 if __name__ == "__main__":
     if 'DATABASE_URL' not in os.environ:
         # Populate the in-memory test database.
-        from metaswitch_tinder import populate_test_database
-        populate_test_database.populate()
+        from metaswitch_tinder import review_app_database
+        review_app_database.populate()
     app.run_server(port=int(os.environ.get('PORT', 80)), debug=True, threaded=True)
 else:
     # The `server` is imported here so that gunicorn's entry point is this file. That forces load of

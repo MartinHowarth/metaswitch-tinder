@@ -5,7 +5,7 @@ import logging
 from dash.dependencies import Event, Output, State
 
 from metaswitch_tinder.app import app
-from metaswitch_tinder.components.session import is_logged_in, current_username, current_user
+from metaswitch_tinder.components.session import is_logged_in, current_username, get_current_user
 from metaswitch_tinder.components.grid import create_equal_row
 
 
@@ -25,7 +25,7 @@ def layout():
         return html.Div([html.Br(),
                          html.H1("You must be logged in to do this")])
 
-    user = current_user()
+    user = get_current_user()
 
     return html.Div(
         children=[
@@ -73,7 +73,7 @@ def set_mentor_tags(bio: str, email: str):
     """
     log.info("User %s set bio: %s", current_username(), bio)
     log.info("User %s set email: %s", current_username(), email)
-    user = current_user()
+    user = get_current_user()
     user.bio = bio
     user.email = email
     user.commit()

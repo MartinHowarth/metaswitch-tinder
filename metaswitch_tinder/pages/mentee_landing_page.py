@@ -78,4 +78,4 @@ def submit_mentee_information(username, email):
     log.info('signin (as part of initial mentee request): %s - %s', username, email)
     if not session.is_logged_in():
         session.login(username)
-        metaswitch_tinder.database.matches.handle_mentee_signup(username, email)
+        metaswitch_tinder.database.user.handle_signup_submit(username, email)

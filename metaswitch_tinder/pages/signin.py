@@ -44,5 +44,5 @@ def layout():
 )
 def submit_signup_information(username):
     log.info("%s - Signin clicked: %s", NAME, username)
-    database.identity.handle_signin_submit(username)
+    database.user.handle_signin_submit(username)
     session.login(username)

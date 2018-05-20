@@ -7,7 +7,7 @@ from typing import List
 
 from metaswitch_tinder import database
 from metaswitch_tinder.app import app
-from metaswitch_tinder.components.session import current_username, current_user
+from metaswitch_tinder.components.session import current_username, get_current_user
 from metaswitch_tinder.components.grid import create_equal_row
 from metaswitch_tinder.components.inputs import multi_dropdown_with_tags
 
@@ -20,7 +20,7 @@ categories_id = 'categories-{}'.format(NAME)
 
 
 def layout():
-    user = current_user()
+    user = get_current_user()
 
     return html.Div([
         create_equal_row([html.Label('Tell us what you know about:')]),
@@ -47,4 +47,4 @@ def set_mentor_tags(tags: List[str]):
     :param tags: List of tags, comma separated.
     """
     log.info("User %s set mentor tags: %s", current_username(), tags)
-    current_user().set_tags(tags)
+    get_current_user().tags = tags

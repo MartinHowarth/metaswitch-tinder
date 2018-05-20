@@ -4,8 +4,7 @@ from flask import session as flask_session
 from typing import Optional
 
 from .utils import wait_for
-from metaswitch_tinder.database.manage import get_user, User
-
+from metaswitch_tinder.database.user import User, get_user
 
 log = logging.getLogger(__name__)
 
@@ -14,7 +13,7 @@ def current_username() -> Optional[str]:
     return flask_session.get('username', None)
 
 
-def current_user() -> User:
+def get_current_user() -> User:
     return get_user(current_username())
 
 

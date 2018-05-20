@@ -70,5 +70,5 @@ def layout():
     [Event('submit-{}'.format(NAME), 'click')]
 )
 def submit_signup_information(username, email, biography, categories, details):
-    database.identity.handle_signup_submit(username, email, biography, categories, details)
+    database.user.handle_signup_submit(username, email, biography, categories, details)
     session.login(username)

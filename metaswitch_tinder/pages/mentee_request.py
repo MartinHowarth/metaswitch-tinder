@@ -2,6 +2,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 
 from dash.dependencies import Output, State, Event
+from typing import List
 
 import metaswitch_tinder.database.matches
 
@@ -48,7 +49,8 @@ def layout():
     ],
     [Event(submit_button, 'click')]
 )
-def submit_mentee_information(categories, details):
+def submit_mentee_information(categories: List[str], details: str):
     print('mentee request', categories, details)
     wait_for_login()
-    metaswitch_tinder.database.matches.handle_mentee_add_request(current_username(), categories, details)
+    request = metaswitch_tinder.database.Request(current_username(), categories, details)
+    request.add()

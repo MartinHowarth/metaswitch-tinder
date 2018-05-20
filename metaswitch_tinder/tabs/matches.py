@@ -3,12 +3,13 @@ import logging
 import random
 
 from dash.dependencies import Output, State, Event
+from typing import List, Tuple
 
 from metaswitch_tinder import matches
-from metaswitch_tinder.database.manage import get_request_by_id, get_user
+from metaswitch_tinder.database import get_request_by_id, get_user, Request, User
 from metaswitch_tinder.app import app, config
 from metaswitch_tinder.components.grid import create_magic_three_row
-from metaswitch_tinder.components.session import is_logged_in, on_mentee_tab
+from metaswitch_tinder.components.session import is_logged_in, on_mentee_tab, get_current_user
 
 
 log = logging.getLogger(__name__)
@@ -40,7 +41,7 @@ def children_for_match(match: matches.Match, completed_users):
         table_rows = [
             html.Tr([
                 html.Td("Mentor skills"),
-                html.Td(', '.join(mentor.get_tags()))
+                html.Td(', '.join(mentor.tags))
             ], className="table-success"),
             html.Tr([
                 html.Td("Mentor bio"),
@@ -52,7 +53,7 @@ def children_for_match(match: matches.Match, completed_users):
         table_rows = [
             html.Tr([
                 html.Td("Requested skills"),
-                html.Td(', '.join(request.get_tags()))
+                html.Td(', '.join(request.tags))
             ], className="table-success"),
             html.Tr([
                 html.Td("Comment"),
@@ -87,8 +88,11 @@ def children_for_match(match: matches.Match, completed_users):
 
 
 def get_matches_children(completed_users=list()):
-    current_matches = matches.generate_matches()
+    current_matches = get_matches_for_current_user_role()
     print(current_matches)
+
+    # TODO continue from here.
+    # TODO change completed users to be skipped users?
     for user in completed_users:
         for match in current_matches:
             if user == match.other_user:
@@ -101,10 +105,46 @@ def get_matches_children(completed_users=list()):
     return children
 
 
+def get_requests_for_current_user_role() -> List[Request]:
+    # Load all the requests for this user from the database
+    current_user = get_current_user()
+    requests = current_user.requests
+    if on_mentee_tab():
+        # Filter to only the requests made by this user.
+        requests = [req for req in requests if req.maker == current_user.name]
+    else:
+        # Filter to only the requests that this user didn't make.
+        # That must be only the ones they are applicable to mentor for.
+        requests = [req for req in requests if req.maker != current_user.name]
+
+        # Filter out all the requests this mentor has rejected already
+        requests = [req for req in requests if current_user.name not in req.rejected_mentors]
+    return requests
+
+
+def get_matches_for_current_user_role() -> List[Tuple(Request, User)]:
+    requests = get_requests_for_current_user_role()
+
+    current_matches = []  # type: List[Tuple[Request, User]]
+
+    if on_mentee_tab():
+        for request in requests:
+            for mentor in request.possible_mentors:
+                if mentor in request.rejected_mentors:
+                    continue
+                current_matches.append((request, mentor))
+    else:
+        for request in requests:
+            current_matches.append((request, request.get_maker()))
+
+    return current_matches
+
+
 def layout():
     if not is_logged_in():
         return html.Div([html.Br(),
                          html.H1("You must be logged in to do this")])
+
     return html.Div(
         children=get_matches_children(),
         className="container text-center",
