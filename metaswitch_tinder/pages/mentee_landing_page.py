@@ -6,6 +6,7 @@ from dash.dependencies import Output, State, Event
 
 import metaswitch_tinder.database.matches
 
+import metaswitch_tinder.database.models
 from metaswitch_tinder.app import app
 from metaswitch_tinder.app_structure import href
 from metaswitch_tinder.components import session
@@ -78,4 +79,4 @@ def submit_mentee_information(username, email):
     log.info('signin (as part of initial mentee request): %s - %s', username, email)
     if not session.is_logged_in():
         session.login(username)
-        metaswitch_tinder.database.user.handle_signup_submit(username, email)
+        metaswitch_tinder.database.models.handle_signup_submit(username, email)

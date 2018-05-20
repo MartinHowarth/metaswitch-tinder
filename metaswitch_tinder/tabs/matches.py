@@ -108,7 +108,7 @@ def get_matches_children(completed_users=list()):
 def get_requests_for_current_user_role() -> List[Request]:
     # Load all the requests for this user from the database
     current_user = get_current_user()
-    requests = current_user.requests
+    requests = current_user.get_requests()
     if on_mentee_tab():
         # Filter to only the requests made by this user.
         requests = [req for req in requests if req.maker == current_user.name]
@@ -132,7 +132,7 @@ def get_matches_for_current_user_role() -> List[Tuple(Request, User)]:
             for mentor in request.possible_mentors:
                 if mentor in request.rejected_mentors:
                     continue
-                current_matches.append((request, mentor))
+                current_matches.append((request, get_user(mentor)))
     else:
         for request in requests:
             current_matches.append((request, request.get_maker()))

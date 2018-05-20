@@ -5,11 +5,10 @@ import itertools
 from collections import defaultdict
 from typing import Dict, List
 
-import metaswitch_tinder.database.request
-import metaswitch_tinder.database.user
+import metaswitch_tinder.database.models
 from metaswitch_tinder import database, tinder_email
 from metaswitch_tinder.components.session import is_logged_in, current_username, on_mentee_tab, get_current_user
-from metaswitch_tinder.database import get_request_by_id, get_user, list_all_users
+from metaswitch_tinder.database import get_request_by_id, get_user, list_all_users, User, Request
 
 
 class Match:
@@ -25,27 +24,26 @@ class Match:
             self=self)
 
 
-def tag_to_mentor_mapping(mentors: List[database.User]) -> Dict[str, List[database.User]]:
-    tag_map = defaultdict(list)  # type: Dict[str, List[database.User]]
+def tag_to_mentor_mapping(mentors: List[User]) -> Dict[str, List[User]]:
+    tag_map = defaultdict(list)  # type: Dict[str, List[User]]
     for mentor in mentors:
         for tag in mentor.tags:
             tag_map[tag].append(mentor)
     return tag_map
 
 
-def tag_to_request_mapping(mentees: List[database.User]) -> Dict[str, List[database.Request]]:
-    tag_map = defaultdict(list)  # type: Dict[str, List[database.Request]]
+def tag_to_request_mapping(mentees: List[User]) -> Dict[str, List[Request]]:
+    tag_map = defaultdict(list)  # type: Dict[str, List[Request]]
     for mentee in mentees:
-        for request in mentee.requests:
+        for request in mentee.get_requests():
             for tag in request.tags:
                 tag_map[tag].append(request)
     return tag_map
 
 
-def matches_for_mentee(mentor_tag_map: Dict[str, List[metaswitch_tinder.database.user.User]],
-                       mentee: metaswitch_tinder.database.user.User) -> List[Match]:
+def matches_for_mentee(mentor_tag_map: Dict[str, List[User]], mentee: User) -> List[Match]:
     matches = []
-    for request in mentee.requests:
+    for request in mentee.get_requests():
         possible_mentors = list(itertools.chain(*[mentor_tag_map[tag] for tag in request.tags]))
         if possible_mentors:
             matches.extend([Match(mentor.name, mentor.tags, mentor.bio, request.tags, request.id)
@@ -53,16 +51,16 @@ def matches_for_mentee(mentor_tag_map: Dict[str, List[metaswitch_tinder.database
     return matches
 
 
-def matches_for_mentor(request_tag_map, mentor: metaswitch_tinder.database.User):
-    user = metaswitch_tinder.database.user.get_user(current_username())
+def matches_for_mentor(request_tag_map, mentor: User):
+    user = metaswitch_tinder.database.models.get_user(current_username())
     matches = []  # type: List[Match]
     print(user.mentor_matches)
     if user.mentor_matches == '':
         return matches
     for match in user.mentor_matches.split(','):
         username, request_id = match.split(':')
-        mentee = metaswitch_tinder.database.user.get_user(username)
-        request = metaswitch_tinder.database.request.get_request_by_id(request_id)
+        mentee = metaswitch_tinder.database.models.get_user(username)
+        request = metaswitch_tinder.database.models.get_request_by_id(request_id)
         matches.extend([Match(mentee.name, request.tags, mentee.bio, [], request_id)])
     return matches
 

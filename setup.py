@@ -48,10 +48,10 @@ setup(
         'requests',
         'schematics',
         'sendgrid',
+        'sqlalchemy-utils',
     ],
     setup_requires=['pytest-runner'],
     tests_require=[
         'pytest',
-        'robotframework',
     ],
 )

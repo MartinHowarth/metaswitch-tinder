@@ -6,6 +6,7 @@ from typing import List
 
 import metaswitch_tinder.database.matches
 
+import metaswitch_tinder.database.models
 from metaswitch_tinder.app import app
 from metaswitch_tinder import database
 from metaswitch_tinder.app_structure import href
@@ -52,5 +53,5 @@ def layout():
 def submit_mentee_information(categories: List[str], details: str):
     print('mentee request', categories, details)
     wait_for_login()
-    request = metaswitch_tinder.database.Request(current_username(), categories, details)
+    request = metaswitch_tinder.database.models.Request(current_username(), categories, details)
     request.add()

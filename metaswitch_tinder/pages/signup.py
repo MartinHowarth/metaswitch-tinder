@@ -4,6 +4,7 @@ import logging
 
 from dash.dependencies import Output, State, Event
 
+import metaswitch_tinder.database.models
 from metaswitch_tinder import database
 from metaswitch_tinder.app import app
 from metaswitch_tinder.app_structure import href
@@ -70,5 +71,5 @@ def layout():
     [Event('submit-{}'.format(NAME), 'click')]
 )
 def submit_signup_information(username, email, biography, categories, details):
-    database.user.handle_signup_submit(username, email, biography, categories, details)
+    metaswitch_tinder.database.models.handle_signup_submit(username, email, biography, categories, details)
     session.login(username)
