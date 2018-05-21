@@ -116,7 +116,7 @@ class TestMatches:
     def test_match_requests_when_mentor_updates_tags(self):
         request1_tags = ['tag1']
         request2_tags = ['tag2']
-        mentor1_tags = ['tag1']
+        mentor_tags = ['tag1']
 
         mentee = self.create_user('mentee')
 
@@ -125,7 +125,7 @@ class TestMatches:
         request2 = self.create_request(mentee, request2_tags)
 
         # Mentor should only match request 1 initially
-        mentor = self.create_user('mentor', tags=mentor1_tags)
+        mentor = self.create_user('mentor', tags=mentor_tags)
 
         assert request1.id in mentor.requests
         assert request2.id not in mentor.requests
@@ -147,3 +147,43 @@ class TestMatches:
         assert request2.id not in mentor.requests
         assert mentor.name not in request1.possible_mentors
         assert mentor.name not in request2.possible_mentors
+
+    def test_get_requests_as_mentee(self):
+        request1_tags = ['tag1']
+        request2_tags = ['tag2']
+        mentor_tags = ['tag1', 'tag2']
+
+        mentee = self.create_user('mentee', tags=mentor_tags)
+
+        req_ids = [req.id for req in mentee.get_requests_as_mentee()]
+        assert len(req_ids) == 0
+
+        request1 = self.create_request(mentee, request1_tags)
+        request2 = self.create_request(mentee, request2_tags)
+
+        self.create_user('mentor', tags=mentor_tags)
+
+        req_ids = [req.id for req in mentee.get_requests_as_mentee()]
+        assert len(req_ids) == 2
+        assert request1.id in req_ids
+        assert request2.id in req_ids
+
+    def test_get_requests_as_mentor(self):
+        request1_tags = ['tag1']
+        request2_tags = ['tag2']
+        mentor_tags = ['tag1', 'tag2']
+
+        mentee = self.create_user('mentee', tags=mentor_tags)
+
+        req_ids = [req.id for req in mentee.get_requests_as_mentor()]
+        assert len(req_ids) == 0
+
+        request1 = self.create_request(mentee, request1_tags)
+        request2 = self.create_request(mentee, request2_tags)
+
+        mentor = self.create_user('mentor', tags=mentor_tags)
+
+        req_ids = [req.id for req in mentor.get_requests_as_mentor()]
+        assert len(req_ids) == 2
+        assert request1.id in req_ids
+        assert request2.id in req_ids

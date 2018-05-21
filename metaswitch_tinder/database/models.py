@@ -1,9 +1,10 @@
 import time
+
 from random import randint
+from sqlalchemy_utils import ScalarListType
 from typing import List, Optional, Union
 
 from metaswitch_tinder.app import db
-from sqlalchemy_utils import ScalarListType
 
 
 class Request(db.Model):
@@ -277,6 +278,19 @@ class User(db.Model):
 
     def get_requests(self) -> List['User']:
         return get_requests_by_ids(self.requests)
+
+    def get_requests_as_mentee(self):
+        # Filter to only the requests made by this user.
+        return [req for req in self.get_requests() if req.maker == self.name]
+
+    def get_requests_as_mentor(self):
+        # Filter to only the requests that this user didn't make.
+        # That must be only the ones they are applicable to mentor for.
+        requests = [req for req in self.get_requests() if req.maker != self.name]
+
+        # Filter out all the requests this mentor has rejected already
+        requests = [req for req in requests if self.name not in req.rejected_mentors]
+        return requests
 
     def populate_all_possible_requests_to_mentor(self):
         requests = list_all_requests()

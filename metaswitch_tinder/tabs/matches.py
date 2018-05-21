@@ -108,17 +108,10 @@ def get_matches_children(completed_users=list()):
 def get_requests_for_current_user_role() -> List[Request]:
     # Load all the requests for this user from the database
     current_user = get_current_user()
-    requests = current_user.get_requests()
     if on_mentee_tab():
-        # Filter to only the requests made by this user.
-        requests = [req for req in requests if req.maker == current_user.name]
+        requests = current_user.get_requests_as_mentee()
     else:
-        # Filter to only the requests that this user didn't make.
-        # That must be only the ones they are applicable to mentor for.
-        requests = [req for req in requests if req.maker != current_user.name]
-
-        # Filter out all the requests this mentor has rejected already
-        requests = [req for req in requests if current_user.name not in req.rejected_mentors]
+        requests = current_user.get_requests_as_mentor()
     return requests
 
 
