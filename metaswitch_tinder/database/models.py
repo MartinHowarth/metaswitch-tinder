@@ -17,7 +17,7 @@ class Request(db.Model):
     _maker = db.Column(db.String(80))  # Also the mentee, by definition.
     mentor = db.Column(db.String(80))  # This is the (singular) mentor who has been matched with.
     comment = db.Column(db.String(2000))
-    _tags = db.Column(ScalarListType())  # type: List[str]
+    tags = db.Column(ScalarListType())  # type: List[str]
     _possible_mentors = db.Column(ScalarListType())  # type: List[str]
     _rejected_mentors = db.Column(ScalarListType())  # type: List[str]
     _accepted_mentors = db.Column(ScalarListType())  # type: List[str]
@@ -41,7 +41,7 @@ class Request(db.Model):
 
         # Register this request with the user.
         user = self.get_maker()
-        user.requests.append(self)
+        user.requests += [self]
 
         # Now go and work out which mentors are possible matches
         self.populate_initial_possible_mentors()
@@ -64,15 +64,6 @@ class Request(db.Model):
 
     def get_maker(self) -> 'User':
         return get_user(self._maker)
-
-    @property
-    def tags(self) -> List[str]:
-        return self._tags
-
-    @tags.setter
-    def tags(self, value: List[str]):
-        self._tags = value
-        self.commit()
 
     @property
     def accepted_mentors(self) -> List[str]:
@@ -148,11 +139,11 @@ class Request(db.Model):
 
     def handle_mentee_accept_mentor(self, mentor: 'User'):
         """Called when a mentee accepts a mentor. A mentee can accept multiple mentors."""
-        self.accepted_mentors.append(mentor)
+        self.accepted_mentors += [mentor]
 
     def handle_mentee_reject_mentor(self, mentor: 'User'):
         """Called when a mentee rejects a mentor. A mentee can reject multiple mentors."""
-        self.rejected_mentors.append(mentor)
+        self.rejected_mentors += [mentor]
 
     def handle_mentor_accept_mentee(self, mentor: 'User'):
         """Called when a mentor accepts a mentee. This can only be called once."""
@@ -165,7 +156,7 @@ class Request(db.Model):
 
     def handle_mentor_reject_mentee(self, mentor: 'User'):
         """Called when a mentor rejects a mentee."""
-        self.rejected_mentors.append(mentor)
+        self.rejected_mentors += [mentor]
 
 
 class User(db.Model):
@@ -187,7 +178,7 @@ class User(db.Model):
         self.bio = bio or ''
         self.mentoring_details = mentoring_details or ''
         self.mentor_matches = ""
-        self.tags = tags or []
+        self._tags = tags or []
 
         self._mentees = []
         self._mentors = []
@@ -286,6 +277,7 @@ class User(db.Model):
 
                 # Mark this user as involved as well.
                 self.requests += [request]
+
         self.commit()
 
     def add_mentor_match(self, match, request_id):

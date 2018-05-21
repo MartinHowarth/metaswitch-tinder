@@ -13,6 +13,7 @@ class TestMatches:
 
     def create_user(self, name: str, tags: List[str]=None) -> User:
         user = User(name, '{}@email.com'.format(name), tags=tags)
+        print(name, user)
         user.add()
         return user
 
@@ -47,15 +48,21 @@ class TestMatches:
         assert request.id in user.requests
 
     def test_populate_initial_possible_mentors(self):
+        """
+        This test covers the initial creation of a request, and ensuring that mentors get matched to it correctly.
+        """
         request_tags = ['tag1']
         request2_tags = ['tag2']
         mentor1_tags = ['tag1']
         mentor2_tags = ['tag1', 'tag2']
 
         mentee = self.create_user('mentee')
+
+        # Make the mentors first.
         mentor1 = self.create_user('mentor1', tags=mentor1_tags)
         mentor2 = self.create_user('mentor2', tags=mentor2_tags)
 
+        # Then make the requests.
         # Request 1 should match both mentors
         request1 = self.create_request(mentee, request_tags)
 
@@ -73,16 +80,34 @@ class TestMatches:
         assert request2.id in mentor2.requests
 
     def test_populate_all_possible_requests_to_mentor(self):
-        # TODO
-        request_tags = ['tag1']
+        """
+        This test covers creating a new user, and ensuring that they get matches to
+        all existing requests they could mentor.
+        """
+        request1_tags = ['tag1']
+        request2_tags = ['tag2']
         mentor1_tags = ['tag1']
         mentor2_tags = ['tag1', 'tag2']
 
         mentee = self.create_user('mentee')
-        request = self.create_request(mentee, request_tags)
 
+        # Make the requests first.
+        request1 = self.create_request(mentee, request1_tags)
+        request2 = self.create_request(mentee, request2_tags)
+
+        # Then make the mentors.
+        # Mentor 1 should only match request 1.
         mentor1 = self.create_user('mentor1', tags=mentor1_tags)
+
+        assert request1.id in mentor1.requests
+        assert request2.id not in mentor1.requests
+        assert mentor1.name in request1.possible_mentors
+        assert mentor1.name not in request2.possible_mentors
+
+        # Mentor 2 should match both requests.
         mentor2 = self.create_user('mentor2', tags=mentor2_tags)
 
-        assert mentor1.name in request.possible_mentors
-        assert mentor2.name in request.possible_mentors
+        assert request1.id in mentor2.requests
+        assert request2.id in mentor2.requests
+        assert mentor2.name in request1.possible_mentors
+        assert mentor2.name in request2.possible_mentors
