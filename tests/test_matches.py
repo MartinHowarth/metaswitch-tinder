@@ -38,8 +38,9 @@ class TestMatches:
 
         # Test setting tags after initial setting
         tags2 = tags[:-1]
-        user.tags = tags2
-        assert user.tags == tags2
+        user.set_tags(tags2)
+        assert len(user.tags) == len(tags2)
+        assert set(user.tags) == set(tags2)
 
     def test_request_creation(self):
         user = self.create_user('fred')
@@ -111,3 +112,38 @@ class TestMatches:
         assert request2.id in mentor2.requests
         assert mentor2.name in request1.possible_mentors
         assert mentor2.name in request2.possible_mentors
+
+    def test_match_requests_when_mentor_updates_tags(self):
+        request1_tags = ['tag1']
+        request2_tags = ['tag2']
+        mentor1_tags = ['tag1']
+
+        mentee = self.create_user('mentee')
+
+        # Make the requests first.
+        request1 = self.create_request(mentee, request1_tags)
+        request2 = self.create_request(mentee, request2_tags)
+
+        # Mentor should only match request 1 initially
+        mentor = self.create_user('mentor', tags=mentor1_tags)
+
+        assert request1.id in mentor.requests
+        assert request2.id not in mentor.requests
+        assert mentor.name in request1.possible_mentors
+        assert mentor.name not in request2.possible_mentors
+
+        # Setting these tags should match both requests
+        mentor.set_tags(request1_tags + request2_tags)
+
+        assert request1.id in mentor.requests
+        assert request2.id in mentor.requests
+        assert mentor.name in request1.possible_mentors
+        assert mentor.name in request2.possible_mentors
+
+        # Removing all tags should match no requests
+        mentor.set_tags([])
+
+        assert request1.id not in mentor.requests
+        assert request2.id not in mentor.requests
+        assert mentor.name not in request1.possible_mentors
+        assert mentor.name not in request2.possible_mentors

@@ -78,7 +78,7 @@ class Request(db.Model):
             else:
                 mentors.append(mentor)
 
-        self._accepted_mentors = mentors
+        self._accepted_mentors = list(set(mentors))
         self.commit()
 
     def get_accepted_mentors(self) -> List['User']:
@@ -97,11 +97,23 @@ class Request(db.Model):
             else:
                 mentors.append(mentor)
 
-        self._possible_mentors = mentors
+        self._possible_mentors = list(set(mentors))
         self.commit()
 
     def get_possible_mentors(self) -> List['User']:
         return get_users(self.possible_mentors)
+
+    def remove_possible_mentor(self, mentor: Union['User', str]):
+        if isinstance(mentor, User):
+            name = mentor.name
+        else:
+            name = mentor
+
+        if name in self.possible_mentors:
+            mentors = self.possible_mentors.copy()
+            mentors.remove(name)
+            self.possible_mentors = mentors
+        self.commit()
 
     @property
     def rejected_mentors(self) -> List[str]:
@@ -116,7 +128,7 @@ class Request(db.Model):
             else:
                 mentors.append(mentor)
 
-        self._rejected_mentees = mentors
+        self._rejected_mentees = list(set(mentors))
         self.commit()
 
     def get_rejected_mentors(self) -> List['User']:
@@ -202,9 +214,8 @@ class User(db.Model):
     def tags(self) -> List[str]:
         return self._tags
 
-    @tags.setter
-    def tags(self, value: List[str]):
-        self._tags = value
+    def set_tags(self, tags: List[str]):
+        self._tags = list(set(tags))
         self.commit()
 
         # Mentoring skills have changed, update possible requests to mentor.
@@ -223,7 +234,7 @@ class User(db.Model):
             else:
                 mentees.append(mentee)
 
-        self._mentees = mentees
+        self._mentees = list(set(mentees))
         self.commit()
 
     def get_mentees(self) -> List['User']:
@@ -242,7 +253,7 @@ class User(db.Model):
             else:
                 mentors.append(mentor)
 
-        self._mentors = mentors
+        self._mentors = list(set(mentors))
         self.commit()
 
     def get_mentors(self) -> List['User']:
@@ -261,7 +272,7 @@ class User(db.Model):
             else:
                 reqs.append(request)
 
-        self._requests = reqs
+        self._requests = list(set(reqs))
         self.commit()
 
     def get_requests(self) -> List['User']:
@@ -270,14 +281,18 @@ class User(db.Model):
     def populate_all_possible_requests_to_mentor(self):
         requests = list_all_requests()
 
+        matching_requests = []
         for request in requests:
             if self.could_mentor_for_request(request):
                 # Mark this user as a possible match for the request
                 request.possible_mentors += [self]
 
                 # Mark this user as involved as well.
-                self.requests += [request]
+                matching_requests.append(request)
+            else:
+                request.remove_possible_mentor(self)
 
+        self.requests = list(set(matching_requests))
         self.commit()
 
     def add_mentor_match(self, match, request_id):
