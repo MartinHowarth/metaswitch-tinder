@@ -13,7 +13,6 @@ class TestModels:
 
     def create_user(self, name: str, tags: List[str]=None) -> User:
         user = User(name, '{}@email.com'.format(name), tags=tags)
-        print(name, user)
         user.add()
         return user
 
