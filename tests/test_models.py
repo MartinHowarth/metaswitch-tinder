@@ -1,10 +1,10 @@
 from typing import List
 
-from metaswitch_tinder.database import User, get_user, Request, get_request_by_id
+from metaswitch_tinder.database import User, Request
 from metaswitch_tinder.app import db
 
 
-class TestMatches:
+class TestModels:
     def setup_method(self, method):
         db.create_all()
 
