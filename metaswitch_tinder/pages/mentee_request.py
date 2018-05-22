@@ -4,9 +4,8 @@ import dash_html_components as html
 from dash.dependencies import Output, State, Event
 from typing import List
 
-import metaswitch_tinder.database.matches
-
 import metaswitch_tinder.database.models
+
 from metaswitch_tinder.app import app
 from metaswitch_tinder import database
 from metaswitch_tinder.app_structure import href
@@ -27,7 +26,7 @@ def layout():
     return html.Div([
         html.Label('What topics do you want to learn about?'),
         html.Br(),
-        multi_dropdown_with_tags(database.tags.get_tags(), categories_id),
+        multi_dropdown_with_tags(database.get_tags(), categories_id),
         html.Br(),
         html.Label('Any additional details about this request that the mentor should know?', className="text-center"),
         html.Br(),

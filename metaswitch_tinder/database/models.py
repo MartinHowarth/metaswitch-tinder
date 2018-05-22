@@ -25,6 +25,9 @@ class Request(db.Model):
     _rejected_mentees = db.Column(ScalarListType())  # type: List[str]
 
     def __init__(self, maker: str, tags: List[str], comment: str=None):
+        if not isinstance(tags, list) and tags is not None:
+            tags = [tags]
+
         self.id = str(time.time()) + str(randint(1, 100))
         self._maker = maker
         self.tags = tags
@@ -160,12 +163,22 @@ class Request(db.Model):
 
     def handle_mentor_accept_mentee(self, mentor: 'User'):
         """Called when a mentor accepts a mentee. This can only be called once."""
+        print("mentor %s accepted request: %s", mentor, self)
         self.mentor = mentor.name
         self.possible_mentors = []
         self.accepted_mentors = []
         self.rejected_mentors = []
 
+        # Change this request to be a match for both mentor and mentee
+        mentor.matches += [self]
+        mentor.remove_request(self)
+
+        mentee = self.get_maker()
+        mentee.matches += [self]
+        mentee.remove_request(self)
+
         self.commit()
+        print("mentor %s accepted request: %s", mentor, self)
 
     def handle_mentor_reject_mentee(self, mentor: 'User'):
         """Called when a mentor rejects a mentee."""
@@ -185,7 +198,13 @@ class User(db.Model):
     _requests = db.Column(ScalarListType())  # type: List[str]
     _tags = db.Column(ScalarListType())  # type: List[str]
 
+    # The list of requests (for both mentors and mentees) that have been completed.
+    _matches = db.Column(ScalarListType())  # type: List[str]
+
     def __init__(self, name: str, email: str, bio: str=None, tags: List[str]=None, mentoring_details: str=None):
+        if not isinstance(tags, list) and tags is not None:
+            tags = [tags]
+
         self.name = name
         self.email = email
         self.bio = bio or ''
@@ -196,6 +215,7 @@ class User(db.Model):
         self._mentees = []
         self._mentors = []
         self._requests = []
+        self._matches = []
 
     def __repr__(self):
         return (
@@ -279,6 +299,12 @@ class User(db.Model):
     def get_requests(self) -> List['User']:
         return get_requests_by_ids(self.requests)
 
+    def remove_request(self, request: Request):
+        requests = self.requests
+        if request.id in requests:
+            requests.remove(request.id)
+            self.requests = requests
+
     def get_requests_as_mentee(self):
         # Filter to only the requests made by this user.
         return [req for req in self.get_requests() if req.maker == self.name]
@@ -291,6 +317,25 @@ class User(db.Model):
         # Filter out all the requests this mentor has rejected already
         requests = [req for req in requests if self.name not in req.rejected_mentors]
         return requests
+
+    @property
+    def matches(self) -> List[str]:
+        return self._matches
+
+    @matches.setter
+    def matches(self, value: Union[List['Request'], List[str]]):
+        mats = []
+        for match in value:
+            if isinstance(match, Request):
+                mats.append(match.id)
+            else:
+                mats.append(match)
+
+        self._matches = list(set(mats))
+        self.commit()
+
+    def get_matches(self) -> List['User']:
+        return get_requests_by_ids(self.matches)
 
     def populate_all_possible_requests_to_mentor(self):
         requests = list_all_requests()
@@ -330,6 +375,8 @@ def get_request_by_id(request_id: str) -> Optional[Request]:
 
 
 def get_requests_by_ids(request_ids: List[str]) -> List[Request]:
+    if not request_ids:
+        return []
     return Request.query.filter(Request.id.in_(request_ids)).all()
 
 
@@ -337,11 +384,13 @@ def list_all_users() -> List[User]:
     return User.query.all()
 
 
-def get_user(user_name: Optional[str]) -> Optional[User]:
+def get_user(user_name: str) -> Optional[User]:
     return User.query.filter_by(name=user_name).first()
 
 
 def get_users(names: List[str]) -> List[User]:
+    if not names:
+        return []
     return User.query.filter(User.id.in_(names)).all()
 
 

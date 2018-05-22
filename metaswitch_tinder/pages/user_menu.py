@@ -23,9 +23,9 @@ def layout():
     session.wait_for_login()
     return html.Div([generate_tabs(
         {
-            'Messages': 'messages',
-            'Be a mentee': 'mentee',
-            'Be a mentor': 'mentor',
+            'Your matches': 'completed_matches',
+            'Become a mentee': 'mentee',
+            'Become a mentor': 'mentor',
             'Settings': 'settings'
         },
         default_tab=cached_tab,

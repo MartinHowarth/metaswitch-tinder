@@ -64,7 +64,7 @@ def generate_structure():
     )
     from metaswitch_tinder.tabs import (  # noqa
         matches,
-        messages,
+        completed_matches,
         settings,
     )
 

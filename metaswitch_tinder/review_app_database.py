@@ -1,8 +1,7 @@
 import random
 
 import metaswitch_tinder.database.models
-import metaswitch_tinder.database.request
-import metaswitch_tinder.database.user
+
 from metaswitch_tinder.app import db
 
 
@@ -14,9 +13,12 @@ def populate():
             'user{}'.format(i),
             'user{}@email.com'.format(i),
             'user{} bio'.format(i),
-            ['Coding',
-             'Design',
-             'Testing'],
+            random.choices(
+                ['Coding',
+                 'Design',
+                 'Testing'],
+                k=2
+            ),
             'I can teach you anything!'
         )
         user.add()
@@ -24,7 +26,7 @@ def populate():
     for i in range(5):
         req = metaswitch_tinder.database.models.Request(
             'user{}'.format(i),
-            random.choice(['Coding', 'Design', 'Testing']),
+            [random.choice(['Coding', 'Design', 'Testing'])],
             "Teach me a random thing.",
         )
         req.add()

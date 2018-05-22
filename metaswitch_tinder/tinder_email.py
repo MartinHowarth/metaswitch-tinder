@@ -25,6 +25,12 @@ def send_email(recipients: List[str], email_text: str, subject: str):
     :param subject: Subject of the email.
     :return:
     """
+    log.info("Sending email to %s: %s: %s", recipients, subject, email_text)
+
+    if 'NO_EMAIL' in os.environ:
+        log.info("Skipped sending email because NO_EMAIL was set in environment.")
+        return
+
     if 'SENDGRID_API_KEY' in os.environ:
         # For sending emails from heroku, using "sendgrid" plugin
         sg = sendgrid.SendGridAPIClient(apikey=os.environ.get('SENDGRID_API_KEY'))

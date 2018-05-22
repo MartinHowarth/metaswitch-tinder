@@ -22,10 +22,6 @@ class TestMatches:
         request.add()
         return request
 
-    def delete_user(self, name: str):
-        user = get_user(name)
-        # TODO
-
     def test_basic_user_creation(self):
         user = self.create_user('fred', tags=[])
         assert user.name == 'fred'

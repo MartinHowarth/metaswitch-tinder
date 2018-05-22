@@ -1,4 +1,4 @@
-from . import matches, messages, mentee, mentor, settings, mentor_skills
+from . import matches, completed_matches, mentee, mentor, settings, mentor_skills
 from ..pages import mentee_request
 
 tabs = {
@@ -8,6 +8,6 @@ tabs = {
     'mentor': mentor.layout,
     'mentor_matches': matches.layout,
     'mentor_skills': mentor_skills.layout,
-    'messages': messages.layout,
+    'completed_matches': completed_matches.layout,
     'settings': settings.layout,
 }

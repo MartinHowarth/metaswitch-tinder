@@ -47,4 +47,4 @@ def set_mentor_tags(tags: List[str]):
     :param tags: List of tags, comma separated.
     """
     log.info("User %s set mentor tags: %s", current_username(), tags)
-    get_current_user().tags = tags
+    get_current_user().set_tags(tags)
