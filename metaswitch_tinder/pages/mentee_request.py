@@ -52,5 +52,9 @@ def layout():
 def submit_mentee_information(categories: List[str], details: str):
     print('mentee request', categories, details)
     wait_for_login()
-    request = metaswitch_tinder.database.models.Request(current_username(), categories, details)
+    user_name = current_username()
+    if user_name is None:
+        raise AssertionError("Failed to login with user name: %s" % user_name)
+
+    request = metaswitch_tinder.database.models.Request(user_name, categories, details)
     request.add()

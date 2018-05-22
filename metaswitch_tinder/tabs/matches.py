@@ -164,6 +164,13 @@ def layout():
 def handle_submit(match_request_id: str, other_user_name: str, accepted: bool):
     request = get_request_by_id(match_request_id)
     other_user = get_user(other_user_name)
+
+    if other_user is None:
+        raise AssertionError("Could not get other user by name: %s" % other_user_name)
+
+    if request is None:
+        raise AssertionError("Could not get request by id: %s" % match_request_id)
+
     if accepted:
         if on_mentee_tab():
             matches.handle_mentee_accept_match(other_user, request)

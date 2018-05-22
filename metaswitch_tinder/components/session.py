@@ -14,7 +14,14 @@ def current_username() -> Optional[str]:
 
 
 def get_current_user() -> User:
-    return get_user(current_username())
+    user_name = current_username()
+    if user_name is None:
+        raise AssertionError("Could not get current user as they are not logged in.")
+
+    user = get_user(user_name)
+    if user is None:
+        raise AssertionError("Could not get current user from database by name: %s" % user_name)
+    return user
 
 
 def set_current_usename(username: str):

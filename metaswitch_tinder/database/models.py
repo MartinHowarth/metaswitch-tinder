@@ -23,7 +23,7 @@ class Request(db.Model):
     _rejected_mentors = db.Column(ScalarListType())  # type: List[str]
     _accepted_mentors = db.Column(ScalarListType())  # type: List[str]
 
-    def __init__(self, maker: Union[str, 'User'], tags: List[str], comment: str=None):
+    def __init__(self, maker: Union[str, 'User'], tags: Union[str, List[str]], comment: str=None) -> None:
         if not isinstance(tags, list) and tags is not None:
             tags = [tags]
         if isinstance(maker, User):
@@ -31,7 +31,7 @@ class Request(db.Model):
 
         self.id = str(time.time()) + str(randint(1, 100))
         self._maker = maker
-        self.tags = tags
+        self.tags = tags or []
         self.comment = comment or ''
         self._accepted_mentors = []
         self._possible_mentors = []
@@ -68,7 +68,10 @@ class Request(db.Model):
             self.maker = value
 
     def get_maker(self) -> 'User':
-        return get_user(self.maker)
+        maker = get_user(self.maker)
+        if maker is None:
+            raise AssertionError("Could not get maker from database with name: %s" % self.maker)
+        return maker
 
     @property
     def accepted_mentors(self) -> List[str]:
@@ -205,7 +208,8 @@ class User(db.Model):
     # The list of requests (for both mentors and mentees) that have been completed.
     _matches = db.Column(ScalarListType())  # type: List[str]
 
-    def __init__(self, name: str, email: str, bio: str=None, tags: List[str]=None, mentoring_details: str=None):
+    def __init__(self, name: str, email: str, bio: str=None,
+                 tags: List[str]=None, mentoring_details: str=None) -> None:
         if not isinstance(tags, list) and tags is not None:
             tags = [tags]
 
