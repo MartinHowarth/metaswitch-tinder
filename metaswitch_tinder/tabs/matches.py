@@ -133,7 +133,7 @@ def get_matches_for_mentee(mentee: User, skipped_matches: List[str]=list()) -> L
             # For mentees, skipped_matches is a list of mentor names.
             if mentor_name in skipped_matches:
                 continue
-            print(1, list(itertools.chain(request.rejected_mentors, request.accepted_mentors)))
+
             # Don't show mentors who have previously been rejected or accepted.
             if mentor_name in itertools.chain(request.rejected_mentors, request.accepted_mentors):
                 continue
