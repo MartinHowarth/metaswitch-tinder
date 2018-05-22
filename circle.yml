@@ -31,12 +31,6 @@ jobs:
           paths:
             - "venv"
 
-      - run: # initialise database
-          command: |
-            . venv/bin/activate
-            python setup.py install
-            python tests/init_database.py
-
       - run: # run tests
           command: |
             . venv/bin/activate
