@@ -22,11 +22,12 @@ class Request(db.Model):
     _possible_mentors = db.Column(ScalarListType())  # type: List[str]
     _rejected_mentors = db.Column(ScalarListType())  # type: List[str]
     _accepted_mentors = db.Column(ScalarListType())  # type: List[str]
-    _rejected_mentees = db.Column(ScalarListType())  # type: List[str]
 
-    def __init__(self, maker: str, tags: List[str], comment: str=None):
+    def __init__(self, maker: Union[str, 'User'], tags: List[str], comment: str=None):
         if not isinstance(tags, list) and tags is not None:
             tags = [tags]
+        if isinstance(maker, User):
+            maker = maker.name
 
         self.id = str(time.time()) + str(randint(1, 100))
         self._maker = maker
@@ -67,11 +68,11 @@ class Request(db.Model):
             self.maker = value
 
     def get_maker(self) -> 'User':
-        return get_user(self._maker)
+        return get_user(self.maker)
 
     @property
     def accepted_mentors(self) -> List[str]:
-        return self._accepted_mentors
+        return self._accepted_mentors.copy()
 
     @accepted_mentors.setter
     def accepted_mentors(self, value: Union[List['User'], List[str]]):
@@ -90,7 +91,7 @@ class Request(db.Model):
 
     @property
     def possible_mentors(self) -> List[str]:
-        return self._possible_mentors
+        return self._possible_mentors.copy()
 
     @possible_mentors.setter
     def possible_mentors(self, value: Union[List['User'], List[str]]):
@@ -114,14 +115,14 @@ class Request(db.Model):
             name = mentor
 
         if name in self.possible_mentors:
-            mentors = self.possible_mentors.copy()
+            mentors = self.possible_mentors
             mentors.remove(name)
             self.possible_mentors = mentors
         self.commit()
 
     @property
     def rejected_mentors(self) -> List[str]:
-        return self._rejected_mentors
+        return self._rejected_mentors.copy()
 
     @rejected_mentors.setter
     def rejected_mentors(self, value: Union[List['User'], List[str]]):
@@ -132,7 +133,7 @@ class Request(db.Model):
             else:
                 mentors.append(mentor)
 
-        self._rejected_mentees = list(set(mentors))
+        self._rejected_mentors = list(set(mentors))
         self.commit()
 
     def get_rejected_mentors(self) -> List['User']:
@@ -160,6 +161,7 @@ class Request(db.Model):
     def handle_mentee_reject_mentor(self, mentor: 'User'):
         """Called when a mentee rejects a mentor. A mentee can reject multiple mentors."""
         self.rejected_mentors += [mentor]
+        mentor.remove_request(self)
 
     def handle_mentor_accept_mentee(self, mentor: 'User'):
         """Called when a mentor accepts a mentee. This can only be called once."""
@@ -182,7 +184,9 @@ class Request(db.Model):
 
     def handle_mentor_reject_mentee(self, mentor: 'User'):
         """Called when a mentor rejects a mentee."""
+        # Record rejected mentees the same as if the mentor had been rejected.
         self.rejected_mentors += [mentor]
+        mentor.remove_request(self)
 
 
 class User(db.Model):
@@ -233,7 +237,7 @@ class User(db.Model):
 
     @property
     def tags(self) -> List[str]:
-        return self._tags
+        return self._tags.copy()
 
     def set_tags(self, tags: List[str]):
         self._tags = list(set(tags))
@@ -244,7 +248,7 @@ class User(db.Model):
 
     @property
     def mentees(self) -> List[str]:
-        return self._mentees
+        return self._mentees.copy()
 
     @mentees.setter
     def mentees(self, value: Union[List['User'], List[str]]):
@@ -263,7 +267,7 @@ class User(db.Model):
 
     @property
     def mentors(self) -> List[str]:
-        return self._mentors
+        return self._mentors.copy()
 
     @mentors.setter
     def mentors(self, value: Union[List['User'], List[str]]):
@@ -282,7 +286,7 @@ class User(db.Model):
 
     @property
     def requests(self) -> List[str]:
-        return self._requests
+        return self._requests.copy()
 
     @requests.setter
     def requests(self, value: Union[List['Request'], List[str]]):
@@ -300,10 +304,10 @@ class User(db.Model):
         return get_requests_by_ids(self.requests)
 
     def remove_request(self, request: Request):
-        requests = self.requests
-        if request.id in requests:
-            requests.remove(request.id)
-            self.requests = requests
+        request_ids = self.requests
+        if request.id in request_ids:
+            request_ids.remove(request.id)
+            self.requests = request_ids
 
     def get_requests_as_mentee(self):
         # Filter to only the requests made by this user.
@@ -311,7 +315,6 @@ class User(db.Model):
 
     def get_requests_as_mentor(self):
         # Filter to only the requests that this user didn't make.
-        # That must be only the ones they are applicable to mentor for.
         requests = [req for req in self.get_requests() if req.maker != self.name]
 
         # Filter out all the requests this mentor has rejected already
@@ -320,7 +323,7 @@ class User(db.Model):
 
     @property
     def matches(self) -> List[str]:
-        return self._matches
+        return self._matches.copy()
 
     @matches.setter
     def matches(self, value: Union[List['Request'], List[str]]):

@@ -1,7 +1,7 @@
 from typing import List
 
-from metaswitch_tinder.database import User, Request
 from metaswitch_tinder.app import db
+from metaswitch_tinder.database import User, Request
 
 
 class TestModels:

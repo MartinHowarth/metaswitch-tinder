@@ -8,7 +8,7 @@ from dash.dependencies import Output, State, Event
 from typing import List
 
 from metaswitch_tinder import matches
-from metaswitch_tinder.database import get_request_by_id, get_user, Request
+from metaswitch_tinder.database import get_request_by_id, get_user, Request, User
 from metaswitch_tinder.app import app, config
 from metaswitch_tinder.components.grid import create_magic_three_row
 from metaswitch_tinder.components.session import is_logged_in, on_mentee_tab, get_current_user, current_username
@@ -105,51 +105,48 @@ def get_matches_children(skipped_requests: List[str]=list()):
     return children
 
 
-def get_requests_for_current_user_role() -> List[Request]:
-    # Load all the requests for this user from the database
-    current_user = get_current_user()
-    if on_mentee_tab():
-        role = "mentee"
-        requests = current_user.get_requests_as_mentee()
-    else:
-        role = "mentor"
-        requests = current_user.get_requests_as_mentor()
+def get_matches_for_mentor(mentor: User, skipped_matches: List[str]=list()) -> List[Match]:
+    requests = mentor.get_requests_as_mentor()
 
-    log.info("Requests for %s as role %s: %s", current_user.name, role, requests)
-    return requests
+    _matches = []
+    for request in requests:
+        # Don't show skipped matches
+        # For mentors, skipped_matches is a list of mentee request IDs
+        if request.id in skipped_matches:
+            continue
+
+        # Don't show matches where this mentor hasn't been accepted by the mentee yet.
+        if mentor.name not in request.accepted_mentors:
+            continue
+
+        _matches.append(Match(request.get_maker(), mentor, request))
+    return _matches
+
+
+def get_matches_for_mentee(mentee: User, skipped_matches: List[str]=list()) -> List[Match]:
+    requests = mentee.get_requests_as_mentee()
+
+    _matches = []
+    for request in requests:
+        for mentor_name in request.possible_mentors:
+            # Don't show skipped matches.
+            # For mentees, skipped_matches is a list of mentor names.
+            if mentor_name in skipped_matches:
+                continue
+            print(1, list(itertools.chain(request.rejected_mentors, request.accepted_mentors)))
+            # Don't show mentors who have previously been rejected or accepted.
+            if mentor_name in itertools.chain(request.rejected_mentors, request.accepted_mentors):
+                continue
+
+            _matches.append(Match(mentee, get_user(mentor_name), request))
+    return _matches
 
 
 def get_matches_for_current_user_role(skipped_matches: List[str]) -> List[Match]:
-    requests = get_requests_for_current_user_role()
-
-    current_matches = []  # type: List[Match]
-
     if on_mentee_tab():
-        for request in requests:
-            for mentor_name in request.possible_mentors:
-                # Don't show skipped matches.
-                # For mentees, skipped_matches is a list of mentor names.
-                if mentor_name in skipped_matches:
-                    continue
-
-                # Don't show mentors who have previously been rejected or accepted.
-                if mentor_name in itertools.chain(request.rejected_mentors, request.accepted_mentors):
-                    continue
-
-                current_matches.append(Match(get_current_user(), get_user(mentor_name), request))
+        current_matches = get_matches_for_mentee(get_current_user(), skipped_matches)
     else:
-        for request in requests:
-            # Don't show skipped matches
-            # For mentors, skipped_matches is a list of mentee request IDs
-            if request.id in skipped_matches:
-                continue
-
-            # Don't show matches where this mentor hasn't been accepted by the mentee yet.
-            if current_username() not in request.accepted_mentors:
-                continue
-
-            current_matches.append(Match(request.get_maker(), get_current_user(), request))
-
+        current_matches = get_matches_for_mentor(get_current_user(), skipped_matches)
     return current_matches
 
 
