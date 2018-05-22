@@ -5,7 +5,7 @@ import logging
 from dash.dependencies import Output, State, Event
 
 import metaswitch_tinder.database.models
-from metaswitch_tinder import database
+
 from metaswitch_tinder.app import app
 from metaswitch_tinder.app_structure import href
 from metaswitch_tinder.components import session

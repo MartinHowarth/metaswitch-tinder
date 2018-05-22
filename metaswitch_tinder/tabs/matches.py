@@ -8,11 +8,10 @@ from dash.dependencies import Output, State, Event
 from typing import List
 
 from metaswitch_tinder import matches
-from metaswitch_tinder.database import get_request_by_id, get_user, Request, User
+from metaswitch_tinder.database import get_request_by_id, get_user, User
 from metaswitch_tinder.app import app, config
 from metaswitch_tinder.components.grid import create_magic_three_row
-from metaswitch_tinder.components.session import is_logged_in, on_mentee_tab, get_current_user, current_username
-
+from metaswitch_tinder.components.session import is_logged_in, on_mentee_tab, get_current_user
 
 log = logging.getLogger(__name__)
 

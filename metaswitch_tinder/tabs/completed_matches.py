@@ -8,7 +8,7 @@ from metaswitch_tinder.components.session import is_logged_in, get_current_user,
 
 
 def children_no_matches():
-    return [html.H1("{}, you have no completed matches! :(".format(current_username())),]
+    return [html.H1("{}, you have no completed matches! :(".format(current_username()))]
 
 
 def children_matches(completed_matches: List[Request]) -> List:
