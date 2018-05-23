@@ -7,14 +7,10 @@ from metaswitch_tinder.tabs.matches import get_matches_for_mentee, get_matches_f
 
 class TestModels:
     def setup_method(self, method):
-        print(1, "setup")
         db.create_all()
-        print(2, "setup")
 
     def teardown_method(self, method):
-        print(1, "teardown")
         db.drop_all()
-        print(2, "teardown")
 
     def create_user(self, name: str, tags: List[str]=None) -> User:
         user = User(name, '{}@email.com'.format(name), tags=tags)
