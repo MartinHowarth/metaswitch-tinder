@@ -6,7 +6,7 @@ jobs:
     # Image to run the tests in
       - image: circleci/python:3.6.5-stretch-browsers
         environment:
-          DATABASE_URL: postgresql://root@localhost/circle_test
+          DATABASE_URL: postgresql://root@localhost:5432/circle_test
 
     # Postgres database container image
       - image: circleci/postgres:9.6.5-alpine-ram
@@ -31,7 +31,19 @@ jobs:
           paths:
             - "venv"
 
-      - run: # run tests
+      - run:
+          name: Waiting for Postgres to be ready
+          command: |
+            for i in `seq 1 10`;
+            do
+              nc -z localhost 5432 && echo Success && exit 0
+              echo -n .
+              sleep 1
+            done
+            echo Failed waiting for Postgres && exit 1
+
+      - run:
+          name: Unit tests
           command: |
             . venv/bin/activate
             python setup.py test
