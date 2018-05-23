@@ -5,42 +5,42 @@ jobs:
     docker:
     # Image to run the tests in
       - image: circleci/python:3.6.5-stretch-browsers
-        environment:
-          DATABASE_URL: postgresql://root@localhost:5432/circle_test
+#        environment:
+#          DATABASE_URL: postgresql://root@localhost:5432/circle_test
 
-    # Postgres database container image
-      - image: circleci/postgres:9.6.5-alpine-ram
-        environment: # environment variables for database
-          POSTGRES_USER: root
-          POSTGRES_DB: circle_test
+#    # Postgres database container image
+#      - image: circleci/postgres:9.6.5-alpine-ram
+#        environment: # environment variables for database
+#          POSTGRES_USER: root
+#          POSTGRES_DB: circle_test
 
     steps:
       - checkout
 
       # Cache `python setup.py install` if setup.py hasn't changed - this will handle the majority of cases where the dependencies haven't changed.
       # We re-run the install method in the tests to catch changes in the app, but this cache should prevent the need for re-installing every dependency on every build.
-#      - restore_cache: # restores saved dependency cache if the Branch key template or setup.py files have not changed since the previous run
-#          key: deps1-{{ .Branch }}-{{ checksum "setup.py" }}
+      - restore_cache: # restores saved dependency cache if the Branch key template or setup.py files have not changed since the previous run
+          key: deps1-{{ .Branch }}-{{ checksum "setup.py" }}
       - run: # install and activate virtual environment with pip
           command: |
             python3 -m venv venv
             . venv/bin/activate
             python setup.py install
-#      - save_cache: # special step to save dependency cache
-#          key: deps1-{{ .Branch }}-{{ checksum "setup.py" }}
-#          paths:
-#            - "venv"
+      - save_cache: # special step to save dependency cache
+          key: deps1-{{ .Branch }}-{{ checksum "setup.py" }}
+          paths:
+            - "venv"
 
-      - run:
-          name: Waiting for Postgres to be ready
-          command: |
-            for i in `seq 1 10`;
-            do
-              nc -z localhost 5432 && echo Success && exit 0
-              echo -n .
-              sleep 1
-            done
-            echo Failed waiting for Postgres && exit 1
+#      - run:
+#          name: Waiting for Postgres to be ready
+#          command: |
+#            for i in `seq 1 10`;
+#            do
+#              nc -z localhost 5432 && echo Success && exit 0
+#              echo -n .
+#              sleep 1
+#            done
+#            echo Failed waiting for Postgres && exit 1
 
       - run:
           name: Unit tests
