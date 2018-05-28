@@ -36,23 +36,25 @@ def layout():
     else:
         is_signed_in_fields = [
             html.H3('Existing Users', className="text-center"),
-            dcc.Link(html.Button("Sign in",
-                                 id='sign-in-{}'.format(NAME),
-                                 className="btn btn-lg btn-primary btn-block"),
-                     href=href(__name__, sign_in)),
+            html.A("Sign in!", href='/login-with-google', id='signin-{}'.format(NAME),
+                   className="btn btn-lg btn-primary btn-block"),
+            # dcc.Link(html.Button("Sign in",
+            #                      id='sign-in-{}'.format(NAME),
+            #                      className="btn btn-lg btn-primary btn-block"),
+            #          href=href(__name__, sign_in)),
             html.Br(),
             html.Br(),
             html.H3('New mentoring request', className="text-center"),
             html.Br(),
-            create_equal_row([
-                html.Label('Name:'),
-                dcc.Input(value='', type='text', id='username-{}'.format(NAME)),
-            ]),
-            html.Br(),
-            create_equal_row([
-                html.Label('Email:',),
-                dcc.Input(value='@metaswitch.com', type='text', id='email-{}'.format(NAME)),
-            ]),
+            # create_equal_row([
+            #     html.Label('Name:'),
+            #     dcc.Input(value='', type='text', id='username-{}'.format(NAME)),
+            # ]),
+            # html.Br(),
+            # create_equal_row([
+            #     html.Label('Email:',),
+            #     dcc.Input(value='@metaswitch.com', type='text', id='email-{}'.format(NAME)),
+            # ]),
         ]
 
     return html.Div([
@@ -61,6 +63,7 @@ def layout():
         *is_signed_in_fields,
         html.Br(),
         mentee_request.layout(),
+        html.Div(id='dummy-signin-{}'.format(NAME), hidden=True)
     ],
         className="container", id='my-div')
 
@@ -69,13 +72,28 @@ def layout():
     Output('my-div'.format(NAME), 'children'),
     [],
     [
-        State('username-{}'.format(NAME), 'value'),
-        State('email-{}'.format(NAME), 'value'),
+        # State('username-{}'.format(NAME), 'value'),
+        # State('email-{}'.format(NAME), 'value'),
     ],
     [Event(mentee_request.submit_button, 'click')]
 )
-def submit_mentee_information(username, email):
-    log.info('signin (as part of initial mentee request): %s - %s', username, email)
-    if not session.is_logged_in():
-        session.login(username)
-        metaswitch_tinder.database.models.handle_signup_submit(username, email)
+def submit_mentee_information():#username, email):
+    # log.info('signin (as part of initial mentee request): %s - %s', username, email)
+    session.set_post_login_redirect(href(__name__, mentee_request.submit_request))
+
+    # if not session.is_logged_in():
+    #     session.login(username)
+    #     metaswitch_tinder.database.models.handle_signup_submit(username, email)
+
+
+@app.callback(
+    Output('dummy-signin-{}'.format(NAME), 'children'),
+    [],
+    [],
+    [Event('signin-{}'.format(NAME), 'click')]
+)
+def submit_signup_information():
+    log.info("%s - Signin clicked", NAME)
+    session.set_post_login_redirect(href(__name__, sign_in))
+    # metaswitch_tinder.database.models.username_already_exists(username)
+    # session.login(username)

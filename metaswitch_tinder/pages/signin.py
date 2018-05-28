@@ -28,9 +28,9 @@ def layout():
             dcc.Input(value='', type='text', id='username-{}'.format(NAME)),
         ]),
         html.Br(),
-        dcc.Link(html.Button("Submit!", id='submit-{}'.format(NAME),
-                             n_clicks=0, className="btn btn-lg btn-primary btn-block"),
-                 href=href(__name__, submit)),
+        html.A(html.Button("Submit!", id='submit-{}'.format(NAME),
+                           n_clicks=0, className="btn btn-lg btn-primary btn-block"),
+               href='/login-with-google'),
     ],
         className="container", id='signin')
 
@@ -45,5 +45,4 @@ def layout():
 )
 def submit_signup_information(username):
     log.info("%s - Signin clicked: %s", NAME, username)
-    metaswitch_tinder.database.models.handle_signin_submit(username)
-    session.login(username)
+    session.set_post_login_redirect(href(__name__, submit))

@@ -39,6 +39,7 @@ setup(
         'dash-core-components==0.13.0-rc4',
         'dash-renderer==0.12.1',
         'Flask-Migrate',
+        'Flask-OAuthlib',
         'Flask-Script',
         'Flask-SQLAlchemy',
         'gunicorn',

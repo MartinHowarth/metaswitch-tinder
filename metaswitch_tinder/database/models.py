@@ -1,3 +1,4 @@
+import logging
 import time
 
 from random import randint
@@ -5,6 +6,9 @@ from sqlalchemy_utils import ScalarListType
 from typing import List, Optional, Union
 
 from metaswitch_tinder.app import db
+
+
+log = logging.getLogger(__name__)
 
 
 class Request(db.Model):
@@ -193,8 +197,8 @@ class Request(db.Model):
 
 
 class User(db.Model):
-    name = db.Column(db.String(80), primary_key=True)
-    email = db.Column(db.String(120), unique=True)
+    name = db.Column(db.String(80))
+    email = db.Column(db.String(120), unique=True, primary_key=True)
     bio = db.Column(db.String(2000))
     mentoring_details = db.Column(db.String(2000))
     mentor_matches = db.Column(db.String(2000))
@@ -407,10 +411,18 @@ def handle_signup_submit(username: str, email: str, biography: str=None, categor
     new_user.add()
 
 
-def handle_signin_submit(username: str):
+def username_already_exists(username: str) -> bool:
     print("signin submitted:", username)
     all_users = list_all_users()
     all_usernames = [user.name for user in all_users]
     print("all users:", all_usernames)
     if username not in all_usernames:
-        raise ValueError("User not found.")
+        return False
+    return True
+
+
+def create_request(username: str, categories: List[str], details: str):
+    log.info("Creating request for %s: %s, %s", username, categories, details)
+    request = Request(username, categories, details)
+    request.add()
+
