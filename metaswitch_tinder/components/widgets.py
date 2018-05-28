@@ -2,12 +2,8 @@ import dash_core_components as dcc
 import dash_html_components as html
 import logging
 
-from dash.dependencies import Output, State, Event
+from dash.dependencies import Output, State
 from typing import List, Tuple
-
-from metaswitch_tinder.app import app
-from metaswitch_tinder.components import session
-
 
 log = logging.getLogger(__name__)
 
@@ -51,13 +47,3 @@ def choose_page(btn_click_list: List[Tuple[int, str]]) -> str:
         if tup[0] == 1:
             return tup[1]
     raise ValueError("No clicks were detected, or the click list is misconfigured: {}".format(btn_click_list))
-
-
-@app.callback(
-    Output('logout', ''),
-    [],
-    [],
-    [Event('logout', 'click')]
-)
-def handle_logout():
-    session.logout()

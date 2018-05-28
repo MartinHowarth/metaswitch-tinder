@@ -1,7 +1,8 @@
+import flask
 import logging
 
-from flask import session as flask_session
-from typing import Optional
+from collections import namedtuple
+from typing import List, Optional
 
 from .utils import wait_for
 from metaswitch_tinder.database import User, get_user
@@ -9,8 +10,16 @@ from metaswitch_tinder.database import User, get_user
 log = logging.getLogger(__name__)
 
 
+SignupInformation = namedtuple('SignupInformation', [
+    'biography',
+    'request_categories',
+    'request_details',
+    'mentor_categories',
+    'mentor_details'])
+
+
 def current_username() -> Optional[str]:
-    return flask_session.get('username', None)
+    return flask.session.get('username', None)
 
 
 def get_current_user() -> User:
@@ -25,7 +34,7 @@ def get_current_user() -> User:
 
 
 def set_current_usename(username: str):
-    flask_session['username'] = username
+    flask.session['username'] = username
 
 
 def login(username: str):
@@ -34,14 +43,41 @@ def login(username: str):
 
 
 def logout():
-    log.info("Logout: %s", flask_session)
-    keys = list(flask_session.keys())
+    log.info("Logout: %s", flask.session)
+    keys = list(flask.session.keys())
     for key in keys:
-        del flask_session[key]
+        del flask.session[key]
 
 
 def is_logged_in() -> bool:
-    return 'username' in flask_session
+    log.debug("is_logged_in: Flask session is: %s", flask.session)
+    return 'google_token' in flask.session
+
+
+def set_post_login_redirect(href: str):
+    log.info("Set post login redirect to: %s", href)
+    flask.session['signin_redirect'] = href
+
+
+def store_signup_information(biography: str,
+                             request_categories: List[str]=None, request_details: str=None,
+                             mentor_categories: List[str]=None, mentor_details: str=None):
+    info = SignupInformation(biography, request_categories, request_details, mentor_categories, mentor_details)
+    flask.session['signup_info'] = info._asdict()
+
+
+def get_signup_information() -> Optional[SignupInformation]:
+    raw_info = flask.session.get('signup_info')
+    if raw_info is not None:
+        info = SignupInformation(**raw_info)
+    else:
+        info = None
+    return info
+
+
+def clear_signup_information():
+    if 'signup_info' in flask.session:
+        del flask.session['signup_info']
 
 
 def wait_for_login():
@@ -49,19 +85,19 @@ def wait_for_login():
 
 
 def on_mentee_tab() -> bool:
-    return flask_session.get('on_mentee_tab') is True
+    return flask.session.get('on_mentee_tab') is True
 
 
 def set_on_mentee_tab(status: bool):
-    flask_session['on_mentee_tab'] = status
+    flask.session['on_mentee_tab'] = status
 
 
 def get_last_tab_on(page: str) -> Optional[str]:
-    cached_tab = flask_session.get('tab-{}'.format(page), None)
+    cached_tab = flask.session.get('tab-{}'.format(page), None)
     log.debug("%s - Cached tab was: %s", page, cached_tab)
     return cached_tab
 
 
 def set_last_tab_on(page: str, last_tab: str):
     log.info("%s - Caching last tab as: %s", page, last_tab)
-    flask_session['tab-{}'.format(page)] = last_tab
+    flask.session['tab-{}'.format(page)] = last_tab

@@ -67,6 +67,7 @@ def generate_structure():
         completed_matches,
         settings,
     )
+    from metaswitch_tinder.components import auth  # noqa
 
     # The keys of this dictionary are the `href`s for each page.
     # The `module` key of each dictionary must define a `layout` method that
@@ -87,7 +88,8 @@ def generate_structure():
         module_href(mentee_landing_page): {
             'module': mentee_landing_page,
             'links': {
-                mentee_landing_page.sign_in: module_href(signin),
+                mentee_landing_page.sign_in: module_href(user_menu),
+                mentee_request.submit_request: module_href(user_menu),
             }
         },
         module_href(mentee_request): {
@@ -99,7 +101,7 @@ def generate_structure():
         module_href(signin_or_signup): {
             'module': signin_or_signup,
             'links': {
-                signin_or_signup.signin: module_href(signin),
+                signin_or_signup.signin: module_href(user_menu),
                 signin_or_signup.signup: module_href(signup),
             }
         },
