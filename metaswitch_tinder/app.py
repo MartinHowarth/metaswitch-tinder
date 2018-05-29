@@ -31,17 +31,20 @@ server.config['GOOGLE_SECRET'] = os.environ.get('GOOGLE_SECRET')
 OAUTH_REDIRECT_URI = '/oauth2_callback'
 oauth = OAuth(app.server)
 
-google = oauth.remote_app(
-    'google',
-    request_token_params={
-        'scope': 'email'
-    },
-    base_url='https://www.googleapis.com/oauth2/v1/',
-    request_token_url=None,
-    access_token_method='POST',
-    access_token_url='https://accounts.google.com/o/oauth2/token',
-    authorize_url='https://accounts.google.com/o/oauth2/auth',
-    consumer_key=app.server.config.get('GOOGLE_ID'),
-    consumer_secret=app.server.config.get('GOOGLE_SECRET'))
+if 'GOOGLE_ID' in os.environ:
+    google = oauth.remote_app(
+        'google',
+        request_token_params={
+            'scope': 'email'
+        },
+        base_url='https://www.googleapis.com/oauth2/v1/',
+        request_token_url=None,
+        access_token_method='POST',
+        access_token_url='https://accounts.google.com/o/oauth2/token',
+        authorize_url='https://accounts.google.com/o/oauth2/auth',
+        consumer_key=app.server.config.get('GOOGLE_ID'),
+        consumer_secret=app.server.config.get('GOOGLE_SECRET'))
+else:
+    google = None
 
 db = SQLAlchemy(server)

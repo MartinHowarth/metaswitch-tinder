@@ -22,7 +22,7 @@ def layout():
     return html.Div([
         html.H1("Metaswitch Tinder", className="cover-heading"),
         create_equal_row([
-            html.A("Sign in!", href='/login-with-google', id='signin-{}'.format(NAME),
+            html.A("Sign in!", href='/login', id='signin-{}'.format(NAME),
                    className="btn btn-lg btn-secondary"),
             dcc.Link("Sign up!", href=href(__name__, signup), className="btn btn-lg btn-primary"),
         ])

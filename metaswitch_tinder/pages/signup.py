@@ -47,7 +47,7 @@ def layout():
         html.Br(),
         html.A(html.Button("Submit!", id='submit-{}'.format(NAME),
                            n_clicks=0, className="btn btn-lg btn-primary btn-block"),
-               href='/login-with-google'),
+               href='/login'),
     ], className="container", id='signup')
 
 

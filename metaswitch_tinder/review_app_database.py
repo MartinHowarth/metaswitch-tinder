@@ -24,12 +24,11 @@ def populate():
         user.add()
 
     for i in range(5):
-        req = metaswitch_tinder.database.models.Request(
+        metaswitch_tinder.database.models.create_request(
             'user{}'.format(i),
             [random.choice(['Coding', 'Design', 'Testing'])],
             "Teach me a random thing.",
         )
-        req.add()
 
 
 def clear():

@@ -51,7 +51,7 @@ def logout():
 
 def is_logged_in() -> bool:
     log.debug("is_logged_in: Flask session is: %s", flask.session)
-    return 'google_token' in flask.session
+    return 'username' in flask.session
 
 
 def set_post_login_redirect(href: str):

@@ -36,7 +36,7 @@ def layout():
     else:
         is_signed_in_fields = [
             html.H3('Existing Users', className="text-center"),
-            html.A("Sign in!", href='/login-with-google', id='signin-{}'.format(NAME),
+            html.A("Sign in!", href='/login', id='signin-{}'.format(NAME),
                    className="btn btn-lg btn-primary btn-block"),
             # dcc.Link(html.Button("Sign in",
             #                      id='sign-in-{}'.format(NAME),

@@ -38,7 +38,7 @@ def layout():
         btn = html.A(html.Button("Submit my request and sign up!",
                                  id=submit_button,
                                  className="btn btn-lg btn-success btn-block"),
-                     href='/login-with-google'),
+                     href='/login'),
 
     return html.Div([
         html.Label('What topics do you want to learn about?'),
