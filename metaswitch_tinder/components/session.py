@@ -18,14 +18,15 @@ SignupInformation = namedtuple('SignupInformation', [
     'mentor_details'])
 
 
-def current_username() -> Optional[str]:
-    return flask.session.get('username', None)
+def current_username() -> str:
+    username = flask.session.get('username', None)
+    if username is None:
+        raise AssertionError("Could not get current user as they are not logged in.")
+    return username
 
 
 def get_current_user() -> User:
     user_name = current_username()
-    if user_name is None:
-        raise AssertionError("Could not get current user as they are not logged in.")
 
     user = get_user(user_name)
     if user is None:
@@ -69,10 +70,8 @@ def store_signup_information(biography: str,
 def get_signup_information() -> Optional[SignupInformation]:
     raw_info = flask.session.get('signup_info')
     if raw_info is not None:
-        info = SignupInformation(**raw_info)
-    else:
-        info = None
-    return info
+        return SignupInformation(**raw_info)
+    return None
 
 
 def clear_signup_information():

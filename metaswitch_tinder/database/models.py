@@ -425,4 +425,3 @@ def create_request(username: str, categories: List[str], details: str):
     log.info("Creating request for %s: %s, %s", username, categories, details)
     request = Request(username, categories, details)
     request.add()
-
