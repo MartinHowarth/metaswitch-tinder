@@ -5,7 +5,7 @@ import logging
 from dash.dependencies import Event, Output, State
 
 from metaswitch_tinder.app import app
-from metaswitch_tinder.components.session import is_logged_in, current_username, get_current_user
+from metaswitch_tinder.components.session import is_logged_in, current_username, get_current_user, logout
 from metaswitch_tinder.components.grid import create_equal_row
 
 
@@ -15,7 +15,9 @@ NAME = __name__.replace('.', '_')
 
 biography_id = 'biography-{}'.format(NAME)
 email_id = 'email-{}'.format(NAME)
-submit_id = 'submit-{}'.format(NAME)
+save_id = 'save-{}'.format(NAME)
+delete_id = 'delete-{}'.format(NAME)
+_dummy1 = 'dummy1-{}'.format(NAME)
 
 
 def layout():
@@ -45,24 +47,25 @@ def layout():
             dcc.Textarea(placeholder='Enter a biography', value=user.bio, id=biography_id,
                          style={'width': '100%'}),
             html.Br(),
-            html.Button("Save", id=submit_id,
+            html.Button("Save", id=save_id,
                         n_clicks=0, className="btn btn-lg btn-primary btn-block"),
-            html.Button("Delete Account", id='delete-{}'.format(NAME),
-                        n_clicks=0, className="btn btn-lg btn-warning btn-block"),
-            html.Div(id='dummy-{}'.format(NAME), hidden=True)
+            dcc.Link(html.Button("Delete Account", id=delete_id,
+                                 n_clicks=0, className="btn btn-lg btn-warning btn-block"),
+                     href='/'),
+            html.Div(id=_dummy1, hidden=True),
         ],
         className="container",
     )
 
 
-@app.callback(Output(submit_id, 'children'),
+@app.callback(Output(save_id, 'children'),
               [],
               [
                   State(biography_id, 'value'),
                   State(email_id, 'value'),
               ],
               [
-                  Event(submit_id, 'click')
+                  Event(save_id, 'click'),
               ])
 def set_mentor_tags(bio: str, email: str):
     """
@@ -79,3 +82,20 @@ def set_mentor_tags(bio: str, email: str):
     user.commit()
 
     return "Saved!"
+
+
+@app.callback(Output(_dummy1, 'children'),
+              [],
+              [],
+              [
+                  Event(delete_id, 'click'),
+              ])
+def delete_account():
+    """
+    Callback that gets called when the user requests account deletion.
+    """
+    user = get_current_user()
+    log.info("User %s requested account deletion.", user.name)
+    user.delete()
+    log.info("User %s deleted.", user.name)
+    logout()

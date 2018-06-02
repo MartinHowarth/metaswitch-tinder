@@ -1,3 +1,4 @@
+import itertools
 import logging
 import time
 
@@ -59,6 +60,32 @@ class Request(db.Model):
 
     def commit(self):
         db.session.commit()
+
+    def handle_user_deletion(self, user: 'User'):
+        if user.name == self.maker:
+            db.session.delete(self)
+            self.commit()
+
+        for user in itertools.chain(
+                self.get_accepted_mentors(),
+                self.get_possible_mentors(),
+                self.get_rejected_mentors()):
+            user.handle_request_deletion(self)
+
+        if user.name in self.accepted_mentors:
+            users = self.accepted_mentors
+            users.remove(user.name)
+            self.accepted_mentors = users
+
+        if user.name in self.possible_mentors:
+            users = self.possible_mentors
+            users.remove(user.name)
+            self.possible_mentors = users
+
+        if user.name in self.rejected_mentors:
+            users = self.rejected_mentors
+            users.remove(user.name)
+            self.rejected_mentors = users
 
     @property
     def maker(self) -> str:
@@ -243,6 +270,19 @@ class User(db.Model):
     def commit(self):
         db.session.commit()
 
+    def delete(self):
+        db.session.delete(self)
+        self.commit()
+
+        for request in self.get_requests():
+            request.handle_user_deletion(self)
+
+    def handle_request_deletion(self, request: Request):
+        if request.id in self.requests:
+            reqs = self.requests
+            reqs.remove(request.id)
+            self.requests = reqs
+
     @property
     def tags(self) -> List[str]:
         return self._tags.copy()
@@ -308,7 +348,7 @@ class User(db.Model):
         self._requests = list(set(reqs))
         self.commit()
 
-    def get_requests(self) -> List['User']:
+    def get_requests(self) -> List['Request']:
         return get_requests_by_ids(self.requests)
 
     def remove_request(self, request: Request):
@@ -402,7 +442,7 @@ def get_user(user_name: str) -> Optional[User]:
 def get_users(names: List[str]) -> List[User]:
     if not names:
         return []
-    return User.query.filter(User.id.in_(names)).all()
+    return User.query.filter(User.name.in_(names)).all()
 
 
 def handle_signup_submit(username: str, email: str, biography: str=None, categories: List[str]=None, details: str=None):
