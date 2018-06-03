@@ -1,7 +1,7 @@
 from typing import List
 
 from metaswitch_tinder.app import db
-from metaswitch_tinder.database import User, Request
+from metaswitch_tinder.database import User, Request, list_all_users, list_all_requests
 
 
 class TestModels:
@@ -182,3 +182,36 @@ class TestModels:
         assert len(req_ids) == 2
         assert request1.id in req_ids
         assert request2.id in req_ids
+
+    def test_delete_user(self):
+        # Create a matching pair
+        mentee = self.create_user('user0', tags=[])
+        mentor = self.create_user('user1', tags=['tag1'])
+
+        request1 = self.create_request(mentee, ['tag1'])
+        request2 = self.create_request(mentee, ['tag1'])
+        request3 = self.create_request(mentor, ['tag2'])
+
+        request1.handle_mentee_accept_mentor(mentor)
+        request2.handle_mentee_accept_mentor(mentor)
+        request2.handle_mentor_accept_mentee(mentor)
+
+        # Record some info so we can compare to it after deletion.
+        mentee_requests = [request1.id, request2.id]
+
+        # Now delete the mentee
+        mentee.delete()
+
+        # Ensure that the mentee isn't in the database of users
+        assert mentee.name not in [user.name for user in list_all_users()]
+
+        # Ensure that the mentee has been purged from all requests
+        assert mentee.name not in [req.all_involved_users for req in list_all_requests()]
+
+        # Ensure that the requests made by the mentee have been deleted as well
+        for req in mentee_requests:
+            assert req not in [_req.id for _req in list_all_requests()]
+
+        # Ensure that the mentor has no reference to the deleted requests
+        assert mentor.requests == [request3.id]
+        assert mentor.matches == []

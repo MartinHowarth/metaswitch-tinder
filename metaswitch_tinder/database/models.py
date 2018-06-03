@@ -62,15 +62,9 @@ class Request(db.Model):
         db.session.commit()
 
     def handle_user_deletion(self, user: 'User'):
-        if user.name == self.maker:
-            db.session.delete(self)
-            self.commit()
-
-        for user in itertools.chain(
-                self.get_accepted_mentors(),
-                self.get_possible_mentors(),
-                self.get_rejected_mentors()):
-            user.handle_request_deletion(self)
+        log.debug("%s: Handling user deletion: %s", self, user)
+        for involved_user in self.get_all_involved_users():
+            involved_user.handle_request_deletion(self)
 
         if user.name in self.accepted_mentors:
             users = self.accepted_mentors
@@ -86,6 +80,11 @@ class Request(db.Model):
             users = self.rejected_mentors
             users.remove(user.name)
             self.rejected_mentors = users
+
+        if user.name == self.maker:
+            log.info("Deleting request: %s", self)
+            db.session.delete(self)
+            self.commit()
 
     @property
     def maker(self) -> str:
@@ -173,6 +172,19 @@ class Request(db.Model):
     def get_rejected_mentors(self) -> List['User']:
         return get_users(self.rejected_mentors)
 
+    @property
+    def all_involved_users(self):
+        return itertools.chain(
+            [self.maker],
+            [self.mentor],
+            self.possible_mentors,
+            self.rejected_mentors,
+            self.accepted_mentors,
+        )
+
+    def get_all_involved_users(self) -> List['User']:
+        return get_users(list(self.all_involved_users))
+
     def populate_initial_possible_mentors(self):
         all_users = list_all_users()
 
@@ -214,7 +226,6 @@ class Request(db.Model):
         mentee.remove_request(self)
 
         self.commit()
-        print("mentor %s accepted request: %s", mentor, self)
 
     def handle_mentor_reject_mentee(self, mentor: 'User'):
         """Called when a mentor rejects a mentee."""
@@ -228,9 +239,6 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, primary_key=True)
     bio = db.Column(db.String(2000))
     mentoring_details = db.Column(db.String(2000))
-    mentor_matches = db.Column(db.String(2000))
-    _mentors = db.Column(ScalarListType())  # type: List[str]
-    _mentees = db.Column(ScalarListType())  # type: List[str]
 
     # Requests that this user is involved with. Both as a mentor and as a mentee.
     _requests = db.Column(ScalarListType())  # type: List[str]
@@ -239,8 +247,8 @@ class User(db.Model):
     # The list of requests (for both mentors and mentees) that have been completed.
     _matches = db.Column(ScalarListType())  # type: List[str]
 
-    def __init__(self, name: str, email: str, bio: str=None,
-                 tags: List[str]=None, mentoring_details: str=None) -> None:
+    def __init__(self, name: str, email: str, bio: str = None,
+                 tags: List[str] = None, mentoring_details: str = None) -> None:
         if not isinstance(tags, list) and tags is not None:
             tags = [tags]
 
@@ -248,11 +256,8 @@ class User(db.Model):
         self.email = email
         self.bio = bio or ''
         self.mentoring_details = mentoring_details or ''
-        self.mentor_matches = ""
         self._tags = tags or []
 
-        self._mentees = []
-        self._mentors = []
         self._requests = []
         self._matches = []
 
@@ -271,17 +276,19 @@ class User(db.Model):
         db.session.commit()
 
     def delete(self):
-        db.session.delete(self)
-        self.commit()
-
         for request in self.get_requests():
             request.handle_user_deletion(self)
 
+        for request in self.get_matches():
+            request.handle_user_deletion(self)
+
+        db.session.delete(self)
+        self.commit()
+
     def handle_request_deletion(self, request: Request):
-        if request.id in self.requests:
-            reqs = self.requests
-            reqs.remove(request.id)
-            self.requests = reqs
+        log.debug("%s: Handling request deletion: %s", self, request)
+        self.remove_request(request)
+        self.remove_match(request)
 
     @property
     def tags(self) -> List[str]:
@@ -293,44 +300,6 @@ class User(db.Model):
 
         # Mentoring skills have changed, update possible requests to mentor.
         self.populate_all_possible_requests_to_mentor()
-
-    @property
-    def mentees(self) -> List[str]:
-        return self._mentees.copy()
-
-    @mentees.setter
-    def mentees(self, value: Union[List['User'], List[str]]):
-        mentees = []
-        for mentee in value:
-            if isinstance(mentee, User):
-                mentees.append(mentee.name)
-            else:
-                mentees.append(mentee)
-
-        self._mentees = list(set(mentees))
-        self.commit()
-
-    def get_mentees(self) -> List['User']:
-        return get_users(self.mentees)
-
-    @property
-    def mentors(self) -> List[str]:
-        return self._mentors.copy()
-
-    @mentors.setter
-    def mentors(self, value: Union[List['User'], List[str]]):
-        mentors = []
-        for mentor in value:
-            if isinstance(mentor, User):
-                mentors.append(mentor.name)
-            else:
-                mentors.append(mentor)
-
-        self._mentors = list(set(mentors))
-        self.commit()
-
-    def get_mentors(self) -> List['User']:
-        return get_users(self.mentors)
 
     @property
     def requests(self) -> List[str]:
@@ -356,6 +325,12 @@ class User(db.Model):
         if request.id in request_ids:
             request_ids.remove(request.id)
             self.requests = request_ids
+
+    def remove_match(self, match: Request):
+        match_ids = self.matches
+        if match.id in match_ids:
+            match_ids.remove(match.id)
+            self.matches = match_ids
 
     def get_requests_as_mentee(self):
         # Filter to only the requests made by this user.
@@ -385,7 +360,7 @@ class User(db.Model):
         self._matches = list(set(mats))
         self.commit()
 
-    def get_matches(self) -> List['User']:
+    def get_matches(self) -> List['Request']:
         return get_requests_by_ids(self.matches)
 
     def populate_all_possible_requests_to_mentor(self):
@@ -403,13 +378,6 @@ class User(db.Model):
                 request.remove_possible_mentor(self)
 
         self.requests = list(set(matching_requests))
-        self.commit()
-
-    def add_mentor_match(self, match, request_id):
-        if self.mentor_matches == '':
-            self.mentor_matches = match + ":" + request_id
-        else:
-            self.mentor_matches += ',' + match + ":" + request_id
         self.commit()
 
     def could_mentor_for_request(self, request: Request) -> bool:
