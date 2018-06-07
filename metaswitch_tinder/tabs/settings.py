@@ -1,13 +1,12 @@
-import dash_core_components as dcc
-import dash_html_components as html
 import logging
 
+import dash_core_components as dcc
+import dash_html_components as html
 from dash.dependencies import Event, Output, State
 
 from metaswitch_tinder.app import app
-from metaswitch_tinder.components.session import is_logged_in, current_username, get_current_user, logout
 from metaswitch_tinder.components.grid import create_equal_row
-
+from metaswitch_tinder.components.session import current_username, get_current_user, is_logged_in, logout
 
 log = logging.getLogger(__name__)
 
@@ -49,6 +48,8 @@ def layout():
             html.Br(),
             html.Button("Save", id=save_id,
                         n_clicks=0, className="btn btn-lg btn-primary btn-block"),
+            html.Br(),
+            html.Br(),
             dcc.Link(html.Button("Delete Account", id=delete_id,
                                  n_clicks=0, className="btn btn-lg btn-warning btn-block"),
                      href='/'),

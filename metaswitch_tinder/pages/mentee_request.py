@@ -1,20 +1,18 @@
-import dash_core_components as dcc
-import dash_html_components as html
 import logging
-
-from dash.dependencies import Output, State, Event
 from typing import List
 
-from metaswitch_tinder.app import app
+import dash_core_components as dcc
+import dash_html_components as html
+from dash.dependencies import Event, Output, State
+
 from metaswitch_tinder import database
+from metaswitch_tinder.app import app
 from metaswitch_tinder.app_structure import href
 from metaswitch_tinder.components import session
 from metaswitch_tinder.components.grid import create_equal_row
 from metaswitch_tinder.components.inputs import multi_dropdown_with_tags
 
-
 log = logging.getLogger(__name__)
-
 
 NAME = __name__.replace('.', '_')
 submit_request = 'submit_request'

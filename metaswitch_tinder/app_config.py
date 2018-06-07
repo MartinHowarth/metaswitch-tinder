@@ -16,11 +16,10 @@ raw_config = {
     'report_email_address': 'metatinder@gmail.com'
 }
 
-
 config = MetaswitchTinder(raw_config, partial=False)
 config.validate()
 
-
 if __name__ == "__main__":
     import json
+
     print(json.dumps(config))

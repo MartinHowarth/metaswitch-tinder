@@ -1,20 +1,19 @@
 # -*- coding: utf-8 -*-
-import dash
-import dash_core_components as dcc
-import dash_html_components as html
 import logging
 import os
 import sys
+
+import dash
+import dash_core_components as dcc
+import dash_html_components as html
 import flask
 
 import metaswitch_tinder.pages.report
-
-from metaswitch_tinder import app_structure, app_globals
+from metaswitch_tinder import app_globals, app_structure
 from metaswitch_tinder.app import app
 from metaswitch_tinder.app_config import config
-from metaswitch_tinder.components import widgets
 from metaswitch_tinder.app_globals import JAVASCRIPT_DIR
-
+from metaswitch_tinder.components import widgets
 
 log = logging.getLogger(__name__)
 
@@ -35,7 +34,6 @@ configure_logging()
 app.css.append_css({"external_url": config.css_cdn})
 
 app_structure.generate_structure()
-
 
 # Main app layout
 app.layout = html.Div([
@@ -86,6 +84,7 @@ if __name__ == "__main__":
     if 'DATABASE_URL' not in os.environ:
         # Populate the in-memory test database.
         from metaswitch_tinder import review_app_database
+
         review_app_database.populate()
         os.environ['NO_EMAIL'] = 'true'
 
@@ -93,4 +92,4 @@ if __name__ == "__main__":
 else:
     # The `server` is imported here so that gunicorn's entry point is this file. That forces load of
     # all the layouts and callbacks in this file.
-    from metaswitch_tinder.app import server  # noqa
+    pass

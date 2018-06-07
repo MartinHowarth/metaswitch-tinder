@@ -1,7 +1,6 @@
 import random
 
 import metaswitch_tinder.database.models
-
 from metaswitch_tinder.app import db
 
 

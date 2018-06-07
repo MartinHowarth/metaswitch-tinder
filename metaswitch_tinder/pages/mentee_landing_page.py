@@ -1,14 +1,12 @@
-import dash_html_components as html
 import logging
 
-from dash.dependencies import Output, Event
+import dash_html_components as html
+from dash.dependencies import Event, Output
 
 from metaswitch_tinder.app import app
 from metaswitch_tinder.app_structure import href
 from metaswitch_tinder.components import session
-
 from . import mentee_request
-
 
 log = logging.getLogger(__name__)
 

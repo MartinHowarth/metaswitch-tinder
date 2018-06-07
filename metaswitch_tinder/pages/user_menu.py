@@ -1,13 +1,12 @@
 import logging
-import dash_html_components as html
 
+import dash_html_components as html
 from dash.dependencies import Input, Output
 
 from metaswitch_tinder import tabs
 from metaswitch_tinder.app import app
 from metaswitch_tinder.components import session
 from metaswitch_tinder.components.tabs import generate_tabs
-
 
 log = logging.getLogger(__name__)
 
@@ -33,9 +32,9 @@ def layout():
         display_id=display_id
     )],
         style={
-        'width': '80%',
-        'margin-left': 'auto',
-        'margin-right': 'auto'
+            'width': '80%',
+            'margin-left': 'auto',
+            'margin-right': 'auto'
         })
 
 

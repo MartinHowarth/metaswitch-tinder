@@ -1,13 +1,12 @@
 import itertools
 import logging
 import time
-
 from random import randint
-from sqlalchemy_utils import ScalarListType
 from typing import List, Optional, Union
 
-from metaswitch_tinder.app import db
+from sqlalchemy_utils import ScalarListType
 
+from metaswitch_tinder.app import db
 
 log = logging.getLogger(__name__)
 
@@ -28,7 +27,7 @@ class Request(db.Model):
     _rejected_mentors = db.Column(ScalarListType())  # type: List[str]
     _accepted_mentors = db.Column(ScalarListType())  # type: List[str]
 
-    def __init__(self, maker: Union[str, 'User'], tags: Union[str, List[str]], comment: str=None) -> None:
+    def __init__(self, maker: Union[str, 'User'], tags: Union[str, List[str]], comment: str = None) -> None:
         if not isinstance(tags, list) and tags is not None:
             tags = [tags]
         if isinstance(maker, User):
@@ -413,7 +412,8 @@ def get_users(names: List[str]) -> List[User]:
     return User.query.filter(User.name.in_(names)).all()
 
 
-def handle_signup_submit(username: str, email: str, biography: str=None, categories: List[str]=None, details: str=None):
+def handle_signup_submit(username: str, email: str, biography: str = None, categories: List[str] = None,
+                         details: str = None):
     print("Signup submitted:", username, email, biography)
     new_user = User(username, email, biography, categories, details)
     new_user.add()

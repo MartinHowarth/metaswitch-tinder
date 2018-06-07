@@ -1,5 +1,6 @@
-import dash_html_components as html
 import random
+
+import dash_html_components as html
 
 from metaswitch_tinder.app_config import config
 
@@ -9,9 +10,11 @@ def layout():
         children=[
             html.Img(
                 src=random.choice(config.ducks),
-                style={'display': 'block',
-                       'width': '100%',
-                       'vertical-align': 'middle'}
+                style={
+                    'display': 'block',
+                    'width': '100%',
+                    'vertical-align': 'middle'
+                }
             ),
         ],
     )

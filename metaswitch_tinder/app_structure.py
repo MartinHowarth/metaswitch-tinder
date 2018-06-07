@@ -1,12 +1,10 @@
 """Module that defines how app pages link to other app pages."""
 import logging
 import sys
-
 from typing import Any, Callable
 
 from metaswitch_tinder import app_globals
 from metaswitch_tinder.components.session import is_logged_in
-
 
 log = logging.getLogger(__name__)
 
@@ -17,6 +15,7 @@ def if_logged_in_else(logged_in_target: str, other_target: str) -> Callable:
             # Already logged in, skip the signin page
             return logged_in_target
         return other_target
+
     return decide_later
 
 
@@ -26,7 +25,7 @@ def module_href(module: Any) -> str:
     return '/' + module.__name__.split('.')[-1].replace('_', '-')
 
 
-def href(module_name: str, ref: str=None) -> str:
+def href(module_name: str, ref: str = None) -> str:
     _module_href = module_href(sys.modules[module_name])
     if ref is None:
         return _module_href
@@ -55,8 +54,6 @@ def generate_structure():
     # These imports happen here to avoid an infinite loop.
     from metaswitch_tinder.pages import (  # noqa
         easter,
-        page_1,
-        page_2,
         user_menu,
         signup,
         mentee_landing_page,
@@ -65,15 +62,10 @@ def generate_structure():
         report,
         home,
     )
-    from metaswitch_tinder.tabs import (  # noqa
-        matches,
-        completed_matches,
-        settings,
-    )
     from metaswitch_tinder.components import (  # noqa
-        auth,
-        debug_login
-    )
+    auth,
+    debug_login,
+)
 
     # The keys of this dictionary are the `href`s for each page.
     # The `module` key of each dictionary must define a `layout` method that

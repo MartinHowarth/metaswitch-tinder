@@ -1,4 +1,4 @@
-from . import matches, completed_matches, mentee, mentor, settings, mentor_skills
+from . import completed_matches, matches, mentee, mentor, mentor_skills, settings
 from ..pages import mentee_request
 
 tabs = {

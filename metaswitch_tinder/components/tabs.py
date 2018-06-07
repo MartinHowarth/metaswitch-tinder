@@ -1,7 +1,7 @@
+from typing import Dict
+
 import dash_core_components as dcc
 import dash_html_components as html
-
-from typing import Dict
 
 
 def generate_tabs(tabs: Dict[str, html.Div], default_tab: html.Div, tabs_id: str, display_id: str) -> html.Div:

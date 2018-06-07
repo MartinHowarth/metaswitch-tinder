@@ -1,16 +1,15 @@
+import logging
+from typing import List
+
 import dash_core_components as dcc
 import dash_html_components as html
-import logging
-
 from dash.dependencies import Input, Output
-from typing import List
 
 from metaswitch_tinder import database
 from metaswitch_tinder.app import app
-from metaswitch_tinder.components.session import current_username, get_current_user
 from metaswitch_tinder.components.grid import create_equal_row
 from metaswitch_tinder.components.inputs import multi_dropdown_with_tags
-
+from metaswitch_tinder.components.session import current_username, get_current_user
 
 log = logging.getLogger(__name__)
 
@@ -27,10 +26,8 @@ def layout():
         multi_dropdown_with_tags(database.tags.get_tags(), categories_id,
                                  init_selection=user.tags),
         html.Br(),
-        create_equal_row([html.Label('Additional topic tags:')]),
-        create_equal_row(
-            [dcc.Input(placeholder='e.g. \"python\", \"object-oriented design\", \"session-based testing\"',
-                       value='', type='text', id='details-{}'.format(NAME))]),
+        create_equal_row([html.Label('Additional details about your skills:')]),
+        create_equal_row([dcc.Input(value='', type='text', id='details-{}'.format(NAME))]),
         html.Div(id='dummy-{}'.format(NAME), hidden=True)
     ],
         className="container")

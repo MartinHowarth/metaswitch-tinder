@@ -1,14 +1,13 @@
-import dash
 import logging
 import os
 
+import dash
 from flask_oauthlib.client import OAuth
 from flask_sqlalchemy import SQLAlchemy
 
 from metaswitch_tinder.app_config import config
 
 log = logging.getLogger(__name__)
-
 
 app = dash.Dash()
 app.title = config.app_name
@@ -26,7 +25,6 @@ server.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlit
 server.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 server.config['GOOGLE_ID'] = os.environ.get('GOOGLE_ID')
 server.config['GOOGLE_SECRET'] = os.environ.get('GOOGLE_SECRET')
-
 
 OAUTH_REDIRECT_URI = '/oauth2_callback'
 oauth = OAuth(app.server)

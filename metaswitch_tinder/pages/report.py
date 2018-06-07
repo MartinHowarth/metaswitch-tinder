@@ -1,16 +1,14 @@
-import dash_core_components as dcc
-import dash_html_components as html
 import logging
 
-from dash.dependencies import Output, State, Event
+import dash_core_components as dcc
+import dash_html_components as html
+from dash.dependencies import Event, Output, State
 
 from metaswitch_tinder import tinder_email
 from metaswitch_tinder.app import app
 from metaswitch_tinder.app_structure import href
 
-
 log = logging.getLogger(__name__)
-
 
 NAME = __name__.replace('.', '_')
 

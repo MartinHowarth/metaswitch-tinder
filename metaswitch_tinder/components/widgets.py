@@ -1,9 +1,9 @@
+import logging
+from typing import List, Tuple
+
 import dash_core_components as dcc
 import dash_html_components as html
-import logging
-
 from dash.dependencies import Output, State
-from typing import List, Tuple
 
 log = logging.getLogger(__name__)
 

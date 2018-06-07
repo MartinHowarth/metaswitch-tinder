@@ -1,19 +1,17 @@
-import flask
 import logging
 import os
 
-from dash.dependencies import Output, Event
+import flask
+from dash.dependencies import Event, Output
 
-from metaswitch_tinder.app import app, OAUTH_REDIRECT_URI, google
+from metaswitch_tinder.app import OAUTH_REDIRECT_URI, app, google
 from metaswitch_tinder.app_structure import href
 from metaswitch_tinder.components import session
-from metaswitch_tinder.database.models import username_already_exists, handle_signup_submit, create_request
-
+from metaswitch_tinder.database.models import create_request, handle_signup_submit, username_already_exists
 
 log = logging.getLogger(__name__)
 
 NAME = __name__.replace('.', '_')
-
 
 debug_login_target = 'debug_login_target'
 

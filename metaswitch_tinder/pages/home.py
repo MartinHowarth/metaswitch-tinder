@@ -1,10 +1,10 @@
+import logging
+
 import dash_core_components as dcc
 import dash_html_components as html
-import logging
 
 from metaswitch_tinder.app_structure import href
 from metaswitch_tinder.components.grid import create_equal_row
-
 
 log = logging.getLogger(__name__)
 

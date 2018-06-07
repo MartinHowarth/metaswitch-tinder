@@ -1,40 +1,39 @@
-import dash_html_components as html
 import itertools
 import logging
 import random
-
 from collections import namedtuple
-from dash.dependencies import Output, State, Event
 from typing import List
 
+import dash_html_components as html
+from dash.dependencies import Event, Output, State
+
 from metaswitch_tinder import matches
-from metaswitch_tinder.database import get_request_by_id, get_user, User
 from metaswitch_tinder.app import app, config
 from metaswitch_tinder.components.grid import create_magic_three_row
-from metaswitch_tinder.components.session import is_logged_in, on_mentee_tab, get_current_user
+from metaswitch_tinder.components.session import get_current_user, is_logged_in, on_mentee_tab
+from metaswitch_tinder.database import User, get_request_by_id, get_user
 
 log = logging.getLogger(__name__)
-
 
 Match = namedtuple("Match", ['mentee', 'mentor', 'request'])
 
 
 def children_no_matches():
     return [
-            html.Br(),
-            html.Img(src=random.choice(config.sad_ducks),
-                     className="rounded-circle", width=200, height=200, id='no-match'),
-            html.Br(),
-            html.Br(),
-            html.P("Aw shucks! You're out of matches!", className="lead"),
-            html.P("Refresh the tab to see your skipped matches.", className="lead"),
-            html.Div(None, id='current-other-user', hidden=True),
-            html.Div(0, id='accept-match', hidden=True),
-            html.Div(0, id='reject-match', hidden=True),
-            html.Div(None, id='completed-users', hidden=True),
-            html.Div(None, id='matched-tags', hidden=True),
-            html.Div("", id='matched-request-id', hidden=True),
-        ]
+        html.Br(),
+        html.Img(src=random.choice(config.sad_ducks),
+                 className="rounded-circle", width=200, height=200, id='no-match'),
+        html.Br(),
+        html.Br(),
+        html.P("Aw shucks! You're out of matches!", className="lead"),
+        html.P("Refresh the tab to see your skipped matches.", className="lead"),
+        html.Div(None, id='current-other-user', hidden=True),
+        html.Div(0, id='accept-match', hidden=True),
+        html.Div(0, id='reject-match', hidden=True),
+        html.Div(None, id='completed-users', hidden=True),
+        html.Div(None, id='matched-tags', hidden=True),
+        html.Div("", id='matched-request-id', hidden=True),
+    ]
 
 
 def children_for_match(match: Match, skipped_requests: List[str]):
@@ -72,27 +71,27 @@ def children_for_match(match: Match, skipped_requests: List[str]):
         ]
 
     return [
-            html.Br(),
-            create_magic_three_row([
-                html.Button(html.H1("✘"), id='reject-match', className="btn btn-lg btn-secondary"),
-                html.Img(src=config.default_user_image,
-                         className="rounded-circle", height="100%",
-                         id='match-img', draggable='true'),
-                html.Button(html.H1("✔"), id='accept-match', className="btn btn-lg btn-primary"),
-            ]),
-            html.Br(),
-            html.Br(),
-            html.Table([
-                *table_rows
-               ], className="table table-condensed"),
-            html.Button(html.H1("Skip"), id='skip-match', className="btn btn-lg btn-info"),
-            html.Div(other_user_name, id='current-other-user', hidden=True),
-            html.Div(skipped_requests, id='skipped-requests', hidden=True),
-            html.Div(match.request.id, id='matched-request-id', hidden=True),
-        ]
+        html.Br(),
+        create_magic_three_row([
+            html.Button(html.H1("✘"), id='reject-match', className="btn btn-lg btn-secondary"),
+            html.Img(src=config.default_user_image,
+                     className="rounded-circle", height="100%",
+                     id='match-img', draggable='true'),
+            html.Button(html.H1("✔"), id='accept-match', className="btn btn-lg btn-primary"),
+        ]),
+        html.Br(),
+        html.Br(),
+        html.Table([
+            *table_rows
+        ], className="table table-condensed"),
+        html.Button(html.H1("Skip"), id='skip-match', className="btn btn-lg btn-info"),
+        html.Div(other_user_name, id='current-other-user', hidden=True),
+        html.Div(skipped_requests, id='skipped-requests', hidden=True),
+        html.Div(match.request.id, id='matched-request-id', hidden=True),
+    ]
 
 
-def get_matches_children(skipped_requests: List[str]=list()):
+def get_matches_children(skipped_requests: List[str] = list()):
     log.debug("Skipped requests are: %s", skipped_requests)
     current_matches = get_matches_for_current_user_role(skipped_requests)
 
@@ -104,7 +103,7 @@ def get_matches_children(skipped_requests: List[str]=list()):
     return children
 
 
-def get_matches_for_mentor(mentor: User, skipped_matches: List[str]=list()) -> List[Match]:
+def get_matches_for_mentor(mentor: User, skipped_matches: List[str] = list()) -> List[Match]:
     requests = mentor.get_requests_as_mentor()
 
     _matches = []
@@ -122,7 +121,7 @@ def get_matches_for_mentor(mentor: User, skipped_matches: List[str]=list()) -> L
     return _matches
 
 
-def get_matches_for_mentee(mentee: User, skipped_matches: List[str]=list()) -> List[Match]:
+def get_matches_for_mentee(mentee: User, skipped_matches: List[str] = list()) -> List[Match]:
     requests = mentee.get_requests_as_mentee()
 
     _matches = []

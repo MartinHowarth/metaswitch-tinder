@@ -7,7 +7,6 @@ from metaswitch_tinder.app import app
 from metaswitch_tinder.components import session
 from metaswitch_tinder.components.tabs import generate_tabs
 
-
 log = logging.getLogger(__name__)
 
 NAME = __name__.replace('.', '_')

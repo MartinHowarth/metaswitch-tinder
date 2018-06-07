@@ -1,14 +1,13 @@
-import flask
 import logging
-
 from collections import namedtuple
 from typing import List, Optional
 
-from .utils import wait_for
+import flask
+
 from metaswitch_tinder.database import User, get_user
+from .utils import wait_for
 
 log = logging.getLogger(__name__)
-
 
 SignupInformation = namedtuple('SignupInformation', [
     'biography',
@@ -61,8 +60,8 @@ def set_post_login_redirect(href: str):
 
 
 def store_signup_information(biography: str,
-                             request_categories: List[str]=None, request_details: str=None,
-                             mentor_categories: List[str]=None, mentor_details: str=None):
+                             request_categories: List[str] = None, request_details: str = None,
+                             mentor_categories: List[str] = None, mentor_details: str = None):
     info = SignupInformation(biography, request_categories, request_details, mentor_categories, mentor_details)
     flask.session['signup_info'] = info._asdict()
 

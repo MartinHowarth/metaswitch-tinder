@@ -2,14 +2,13 @@
 
 import logging
 import os
-import sendgrid
 import smtplib
-
-from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from sendgrid.helpers.mail import Content, Email, Mail
+from email.mime.text import MIMEText
 from typing import List
 
+import sendgrid
+from sendgrid.helpers.mail import Content, Email, Mail
 
 log = logging.getLogger(__name__)
 

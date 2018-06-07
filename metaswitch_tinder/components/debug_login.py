@@ -1,15 +1,14 @@
-import dash_core_components as dcc
-import dash_html_components as html
 import logging
 
-from dash.dependencies import Output, State, Event
+import dash_core_components as dcc
+import dash_html_components as html
+from dash.dependencies import Event, Output, State
 
 from metaswitch_tinder.app import app
 from metaswitch_tinder.app_structure import href
 from metaswitch_tinder.components import session
 from metaswitch_tinder.components.auth import authenticated_login_is_enabled, handle_login
 from metaswitch_tinder.components.grid import create_equal_row
-
 
 log = logging.getLogger(__name__)
 
