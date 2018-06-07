@@ -17,7 +17,8 @@ def send_email(recipients: List[str], email_text: str, subject: str):
     """
     Send an email.
 
-    This uses `sendgrid` if 'SENDGRID_API_KEY' is defined in the environment (e.g. on heroku).
+    This uses `sendgrid` if 'SENDGRID_API_KEY' is defined in the environment
+        For example, this is the setup on heroku.
     Otherwise it will setup and use a local SMTP server.
     :param recipients: List of email addresses the send the email to.
     :param email_text: Body of the email.

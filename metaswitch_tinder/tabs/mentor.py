@@ -38,7 +38,8 @@ def display_tab(tab_name: str):
     :param tab_name: Name of the tab what was selected.
     :return: Dash html object to display as the children of the 'tab-content' Div.
     """
-    # Cache the last tab we were on so the user returns to where they left off if they navigate away and come back
+    # Cache the last tab we were on so the user returns to where they left off
+    # if they navigate away and come back
     session.set_last_tab_on(NAME, tab_name)
 
     return tabs.tabs[tab_name]()

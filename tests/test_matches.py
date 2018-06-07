@@ -2,7 +2,10 @@ from typing import List, Tuple
 
 from metaswitch_tinder.app import db
 from metaswitch_tinder.database import User, Request
-from metaswitch_tinder.tabs.matches import get_matches_for_mentee, get_matches_for_mentor
+from metaswitch_tinder.tabs.matches import (
+    get_matches_for_mentee,
+    get_matches_for_mentor,
+)
 
 
 class TestModels:
@@ -12,8 +15,8 @@ class TestModels:
     def teardown_method(self, method):
         db.drop_all()
 
-    def create_user(self, name: str, tags: List[str]=None) -> User:
-        user = User(name, '{}@email.com'.format(name), tags=tags)
+    def create_user(self, name: str, tags: List[str] = None) -> User:
+        user = User(name, "{}@email.com".format(name), tags=tags)
         user.add()
         return user
 
@@ -23,10 +26,10 @@ class TestModels:
         return request
 
     def create_matching_pair(self) -> Tuple[User, User, Request]:
-        user0 = self.create_user('user0', tags=[])
-        user1 = self.create_user('user1', tags=['tag1'])
+        user0 = self.create_user("user0", tags=[])
+        user1 = self.create_user("user1", tags=["tag1"])
 
-        req1 = self.create_request(user0, ['tag1'])
+        req1 = self.create_request(user0, ["tag1"])
 
         return user0, user1, req1
 

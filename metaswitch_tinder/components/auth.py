@@ -29,7 +29,8 @@ def authenticated_login_is_enabled() -> bool:
 def handle_login(username: str, email: str):
     log.info("Handling login for: %s, %s", username, email)
 
-    # If the user logged in (or signed up) as part of submitting information, then we will have stored that information.
+    # If the user logged in (or signed up) as part of submitting information,
+    # then we will have stored that information.
     signup_info = session.get_signup_information()
 
     if username_already_exists(username):
@@ -59,7 +60,8 @@ def handle_login(username: str, email: str):
             signup_info.mentor_details,
         )
 
-        # If the user made a request as part of login, then make a request according to that.
+        # If the user made a request as part of login,
+        # then make a request according to that.
         if signup_info.request_categories:
             create_request(
                 username, signup_info.request_categories, signup_info.request_details

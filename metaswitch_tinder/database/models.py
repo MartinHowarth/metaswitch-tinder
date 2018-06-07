@@ -51,8 +51,11 @@ class Request(db.Model):
         self.mentor = ""
 
     def __repr__(self):
-        return "Request<{self.id}>(maker={self.maker}, tags={self.tags}, comment={self.comment})".format(
-            self=self
+        return (
+            "Request<{self.id}>"
+            "(maker={self.maker}, tags={self.tags}, comment={self.comment})".format(
+                self=self
+            )
         )
 
     def add(self):
@@ -69,6 +72,13 @@ class Request(db.Model):
 
     def commit(self):
         db.session.commit()
+
+    def delete(self):
+        for user in self.get_all_involved_users():
+            user.handle_request_deletion(self)
+
+        db.session.delete(self)
+        self.commit()
 
     def handle_user_deletion(self, user: "User"):
         log.debug("%s: Handling user deletion: %s", self, user)
@@ -212,11 +222,19 @@ class Request(db.Model):
         self.commit()
 
     def handle_mentee_accept_mentor(self, mentor: "User"):
-        """Called when a mentee accepts a mentor. A mentee can accept multiple mentors."""
+        """
+        Called when a mentee accepts a mentor.
+
+        A mentee can accept multiple mentors.
+        """
         self.accepted_mentors += [mentor]
 
     def handle_mentee_reject_mentor(self, mentor: "User"):
-        """Called when a mentee rejects a mentor. A mentee can reject multiple mentors."""
+        """
+        Called when a mentee rejects a mentor.
+
+        A mentee can reject multiple mentors.
+        """
         self.rejected_mentors += [mentor]
         mentor.remove_request(self)
 
@@ -279,8 +297,9 @@ class User(db.Model):
         self._matches = []
 
     def __repr__(self):
-        return "User(name={self.name}, email={self.email}, bio={self.bio}, tags={self.tags})".format(
-            self=self
+        return (
+            "User(name={self.name}, email={self.email}, "
+            "bio={self.bio}, tags={self.tags})".format(self=self)
         )
 
     def add(self):
@@ -399,7 +418,7 @@ class User(db.Model):
         self.commit()
 
     def could_mentor_for_request(self, request: Request) -> bool:
-        """Returns True if this user could be the mentor for a request. Otherwise False."""
+        """Returns True if this user could be the mentor for a request."""
         return (
             any((tag in self.tags for tag in request.tags))
             and request.maker != self.name

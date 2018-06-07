@@ -28,7 +28,11 @@ def set_hidden_information(key: str, value: str) -> html.Div:
 
 
 def get_hidden_information(key: str) -> State:
-    """Dash `State` object to get a value by key that was previously stored by `set_hidden_information`."""
+    """
+    Dash `State` object to get a value by key.
+
+    Information must have been previously stored by `set_hidden_information`.
+    """
     return State(key, "children")
 
 
@@ -39,11 +43,15 @@ def get_num_button_clicks(button_id: str) -> State:
 
 def choose_page(btn_click_list: List[Tuple[int, str]]) -> str:
     """
-    Given a list of tuples of (num_clicks, next_page) choose the next_page that corresponds to exactly 1 num_clicks.
+    Given a list of tuples of (num_clicks, next_page) choose the next_page that
+    corresponds to exactly 1 num_clicks.
 
-    This is to help with deciding which page to go to next when clicking on one of many buttons on a page.
+    This is to help with deciding which page to go to next when clicking on one
+    of many buttons on a page.
 
-    The expectation is that exactly one button will have been clicked, so we get a deterministic next page.
+    The expectation is that exactly one button will have been clicked, so we get
+    a deterministic next page.
+
     :param btn_click_list: List of tuples of (num_clicks, next_page).
     :return: The id of the next page.
     """

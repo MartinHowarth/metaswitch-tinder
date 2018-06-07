@@ -15,6 +15,7 @@ from metaswitch_tinder.components.inputs import multi_dropdown_with_tags
 log = logging.getLogger(__name__)
 
 NAME = __name__.replace(".", "_")
+
 submit_request = "submit_request"
 
 categories_id = "categories-{}".format(NAME)
@@ -55,7 +56,8 @@ def layout():
             multi_dropdown_with_tags(database.get_tags(), categories_id),
             html.Br(),
             html.Label(
-                "Any additional details about this request that the mentor should know?",
+                "Any additional details about this request that the mentor "
+                "should know?",
                 className="text-center",
             ),
             html.Br(),

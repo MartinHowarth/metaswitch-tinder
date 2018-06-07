@@ -14,7 +14,8 @@ raw_config = {
         "https://images-na.ssl-images-amazon.com/images/I/610WVKNC0OL._SL1024_.jpg",
     ],
     "sad_ducks": [
-        "https://vignette.wikia.nocookie.net/uncyclopedia/images/6/60/Sad_duck.jpg/revision/latest?cb=20090621212341"
+        "https://vignette.wikia.nocookie.net/uncyclopedia/images/6/60/"
+        "Sad_duck.jpg/revision/latest?cb=20090621212341"
     ],
     "default_user_image": "https://is2-ssl.mzstatic.com/image/thumb/Purple71/"
     "v4/c9/f9/d1/c9f9d1e4-b9f1-6bf2-5846-199528ddab8e/source/512x512bb.jpg",

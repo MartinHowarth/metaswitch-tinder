@@ -113,5 +113,14 @@ def get_last_tab_on(page: str) -> Optional[str]:
 
 
 def set_last_tab_on(page: str, last_tab: str):
-    log.info("%s - Caching last tab as: %s", page, last_tab)
+    log.debug("%s - Caching last tab as: %s", page, last_tab)
     flask.session["tab-{}".format(page)] = last_tab
+
+
+def set_current_request(request_id: str):
+    log.debug("User %s storing current request: %s", current_username(), request_id)
+    flask.session["current_request"] = request_id
+
+
+def get_current_request() -> str:
+    return flask.session["current_request"]

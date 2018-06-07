@@ -8,7 +8,8 @@ class MetaswitchTinder(Model):
 
     app_name = StringType(required=True)
     css_cdn = URLType(
-        default="https://maxcdn.bootstrapcdn.com/bootswatch/4.0.0/minty/bootstrap.min.css"
+        default="https://maxcdn.bootstrapcdn.com/bootswatch/4.0.0/"
+        "minty/bootstrap.min.css"
     )
     default_user_image = URLType(required=True)
     ducks = ListType(URLType(required=True))

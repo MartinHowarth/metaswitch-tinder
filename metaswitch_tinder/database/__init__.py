@@ -1,4 +1,4 @@
-from metaswitch_tinder.database.models import (
+from metaswitch_tinder.database.models import (  # noqa
     Request,
     User,
     get_request_by_id,
@@ -7,5 +7,5 @@ from metaswitch_tinder.database.models import (
     get_users,
     list_all_requests,
     list_all_users,
-)  # noqa
+)
 from .tags import get_tags  # noqa

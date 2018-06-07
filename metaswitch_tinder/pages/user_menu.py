@@ -52,7 +52,8 @@ def display_tab(tab_name):
     else:
         session.set_on_mentee_tab(False)
 
-    # Cache the last tab we were on so the user returns to where they left off if they navigate away and come back
+    # Cache the last tab we were on so the user returns to where they left off
+    # if they navigate away and come back
     session.set_last_tab_on(NAME, tab_name)
 
     return tabs.tabs[tab_name]()

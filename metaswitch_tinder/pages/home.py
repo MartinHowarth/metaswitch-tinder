@@ -17,7 +17,8 @@ def layout():
         [
             html.H1("Metaswitch Tinder", className="cover-heading"),
             html.P(
-                "Metaswitch Tinder is a match-making service for informal mentoring and unofficial pastoral support "
+                "Metaswitch Tinder is a match-making service for informal mentoring "
+                "and unofficial pastoral support "
                 "at Metaswitch.",
                 className="lead",
             ),

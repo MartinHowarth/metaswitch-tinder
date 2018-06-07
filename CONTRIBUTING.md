@@ -7,7 +7,7 @@ Great!
 
 * Open a pull request - give it a useful name and description. Be sure to include "Fixes #<issue number>" if it addresses an open issue.
 * Ensure that the CI passes.
-    * This project aims for blackened code. This is auto-formatting using the [black project](https://github.com/ambv/black)
+    * This project aims for blackened code. This is auto-formatting using the [black project](https://github.com/ambv/black).
 * Ensure that your change works as intended on the review app that gets automatically deployed using the PR code on heroku. You can access it by clicking on the "View deployment" button in the PR (it will take a few minutes to appear).
     * There are sometimes subtle differences between testing locally and testing live - that's what the review app is for.
 

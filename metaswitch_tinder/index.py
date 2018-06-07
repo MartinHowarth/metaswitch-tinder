@@ -65,7 +65,8 @@ def display_page(pathname: str):
     It is used to determine what html to display for the new url.
     :param pathname: URL including the first `/` but excluding the domain.
         I.e. "http://my-app.com/page-1" would be passed in here as "/page-1"
-    :return: Dash html object to display as the children of the 'page-content' Div in the main layout.
+    :return: Dash html object to display as the children of the 'page-content'
+        Div in the main layout.
     """
     if app_globals.structure is None:
         raise RuntimeError("`generate_structure` has not been called.")
@@ -99,6 +100,6 @@ if __name__ == "__main__":
 
     app.run_server(port=int(os.environ.get("PORT", 80)), debug=True, threaded=True)
 else:
-    # The `server` is imported here so that gunicorn's entry point is this file. That forces load of
-    # all the layouts and callbacks in this file.
+    # The `server` is imported here so that gunicorn's entry point is this file.
+    # That forces load of all the layouts and callbacks in this file.
     pass

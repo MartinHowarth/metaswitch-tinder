@@ -33,6 +33,7 @@ def href(module_name: str, ref: str = None) -> str:
     if app_globals.structure is None:
         raise RuntimeError("`generate_structure` has not been called.")
 
+    log.debug("Getting href for module: %s with ref: %s", _module_href, ref)
     href_or_func = app_globals.structure[_module_href]["links"][ref]
 
     if callable(href_or_func):
@@ -62,6 +63,7 @@ def generate_structure():
         report,
         home,
     )
+    from metaswitch_tinder.tabs import open_requests
     from metaswitch_tinder.components import auth, debug_login  # noqa
 
     # The keys of this dictionary are the `href`s for each page.
@@ -92,6 +94,20 @@ def generate_structure():
             "module": mentee_request,
             "links": {mentee_request.submit_request: module_href(user_menu)},
         },
+        module_href(open_requests): {
+            "module": open_requests,
+            "links": {
+                open_requests.delete_id: module_href(user_menu),
+                open_requests.save_id: module_href(user_menu),
+            },
+        },
+        # module_href(manage_request): {
+        #     "module": manage_request,
+        #     "links": {
+        #         manage_request.delete_id: module_href(user_menu),
+        #         manage_request.save_id: module_href(user_menu),
+        #     },
+        # },
         module_href(signin_or_signup): {
             "module": signin_or_signup,
             "links": {
