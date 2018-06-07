@@ -20,9 +20,9 @@ def if_logged_in_else(logged_in_target: str, other_target: str) -> Callable:
 
 
 def module_href(module: Any) -> str:
-    if 'home' in module.__name__:
-        return '/'
-    return '/' + module.__name__.split('.')[-1].replace('_', '-')
+    if "home" in module.__name__:
+        return "/"
+    return "/" + module.__name__.split(".")[-1].replace("_", "-")
 
 
 def href(module_name: str, ref: str = None) -> str:
@@ -33,7 +33,7 @@ def href(module_name: str, ref: str = None) -> str:
     if app_globals.structure is None:
         raise RuntimeError("`generate_structure` has not been called.")
 
-    href_or_func = app_globals.structure[_module_href]['links'][ref]
+    href_or_func = app_globals.structure[_module_href]["links"][ref]
 
     if callable(href_or_func):
         return href_or_func()
@@ -62,10 +62,7 @@ def generate_structure():
         report,
         home,
     )
-    from metaswitch_tinder.components import (  # noqa
-    auth,
-    debug_login,
-)
+    from metaswitch_tinder.components import auth, debug_login  # noqa
 
     # The keys of this dictionary are the `href`s for each page.
     # The `module` key of each dictionary must define a `layout` method that
@@ -76,66 +73,49 @@ def generate_structure():
     # Links to tabs should instead be defined in the `tabs.__init__.py` mapping.
     app_globals.structure = {
         module_href(home): {
-            'module': home,
-            'links': {
+            "module": home,
+            "links": {
                 home.im_a_mentee: module_href(mentee_landing_page),
-                home.im_a_mentor: if_logged_in_else(module_href(user_menu),
-                                                    module_href(signin_or_signup)),
-            }
+                home.im_a_mentor: if_logged_in_else(
+                    module_href(user_menu), module_href(signin_or_signup)
+                ),
+            },
         },
         module_href(mentee_landing_page): {
-            'module': mentee_landing_page,
-            'links': {
+            "module": mentee_landing_page,
+            "links": {
                 mentee_landing_page.sign_in: module_href(user_menu),
                 mentee_request.submit_request: module_href(user_menu),
-            }
+            },
         },
         module_href(mentee_request): {
-            'module': mentee_request,
-            'links': {
-                mentee_request.submit_request: module_href(user_menu),
-            }
+            "module": mentee_request,
+            "links": {mentee_request.submit_request: module_href(user_menu)},
         },
         module_href(signin_or_signup): {
-            'module': signin_or_signup,
-            'links': {
+            "module": signin_or_signup,
+            "links": {
                 signin_or_signup.signin: module_href(user_menu),
                 signin_or_signup.signup: module_href(signup),
-            }
+            },
         },
         module_href(signup): {
-            'module': signup,
-            'links': {
-                signup.submit: module_href(user_menu),
-            }
+            "module": signup,
+            "links": {signup.submit: module_href(user_menu)},
         },
         module_href(report): {
-            'module': report,
-            'links': {
-                report.submit: module_href(home),
-            }
+            "module": report,
+            "links": {report.submit: module_href(home)},
         },
-        module_href(user_menu): {
-            'module': user_menu,
-            'links': {
-            }
-        },
+        module_href(user_menu): {"module": user_menu, "links": {}},
         module_href(auth): {
-            'module': auth,
-            'links': {
-                auth.debug_login_target: module_href(debug_login)
-            }
+            "module": auth,
+            "links": {auth.debug_login_target: module_href(debug_login)},
         },
         module_href(debug_login): {
-            'module': debug_login,
-            'links': {
-                debug_login.debug_login_submit: module_href(user_menu),
-            }
+            "module": debug_login,
+            "links": {debug_login.debug_login_submit: module_href(user_menu)},
         },
-        module_href(easter): {
-            'module': easter,
-            'links': {
-            }
-        },
+        module_href(easter): {"module": easter, "links": {}},
     }
     log.info("App structure is: %s", app_globals.structure)

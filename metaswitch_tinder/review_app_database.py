@@ -9,23 +9,18 @@ def populate():
 
     for i in range(10):
         user = metaswitch_tinder.database.models.User(
-            'user{}'.format(i),
-            'user{}@email.com'.format(i),
-            'user{} bio'.format(i),
-            random.choices(
-                ['Coding',
-                 'Design',
-                 'Testing'],
-                k=2
-            ),
-            'I can teach you anything!'
+            "user{}".format(i),
+            "user{}@email.com".format(i),
+            "user{} bio".format(i),
+            random.choices(["Coding", "Design", "Testing"], k=2),
+            "I can teach you anything!",
         )
         user.add()
 
     for i in range(5):
         metaswitch_tinder.database.models.create_request(
-            'user{}'.format(i),
-            [random.choice(['Coding', 'Design', 'Testing'])],
+            "user{}".format(i),
+            [random.choice(["Coding", "Design", "Testing"])],
             "Teach me a random thing.",
         )
 

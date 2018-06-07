@@ -18,16 +18,24 @@ class Request(db.Model):
     tags - Comma separated list of tags
     comment - Comment about request (str)
     """
+
     id = db.Column(db.String, primary_key=True)
     _maker = db.Column(db.String(80))  # Also the mentee, by definition.
-    mentor = db.Column(db.String(80))  # This is the (singular) mentor who has been matched with.
+    mentor = db.Column(
+        db.String(80)
+    )  # This is the (singular) mentor who has been matched with.
     comment = db.Column(db.String(2000))
     tags = db.Column(ScalarListType())  # type: List[str]
     _possible_mentors = db.Column(ScalarListType())  # type: List[str]
     _rejected_mentors = db.Column(ScalarListType())  # type: List[str]
     _accepted_mentors = db.Column(ScalarListType())  # type: List[str]
 
-    def __init__(self, maker: Union[str, 'User'], tags: Union[str, List[str]], comment: str = None) -> None:
+    def __init__(
+        self,
+        maker: Union[str, "User"],
+        tags: Union[str, List[str]],
+        comment: str = None,
+    ) -> None:
         if not isinstance(tags, list) and tags is not None:
             tags = [tags]
         if isinstance(maker, User):
@@ -36,14 +44,16 @@ class Request(db.Model):
         self.id = str(time.time()) + str(randint(1, 100))
         self._maker = maker
         self.tags = tags or []
-        self.comment = comment or ''
+        self.comment = comment or ""
         self._accepted_mentors = []
         self._possible_mentors = []
         self._rejected_mentors = []
-        self.mentor = ''
+        self.mentor = ""
 
     def __repr__(self):
-        return "Request<{self.id}>(maker={self.maker}, tags={self.tags}, comment={self.comment})".format(self=self)
+        return "Request<{self.id}>(maker={self.maker}, tags={self.tags}, comment={self.comment})".format(
+            self=self
+        )
 
     def add(self):
         db.session.add(self)
@@ -60,7 +70,7 @@ class Request(db.Model):
     def commit(self):
         db.session.commit()
 
-    def handle_user_deletion(self, user: 'User'):
+    def handle_user_deletion(self, user: "User"):
         log.debug("%s: Handling user deletion: %s", self, user)
         for involved_user in self.get_all_involved_users():
             involved_user.handle_request_deletion(self)
@@ -90,16 +100,18 @@ class Request(db.Model):
         return self._maker
 
     @maker.setter
-    def maker(self, value: Union[str, 'User']):
+    def maker(self, value: Union[str, "User"]):
         if isinstance(value, User):
             self.maker = value.name
         else:
             self.maker = value
 
-    def get_maker(self) -> 'User':
+    def get_maker(self) -> "User":
         maker = get_user(self.maker)
         if maker is None:
-            raise AssertionError("Could not get maker from database with name: %s" % self.maker)
+            raise AssertionError(
+                "Could not get maker from database with name: %s" % self.maker
+            )
         return maker
 
     @property
@@ -107,7 +119,7 @@ class Request(db.Model):
         return self._accepted_mentors.copy()
 
     @accepted_mentors.setter
-    def accepted_mentors(self, value: Union[List['User'], List[str]]):
+    def accepted_mentors(self, value: Union[List["User"], List[str]]):
         mentors = []
         for mentor in value:
             if isinstance(mentor, User):
@@ -118,7 +130,7 @@ class Request(db.Model):
         self._accepted_mentors = list(set(mentors))
         self.commit()
 
-    def get_accepted_mentors(self) -> List['User']:
+    def get_accepted_mentors(self) -> List["User"]:
         return get_users(self.accepted_mentors)
 
     @property
@@ -126,7 +138,7 @@ class Request(db.Model):
         return self._possible_mentors.copy()
 
     @possible_mentors.setter
-    def possible_mentors(self, value: Union[List['User'], List[str]]):
+    def possible_mentors(self, value: Union[List["User"], List[str]]):
         mentors = []
         for mentor in value:
             if isinstance(mentor, User):
@@ -137,10 +149,10 @@ class Request(db.Model):
         self._possible_mentors = list(set(mentors))
         self.commit()
 
-    def get_possible_mentors(self) -> List['User']:
+    def get_possible_mentors(self) -> List["User"]:
         return get_users(self.possible_mentors)
 
-    def remove_possible_mentor(self, mentor: Union['User', str]):
+    def remove_possible_mentor(self, mentor: Union["User", str]):
         if isinstance(mentor, User):
             name = mentor.name
         else:
@@ -157,7 +169,7 @@ class Request(db.Model):
         return self._rejected_mentors.copy()
 
     @rejected_mentors.setter
-    def rejected_mentors(self, value: Union[List['User'], List[str]]):
+    def rejected_mentors(self, value: Union[List["User"], List[str]]):
         mentors = []
         for mentor in value:
             if isinstance(mentor, User):
@@ -168,7 +180,7 @@ class Request(db.Model):
         self._rejected_mentors = list(set(mentors))
         self.commit()
 
-    def get_rejected_mentors(self) -> List['User']:
+    def get_rejected_mentors(self) -> List["User"]:
         return get_users(self.rejected_mentors)
 
     @property
@@ -181,7 +193,7 @@ class Request(db.Model):
             self.accepted_mentors,
         )
 
-    def get_all_involved_users(self) -> List['User']:
+    def get_all_involved_users(self) -> List["User"]:
         return get_users(list(self.all_involved_users))
 
     def populate_initial_possible_mentors(self):
@@ -199,16 +211,16 @@ class Request(db.Model):
         self.possible_mentors = possible_mentors
         self.commit()
 
-    def handle_mentee_accept_mentor(self, mentor: 'User'):
+    def handle_mentee_accept_mentor(self, mentor: "User"):
         """Called when a mentee accepts a mentor. A mentee can accept multiple mentors."""
         self.accepted_mentors += [mentor]
 
-    def handle_mentee_reject_mentor(self, mentor: 'User'):
+    def handle_mentee_reject_mentor(self, mentor: "User"):
         """Called when a mentee rejects a mentor. A mentee can reject multiple mentors."""
         self.rejected_mentors += [mentor]
         mentor.remove_request(self)
 
-    def handle_mentor_accept_mentee(self, mentor: 'User'):
+    def handle_mentor_accept_mentee(self, mentor: "User"):
         """Called when a mentor accepts a mentee. This can only be called once."""
         print("mentor %s accepted request: %s", mentor, self)
         self.mentor = mentor.name
@@ -226,7 +238,7 @@ class Request(db.Model):
 
         self.commit()
 
-    def handle_mentor_reject_mentee(self, mentor: 'User'):
+    def handle_mentor_reject_mentee(self, mentor: "User"):
         """Called when a mentor rejects a mentee."""
         # Record rejected mentees the same as if the mentor had been rejected.
         self.rejected_mentors += [mentor]
@@ -246,23 +258,30 @@ class User(db.Model):
     # The list of requests (for both mentors and mentees) that have been completed.
     _matches = db.Column(ScalarListType())  # type: List[str]
 
-    def __init__(self, name: str, email: str, bio: str = None,
-                 tags: List[str] = None, mentoring_details: str = None) -> None:
+    def __init__(
+        self,
+        name: str,
+        email: str,
+        bio: str = None,
+        tags: List[str] = None,
+        mentoring_details: str = None,
+    ) -> None:
         if not isinstance(tags, list) and tags is not None:
             tags = [tags]
 
         self.name = name
         self.email = email
-        self.bio = bio or ''
-        self.mentoring_details = mentoring_details or ''
+        self.bio = bio or ""
+        self.mentoring_details = mentoring_details or ""
         self._tags = tags or []
 
         self._requests = []
         self._matches = []
 
     def __repr__(self):
-        return (
-            "User(name={self.name}, email={self.email}, bio={self.bio}, tags={self.tags})".format(self=self))
+        return "User(name={self.name}, email={self.email}, bio={self.bio}, tags={self.tags})".format(
+            self=self
+        )
 
     def add(self):
         db.session.add(self)
@@ -305,7 +324,7 @@ class User(db.Model):
         return self._requests.copy()
 
     @requests.setter
-    def requests(self, value: Union[List['Request'], List[str]]):
+    def requests(self, value: Union[List["Request"], List[str]]):
         reqs = []
         for request in value:
             if isinstance(request, Request):
@@ -316,7 +335,7 @@ class User(db.Model):
         self._requests = list(set(reqs))
         self.commit()
 
-    def get_requests(self) -> List['Request']:
+    def get_requests(self) -> List["Request"]:
         return get_requests_by_ids(self.requests)
 
     def remove_request(self, request: Request):
@@ -348,7 +367,7 @@ class User(db.Model):
         return self._matches.copy()
 
     @matches.setter
-    def matches(self, value: Union[List['Request'], List[str]]):
+    def matches(self, value: Union[List["Request"], List[str]]):
         mats = []
         for match in value:
             if isinstance(match, Request):
@@ -359,7 +378,7 @@ class User(db.Model):
         self._matches = list(set(mats))
         self.commit()
 
-    def get_matches(self) -> List['Request']:
+    def get_matches(self) -> List["Request"]:
         return get_requests_by_ids(self.matches)
 
     def populate_all_possible_requests_to_mentor(self):
@@ -381,7 +400,10 @@ class User(db.Model):
 
     def could_mentor_for_request(self, request: Request) -> bool:
         """Returns True if this user could be the mentor for a request. Otherwise False."""
-        return any((tag in self.tags for tag in request.tags)) and request.maker != self.name
+        return (
+            any((tag in self.tags for tag in request.tags))
+            and request.maker != self.name
+        )
 
 
 def list_all_requests() -> List[Request]:
@@ -412,8 +434,13 @@ def get_users(names: List[str]) -> List[User]:
     return User.query.filter(User.name.in_(names)).all()
 
 
-def handle_signup_submit(username: str, email: str, biography: str = None, categories: List[str] = None,
-                         details: str = None):
+def handle_signup_submit(
+    username: str,
+    email: str,
+    biography: str = None,
+    categories: List[str] = None,
+    details: str = None,
+):
     print("Signup submitted:", username, email, biography)
     new_user = User(username, email, biography, categories, details)
     new_user.add()

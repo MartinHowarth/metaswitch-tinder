@@ -10,11 +10,7 @@ def layout():
         children=[
             html.Img(
                 src=random.choice(config.ducks),
-                style={
-                    'display': 'block',
-                    'width': '100%',
-                    'vertical-align': 'middle'
-                }
-            ),
-        ],
+                style={"display": "block", "width": "100%", "vertical-align": "middle"},
+            )
+        ]
     )

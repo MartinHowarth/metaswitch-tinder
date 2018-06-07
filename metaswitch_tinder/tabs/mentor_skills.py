@@ -13,30 +13,34 @@ from metaswitch_tinder.components.session import current_username, get_current_u
 
 log = logging.getLogger(__name__)
 
-NAME = __name__.replace('.', '_')
+NAME = __name__.replace(".", "_")
 
-categories_id = 'categories-{}'.format(NAME)
+categories_id = "categories-{}".format(NAME)
 
 
 def layout():
     user = get_current_user()
 
-    return html.Div([
-        create_equal_row([html.Label('Tell us what you know about:')]),
-        multi_dropdown_with_tags(database.tags.get_tags(), categories_id,
-                                 init_selection=user.tags),
-        html.Br(),
-        create_equal_row([html.Label('Additional details about your skills:')]),
-        create_equal_row([dcc.Input(value='', type='text', id='details-{}'.format(NAME))]),
-        html.Div(id='dummy-{}'.format(NAME), hidden=True)
-    ],
-        className="container")
+    return html.Div(
+        [
+            create_equal_row([html.Label("Tell us what you know about:")]),
+            multi_dropdown_with_tags(
+                database.tags.get_tags(), categories_id, init_selection=user.tags
+            ),
+            html.Br(),
+            create_equal_row([html.Label("Additional details about your skills:")]),
+            create_equal_row(
+                [dcc.Input(value="", type="text", id="details-{}".format(NAME))]
+            ),
+            html.Div(id="dummy-{}".format(NAME), hidden=True),
+        ],
+        className="container",
+    )
 
 
-@app.callback(Output('dummy-{}'.format(NAME), 'children'),
-              [
-                  Input(categories_id, 'value')
-              ])
+@app.callback(
+    Output("dummy-{}".format(NAME), "children"), [Input(categories_id, "value")]
+)
 def set_mentor_tags(tags: List[str]):
     """
     Callback that gets called when a tag is added or deleted

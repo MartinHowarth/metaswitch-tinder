@@ -9,28 +9,27 @@ from metaswitch_tinder.components.tabs import generate_tabs
 
 log = logging.getLogger(__name__)
 
-NAME = __name__.replace('.', '_')
+NAME = __name__.replace(".", "_")
 
-tabs_id = 'tabs-{}'.format(NAME)
-display_id = 'tab-display-{}'.format(NAME)
+tabs_id = "tabs-{}".format(NAME)
+display_id = "tab-display-{}".format(NAME)
 
 
 def layout():
-    cached_tab = session.get_last_tab_on(NAME) or 'mentee_matches'
+    cached_tab = session.get_last_tab_on(NAME) or "mentee_matches"
 
     return generate_tabs(
         {
-            'Make a new request': 'mentee_request',
-            'Your matches - mentors who could teach you': 'mentee_matches',
+            "Make a new request": "mentee_request",
+            "Your matches - mentors who could teach you": "mentee_matches",
         },
         default_tab=cached_tab,
         tabs_id=tabs_id,
-        display_id=display_id
+        display_id=display_id,
     )
 
 
-@app.callback(Output(display_id, 'children'),
-              [Input(tabs_id, 'value')])
+@app.callback(Output(display_id, "children"), [Input(tabs_id, "value")])
 def display_tab(tab_name: str):
     """
     Callback that gets called when a tab is clicked.

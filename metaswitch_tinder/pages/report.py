@@ -10,32 +10,42 @@ from metaswitch_tinder.app_structure import href
 
 log = logging.getLogger(__name__)
 
-NAME = __name__.replace('.', '_')
+NAME = __name__.replace(".", "_")
 
 submit = "submit"
 
 
 def layout():
-    return html.Div([
-        html.H1("Report an issue", className="text-center"),
-        html.Br(),
-        dcc.Textarea(placeholder='Report an issue or inappropriate content.  '
-                                 'Please include as much information as possible',
-                     value='', id='report-{}'.format(NAME),
-                     style={'width': '100%'}),
-        dcc.Link(html.Button("Submit Report", id='submit-{}'.format(NAME),
-                             n_clicks=0, className="btn btn-sm btn-danger btn-block"),
-                 href=href(__name__, submit))
-    ], className="container text-center")
+    return html.Div(
+        [
+            html.H1("Report an issue", className="text-center"),
+            html.Br(),
+            dcc.Textarea(
+                placeholder="Report an issue or inappropriate content.  "
+                "Please include as much information as possible",
+                value="",
+                id="report-{}".format(NAME),
+                style={"width": "100%"},
+            ),
+            dcc.Link(
+                html.Button(
+                    "Submit Report",
+                    id="submit-{}".format(NAME),
+                    n_clicks=0,
+                    className="btn btn-sm btn-danger btn-block",
+                ),
+                href=href(__name__, submit),
+            ),
+        ],
+        className="container text-center",
+    )
 
 
 @app.callback(
-    Output('report', ''),
+    Output("report", ""),
     [],
-    [
-        State('report-{}'.format(NAME), 'value'),
-    ],
-    [Event('submit-{}'.format(NAME), 'click')]
+    [State("report-{}".format(NAME), "value")],
+    [Event("submit-{}".format(NAME), "click")],
 )
 def report_email(report_text):
     log.info("Report submitted with text: %s", report_text)
@@ -43,4 +53,9 @@ def report_email(report_text):
 
 
 def report_button():
-    return dcc.Link("Report", href=href(__name__), className="btn btn-primary btn-block btn-danger", id='report')
+    return dcc.Link(
+        "Report",
+        href=href(__name__),
+        className="btn btn-primary btn-block btn-danger",
+        id="report",
+    )

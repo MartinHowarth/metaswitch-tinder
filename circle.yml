@@ -29,6 +29,21 @@ jobs:
             . venv/bin/activate
             python setup.py test
 
+  black:
+    # Complain if the code isn't blackened - https://github.com/ambv/black
+    docker:
+    # Image to run the tests in
+      - image: circleci/python:3.6.5-stretch-browsers
+
+    steps:
+      - checkout
+      - run: # install and activate virtual environment with pip
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install black
+            black --check metaswitch_tinder
+
   flake8:
     docker:
     # Image to run the tests in
@@ -62,5 +77,6 @@ workflows:
   all_tests:
     jobs:
       - tests
+      - black
       - flake8
       - mypy

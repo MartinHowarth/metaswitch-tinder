@@ -15,24 +15,21 @@ def create_equal_grid(elements):
         raise ValueError("Not all rows are of the same length.")
 
     # Bootstrap allows a maximum of 12 columns per grid.
-    column_class = 'col-sm-{}'.format(int(12 / n_columns))
+    column_class = "col-sm-{}".format(int(12 / n_columns))
 
     grid_children = []
     for row in elements:
         row_children = []
         for col in row:
-            if hasattr(col, 'className'):
-                col.className += ' {}'.format(column_class)
+            if hasattr(col, "className"):
+                col.className += " {}".format(column_class)
             else:
                 col.className = column_class
             row_children.append(col)
 
-        grid_children.append(html.Div(
-            children=row_children,
-            className='row',
-        ))
+        grid_children.append(html.Div(children=row_children, className="row"))
 
-    grid = html.Div(children=grid_children, className='container')
+    grid = html.Div(children=grid_children, className="container")
     return grid
 
 
@@ -64,8 +61,8 @@ def create_magic_three_grid(elements):
             else:
                 break
 
-            if hasattr(col, 'className'):
-                col.className += ' {}'.format(column_class)
+            if hasattr(col, "className"):
+                col.className += " {}".format(column_class)
             else:
                 col.className = column_class
             row_children.append(col)
@@ -73,12 +70,9 @@ def create_magic_three_grid(elements):
             if (num == 0) or (num == 1):
                 row_children.append(html.Div("", className="col-sm-2"))
 
-        grid_children.append(html.Div(
-            children=row_children,
-            className='row',
-        ))
+        grid_children.append(html.Div(children=row_children, className="row"))
 
-    grid = html.Div(children=grid_children, className='container')
+    grid = html.Div(children=grid_children, className="container")
     return grid
 
 

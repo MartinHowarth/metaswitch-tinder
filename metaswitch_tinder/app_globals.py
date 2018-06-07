@@ -5,6 +5,6 @@ from typing import Any, Dict, Optional  # noqa
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
-JAVASCRIPT_DIR = os.path.join(PROJECT_ROOT, 'javascript')
+JAVASCRIPT_DIR = os.path.join(PROJECT_ROOT, "javascript")
 
 structure = None  # type: Optional[Dict[str, Dict[str, Any]]]

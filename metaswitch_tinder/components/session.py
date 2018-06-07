@@ -9,16 +9,20 @@ from .utils import wait_for
 
 log = logging.getLogger(__name__)
 
-SignupInformation = namedtuple('SignupInformation', [
-    'biography',
-    'request_categories',
-    'request_details',
-    'mentor_categories',
-    'mentor_details'])
+SignupInformation = namedtuple(
+    "SignupInformation",
+    [
+        "biography",
+        "request_categories",
+        "request_details",
+        "mentor_categories",
+        "mentor_details",
+    ],
+)
 
 
 def current_username() -> str:
-    username = flask.session.get('username', None)
+    username = flask.session.get("username", None)
     if username is None:
         raise AssertionError("Could not get current user as they are not logged in.")
     return username
@@ -29,12 +33,14 @@ def get_current_user() -> User:
 
     user = get_user(user_name)
     if user is None:
-        raise AssertionError("Could not get current user from database by name: %s" % user_name)
+        raise AssertionError(
+            "Could not get current user from database by name: %s" % user_name
+        )
     return user
 
 
 def set_current_usename(username: str):
-    flask.session['username'] = username
+    flask.session["username"] = username
 
 
 def login(username: str):
@@ -51,31 +57,41 @@ def logout():
 
 def is_logged_in() -> bool:
     log.debug("is_logged_in: Flask session is: %s", flask.session)
-    return 'username' in flask.session
+    return "username" in flask.session
 
 
 def set_post_login_redirect(href: str):
     log.info("Set post login redirect to: %s", href)
-    flask.session['signin_redirect'] = href
+    flask.session["signin_redirect"] = href
 
 
-def store_signup_information(biography: str,
-                             request_categories: List[str] = None, request_details: str = None,
-                             mentor_categories: List[str] = None, mentor_details: str = None):
-    info = SignupInformation(biography, request_categories, request_details, mentor_categories, mentor_details)
-    flask.session['signup_info'] = info._asdict()
+def store_signup_information(
+    biography: str,
+    request_categories: List[str] = None,
+    request_details: str = None,
+    mentor_categories: List[str] = None,
+    mentor_details: str = None,
+):
+    info = SignupInformation(
+        biography,
+        request_categories,
+        request_details,
+        mentor_categories,
+        mentor_details,
+    )
+    flask.session["signup_info"] = info._asdict()
 
 
 def get_signup_information() -> Optional[SignupInformation]:
-    raw_info = flask.session.get('signup_info')
+    raw_info = flask.session.get("signup_info")
     if raw_info is not None:
         return SignupInformation(**raw_info)
     return None
 
 
 def clear_signup_information():
-    if 'signup_info' in flask.session:
-        del flask.session['signup_info']
+    if "signup_info" in flask.session:
+        del flask.session["signup_info"]
 
 
 def wait_for_login():
@@ -83,19 +99,19 @@ def wait_for_login():
 
 
 def on_mentee_tab() -> bool:
-    return flask.session.get('on_mentee_tab') is True
+    return flask.session.get("on_mentee_tab") is True
 
 
 def set_on_mentee_tab(status: bool):
-    flask.session['on_mentee_tab'] = status
+    flask.session["on_mentee_tab"] = status
 
 
 def get_last_tab_on(page: str) -> Optional[str]:
-    cached_tab = flask.session.get('tab-{}'.format(page), None)
+    cached_tab = flask.session.get("tab-{}".format(page), None)
     log.debug("%s - Cached tab was: %s", page, cached_tab)
     return cached_tab
 
 
 def set_last_tab_on(page: str, last_tab: str):
     log.info("%s - Caching last tab as: %s", page, last_tab)
-    flask.session['tab-{}'.format(page)] = last_tab
+    flask.session["tab-{}".format(page)] = last_tab

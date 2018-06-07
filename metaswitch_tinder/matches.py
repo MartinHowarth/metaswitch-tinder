@@ -26,7 +26,7 @@ def handle_mentor_accept_match(matched_user: User, request: Request):
     request.handle_mentor_accept_mentee(mentor)
 
     email_text = "You're a match!"
-    email_text += '\n\n'
+    email_text += "\n\n"
     email_text += request.comment
 
     tinder_email.send_match_email([mentor.email, mentee.email], email_text)

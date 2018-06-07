@@ -24,7 +24,9 @@ def configure_logging():
 
     ch = logging.StreamHandler(sys.stderr)
     ch.setLevel(logging.DEBUG)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter(
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    )
     ch.setFormatter(formatter)
     root.addHandler(ch)
 
@@ -36,18 +38,26 @@ app.css.append_css({"external_url": config.css_cdn})
 app_structure.generate_structure()
 
 # Main app layout
-app.layout = html.Div([
-    dcc.Location(id='url', refresh=False),
-    html.Div([html.Div(widgets.logout_button()),
-              html.Div(metaswitch_tinder.pages.report.report_button())],
-             className="d-flex flex-row justify-content-between"),
-    # The 'page-content' is where all content appears
-    html.Div(id='page-content'),
-])
+app.layout = html.Div(
+    [
+        dcc.Location(id="url", refresh=False),
+        html.Div(
+            [
+                html.Div(widgets.logout_button()),
+                html.Div(metaswitch_tinder.pages.report.report_button()),
+            ],
+            className="d-flex flex-row justify-content-between",
+        ),
+        # The 'page-content' is where all content appears
+        html.Div(id="page-content"),
+    ]
+)
 
 
-@app.callback(dash.dependencies.Output('page-content', 'children'),
-              [dash.dependencies.Input('url', 'pathname')])
+@app.callback(
+    dash.dependencies.Output("page-content", "children"),
+    [dash.dependencies.Input("url", "pathname")],
+)
 def display_page(pathname: str):
     """
     Callback that gets called when the url changes.
@@ -61,34 +71,33 @@ def display_page(pathname: str):
         raise RuntimeError("`generate_structure` has not been called.")
 
     return {
-        href: getattr(details['module'], 'layout') for href, details in app_globals.structure.items()
-    }.get(pathname, lambda: '404: Not found!')()
+        href: getattr(details["module"], "layout")
+        for href, details in app_globals.structure.items()
+    }.get(pathname, lambda: "404: Not found!")()
 
 
 # Add each script to the app from the JAVASCRIPT_DIR
 for script in os.listdir(JAVASCRIPT_DIR):
-    if os.path.splitext(script)[1] != '.js':
+    if os.path.splitext(script)[1] != ".js":
         continue
-    app.scripts.append_script({
-        'external_url': '/static/{}'.format(script)
-    })
+    app.scripts.append_script({"external_url": "/static/{}".format(script)})
 
 
 # Use Flask to serve the javascript source files statically.
-@app.server.route('/static/<filename>.js')
+@app.server.route("/static/<filename>.js")
 def serve_script(filename):
-    return flask.send_from_directory(JAVASCRIPT_DIR, '{}.js'.format(filename))
+    return flask.send_from_directory(JAVASCRIPT_DIR, "{}.js".format(filename))
 
 
 if __name__ == "__main__":
-    if 'DATABASE_URL' not in os.environ:
+    if "DATABASE_URL" not in os.environ:
         # Populate the in-memory test database.
         from metaswitch_tinder import review_app_database
 
         review_app_database.populate()
-        os.environ['NO_EMAIL'] = 'true'
+        os.environ["NO_EMAIL"] = "true"
 
-    app.run_server(port=int(os.environ.get('PORT', 80)), debug=True, threaded=True)
+    app.run_server(port=int(os.environ.get("PORT", 80)), debug=True, threaded=True)
 else:
     # The `server` is imported here so that gunicorn's entry point is this file. That forces load of
     # all the layouts and callbacks in this file.

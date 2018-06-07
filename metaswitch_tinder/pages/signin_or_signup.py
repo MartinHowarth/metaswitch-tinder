@@ -11,29 +11,42 @@ from metaswitch_tinder.components.grid import create_equal_row
 
 log = logging.getLogger(__name__)
 
-NAME = __name__.replace('.', '_')
+NAME = __name__.replace(".", "_")
 
-signin = 'signin'
-signup = 'signup'
+signin = "signin"
+signup = "signup"
 
 
 def layout():
-    return html.Div([
-        html.H1("Metaswitch Tinder", className="cover-heading"),
-        create_equal_row([
-            html.A("Sign in!", href='/login', id='signin-{}'.format(NAME),
-                   className="btn btn-lg btn-secondary"),
-            dcc.Link("Sign up!", href=href(__name__, signup), className="btn btn-lg btn-primary"),
-        ])
-    ],
-        className="container text-center", id='signin-or-signup')
+    return html.Div(
+        [
+            html.H1("Metaswitch Tinder", className="cover-heading"),
+            create_equal_row(
+                [
+                    html.A(
+                        "Sign in!",
+                        href="/login",
+                        id="signin-{}".format(NAME),
+                        className="btn btn-lg btn-secondary",
+                    ),
+                    dcc.Link(
+                        "Sign up!",
+                        href=href(__name__, signup),
+                        className="btn btn-lg btn-primary",
+                    ),
+                ]
+            ),
+        ],
+        className="container text-center",
+        id="signin-or-signup",
+    )
 
 
 @app.callback(
-    Output('signin-or-signup', 'children'),
+    Output("signin-or-signup", "children"),
     [],
     [],
-    [Event('signin-{}'.format(NAME), 'click')]
+    [Event("signin-{}".format(NAME), "click")],
 )
 def submit_signup_information():
     log.info("%s - Signin clicked", NAME)
