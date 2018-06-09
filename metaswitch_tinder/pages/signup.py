@@ -50,7 +50,7 @@ def layout():
             html.Br(),
             create_equal_row([html.Label("Tell us what you know about:")]),
             multi_dropdown_with_tags(
-                database.tags.get_tags(), "categories-{}".format(NAME)
+                database.list_all_tags(), "categories-{}".format(NAME)
             ),
             html.Br(),
             create_equal_row([html.Label("Additional details about your skills:")]),

@@ -7,6 +7,22 @@ from metaswitch_tinder.app import db
 def populate():
     db.create_all()
 
+    for name in [
+        "Coding",
+        "Design",
+        "Testing",
+        "Protocols",
+        "Programming languages",
+        "External Frameworks/Libraries/Tools",
+        "Metaswitch Frameworks/Libraries/Tools",
+        "Task/Project Management",
+        "Pastoral Support",
+        "Career coaching",
+        "Other",
+    ]:
+        tag = metaswitch_tinder.database.models.Tag(name)
+        tag.add()
+
     for i in range(10):
         user = metaswitch_tinder.database.models.User(
             "user{}".format(i),

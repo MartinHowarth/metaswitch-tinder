@@ -11,6 +11,32 @@ from metaswitch_tinder.app import db
 log = logging.getLogger(__name__)
 
 
+class Tag(db.Model):
+    """A tag that users can associate with requests and claim as skills."""
+
+    _name = db.Column(db.String, primary_key=True)
+
+    def __init__(self, name: str):
+        self.name = name
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @name.setter
+    def name(self, value: str):
+        """Disallow commas in tag names as that is the key separator in the DB."""
+        value = value.replace(",", "")
+        self._name = value
+
+    def add(self):
+        db.session.add(self)
+        self.commit()
+
+    def commit(self):
+        db.session.commit()
+
+
 class Request(db.Model):
     """
     id - Randomly generated "unique" ID of request
@@ -451,6 +477,10 @@ def get_users(names: List[str]) -> List[User]:
     if not names:
         return []
     return User.query.filter(User.name.in_(names)).all()
+
+
+def list_all_tags() -> List[Tag]:
+    return Tag.query.all()
 
 
 def handle_signup_submit(

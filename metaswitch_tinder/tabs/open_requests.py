@@ -117,7 +117,7 @@ def edit_request_layout(request: Request):
             html.Label("What topics do you want to learn about?"),
             html.Br(),
             multi_dropdown_with_tags(
-                database.get_tags(), tags_id, init_selection=request.tags
+                database.list_all_tags(), tags_id, init_selection=request.tags
             ),
             html.Br(),
             html.Label(

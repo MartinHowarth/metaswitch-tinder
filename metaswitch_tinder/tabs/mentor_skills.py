@@ -25,7 +25,7 @@ def layout():
         [
             create_equal_row([html.Label("Tell us what you know about:")]),
             multi_dropdown_with_tags(
-                database.tags.get_tags(), categories_id, init_selection=user.tags
+                database.list_all_tags(), categories_id, init_selection=user.tags
             ),
             html.Br(),
             create_equal_row([html.Label("Additional details about your skills:")]),

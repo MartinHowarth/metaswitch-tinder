@@ -53,7 +53,7 @@ def layout():
         [
             html.Label("What topics do you want to learn about?"),
             html.Br(),
-            multi_dropdown_with_tags(database.get_tags(), categories_id),
+            multi_dropdown_with_tags(database.list_all_tags(), categories_id),
             html.Br(),
             html.Label(
                 "Any additional details about this request that the mentor "

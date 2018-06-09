@@ -7,5 +7,5 @@ from metaswitch_tinder.database.models import (  # noqa
     get_users,
     list_all_requests,
     list_all_users,
+    list_all_tags,
 )
-from .tags import get_tags  # noqa
