@@ -19,7 +19,7 @@ from metaswitch_tinder.database import User, get_request_by_id, get_user
 
 log = logging.getLogger(__name__)
 
-Match = namedtuple("Match", ["mentee", "mentor", "request"])
+PossibleMatch = namedtuple("PossibleMatch", ["mentee", "mentor", "request"])
 
 
 def children_no_matches():
@@ -45,7 +45,7 @@ def children_no_matches():
     ]
 
 
-def children_for_match(match: Match, skipped_requests: List[str]):
+def children_for_match(match: PossibleMatch, skipped_requests: List[str]):
     if on_mentee_tab():
         other_user_name = match.mentor.name
         table_rows = [
@@ -58,6 +58,10 @@ def children_for_match(match: Match, skipped_requests: List[str]):
             ),
             html.Tr(
                 [html.Td("Mentor bio"), html.Td(match.mentor.bio)],
+                className="table-success",
+            ),
+            html.Tr(
+                [html.Td("Request details"), html.Td(match.request.comment)],
                 className="table-success",
             ),
         ]
@@ -122,7 +126,7 @@ def get_matches_children(skipped_requests: List[str] = list()):
 
 def get_matches_for_mentor(
     mentor: User, skipped_matches: List[str] = list()
-) -> List[Match]:
+) -> List[PossibleMatch]:
     requests = mentor.get_requests_as_mentor()
 
     _matches = []
@@ -136,13 +140,13 @@ def get_matches_for_mentor(
         if mentor.name not in request.accepted_mentors:
             continue
 
-        _matches.append(Match(request.get_maker(), mentor, request))
+        _matches.append(PossibleMatch(request.get_maker(), mentor, request))
     return _matches
 
 
 def get_matches_for_mentee(
     mentee: User, skipped_matches: List[str] = list()
-) -> List[Match]:
+) -> List[PossibleMatch]:
     requests = mentee.get_requests_as_mentee()
 
     _matches = []
@@ -159,11 +163,11 @@ def get_matches_for_mentee(
             ):
                 continue
 
-            _matches.append(Match(mentee, get_user(mentor_name), request))
+            _matches.append(PossibleMatch(mentee, get_user(mentor_name), request))
     return _matches
 
 
-def get_matches_for_current_user_role(skipped_matches: List[str]) -> List[Match]:
+def get_matches_for_current_user_role(skipped_matches: List[str]) -> List[PossibleMatch]:
     if on_mentee_tab():
         current_matches = get_matches_for_mentee(get_current_user(), skipped_matches)
     else:
