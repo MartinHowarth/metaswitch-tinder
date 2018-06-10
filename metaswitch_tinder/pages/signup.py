@@ -4,12 +4,11 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Event, Output, State
 
-from metaswitch_tinder import database
 from metaswitch_tinder.app import app
 from metaswitch_tinder.app_structure import href
 from metaswitch_tinder.components import session
 from metaswitch_tinder.components.grid import create_equal_row
-from metaswitch_tinder.components.inputs import multi_dropdown_with_tags
+from metaswitch_tinder.components.inputs import tags_dropdown_with_add_new_entry_box
 
 log = logging.getLogger(__name__)
 
@@ -49,9 +48,7 @@ def layout():
             ),
             html.Br(),
             create_equal_row([html.Label("Tell us what you know about:")]),
-            multi_dropdown_with_tags(
-                database.list_all_tags(), "categories-{}".format(NAME)
-            ),
+            *tags_dropdown_with_add_new_entry_box("categories-{}".format(NAME)),
             html.Br(),
             create_equal_row([html.Label("Additional details about your skills:")]),
             create_equal_row(

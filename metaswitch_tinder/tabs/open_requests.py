@@ -6,9 +6,8 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Event, Output, State
 
-from metaswitch_tinder import database
 from metaswitch_tinder.app import app
-from metaswitch_tinder.components.inputs import multi_dropdown_with_tags
+from metaswitch_tinder.components.inputs import tags_dropdown_with_add_new_entry_box
 from metaswitch_tinder.components.grid import create_equal_row
 from metaswitch_tinder.components.session import (
     current_username,
@@ -31,7 +30,7 @@ save_id = "save-{}".format(NAME)
 delete_id = "delete-{}".format(NAME)
 current_request_id = "current_request-{}".format(NAME)
 
-MAX_REQUESTS = 20  # The maximum number of request edit buttons that will work.
+MAX_REQUESTS = 20  # The maximum number of request edit buttons that will be shown.
 
 
 def children_no_requests():
@@ -116,9 +115,7 @@ def edit_request_layout(request: Request):
         [
             html.Label("What topics do you want to learn about?"),
             html.Br(),
-            multi_dropdown_with_tags(
-                database.list_all_tags(), tags_id, init_selection=request.tags
-            ),
+            *tags_dropdown_with_add_new_entry_box(tags_id, init_selection=request.tags),
             html.Br(),
             html.Label(
                 "Any additional details about this request that the mentor "

@@ -27,7 +27,7 @@ def layout():
                     "Your matches": "completed_matches",
                     "Become a mentee": "mentee",
                     "Become a mentor": "mentor",
-                    "Settings": "settings",
+                    "Your account": "settings",
                 },
                 default_tab=cached_tab,
                 tabs_id=tabs_id,

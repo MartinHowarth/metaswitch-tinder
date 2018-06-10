@@ -167,7 +167,9 @@ def get_matches_for_mentee(
     return _matches
 
 
-def get_matches_for_current_user_role(skipped_matches: List[str]) -> List[PossibleMatch]:
+def get_matches_for_current_user_role(
+    skipped_matches: List[str]
+) -> List[PossibleMatch]:
     if on_mentee_tab():
         current_matches = get_matches_for_mentee(get_current_user(), skipped_matches)
     else:

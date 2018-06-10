@@ -1,6 +1,8 @@
 import itertools
 import logging
+import string
 import time
+
 from random import randint
 from typing import List, Optional, Union
 
@@ -16,7 +18,7 @@ class Tag(db.Model):
 
     _name = db.Column(db.String, primary_key=True)
 
-    def __init__(self, name: str):
+    def __init__(self, name: str) -> None:
         self.name = name
 
     @property
@@ -25,16 +27,30 @@ class Tag(db.Model):
 
     @name.setter
     def name(self, value: str):
-        """Disallow commas in tag names as that is the key separator in the DB."""
-        value = value.replace(",", "")
+        value = self.normalise_tag(value)
         self._name = value
 
     def add(self):
         db.session.add(self)
+        log.info(f"Added new tag to database: {self.name}")
         self.commit()
 
     def commit(self):
         db.session.commit()
+
+    @staticmethod
+    def normalise_tag(name: str) -> str:
+        """
+        Take a string and normalise it so that it matches a standard.
+
+        That is:
+            - Capital first letter of each word
+            - No commas (the tags are separated by commas in the database)
+        """
+        normalised_name = name.replace(",", " ")
+        normalised_name = string.capwords(normalised_name)
+        log.debug("Normalised tag %s to: %s", name, normalised_name)
+        return normalised_name
 
 
 class Request(db.Model):

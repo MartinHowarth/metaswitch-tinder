@@ -10,7 +10,7 @@ from metaswitch_tinder.app import app
 from metaswitch_tinder.app_structure import href
 from metaswitch_tinder.components import session
 from metaswitch_tinder.components.grid import create_equal_row
-from metaswitch_tinder.components.inputs import multi_dropdown_with_tags
+from metaswitch_tinder.components.inputs import tags_dropdown_with_add_new_entry_box
 
 log = logging.getLogger(__name__)
 
@@ -53,7 +53,7 @@ def layout():
         [
             html.Label("What topics do you want to learn about?"),
             html.Br(),
-            multi_dropdown_with_tags(database.list_all_tags(), categories_id),
+            *tags_dropdown_with_add_new_entry_box(categories_id),
             html.Br(),
             html.Label(
                 "Any additional details about this request that the mentor "
@@ -61,7 +61,20 @@ def layout():
                 className="text-center",
             ),
             html.Br(),
-            create_equal_row([dcc.Textarea(value="", id=details_id)]),
+            create_equal_row(
+                [
+                    dcc.Textarea(
+                        value="",
+                        id=details_id,
+                        rows=6,
+                        placeholder="I'd like a code review of...\n"
+                                    "I'd like weekly mentoring sessions...\n"
+                                    "I'm looking for a one off education session about...\n"
+                                    "I want a running partner.\n"
+                                    "I'm looking for someone to play chess with.",
+                    )
+                ]
+            ),
             html.Br(),
             html.Div(btn),
             html.Div(id="dummy-submit-{}".format(NAME)),

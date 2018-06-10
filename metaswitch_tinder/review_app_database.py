@@ -12,13 +12,12 @@ def populate():
         "Design",
         "Testing",
         "Protocols",
-        "Programming languages",
+        "Programming Languages",
         "External Frameworks/Libraries/Tools",
         "Metaswitch Frameworks/Libraries/Tools",
         "Task/Project Management",
         "Pastoral Support",
-        "Career coaching",
-        "Other",
+        "Career Coaching",
     ]:
         tag = metaswitch_tinder.database.models.Tag(name)
         tag.add()
