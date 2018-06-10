@@ -56,9 +56,8 @@ def layout():
             *tags_dropdown_with_add_new_entry_box(categories_id),
             html.Br(),
             html.Label(
-                "Any additional details about this request that the mentor "
-                "should know?",
-                className="text-center",
+                "Describe in more detail what you're looking for:",
+                className="text-center text-dark",
             ),
             html.Br(),
             create_equal_row(
@@ -67,11 +66,13 @@ def layout():
                         value="",
                         id=details_id,
                         rows=6,
-                        placeholder="I'd like a code review of...\n"
-                        "I'd like weekly mentoring sessions...\n"
-                        "I'm looking for a one off education session about...\n"
-                        "I want a running partner.\n"
-                        "I'm looking for someone to play chess with.",
+                        placeholder="Try starting with one of the following:\n"
+                        "  I'd like a code review of...\n"
+                        "  I'd like weekly mentoring sessions...\n"
+                        "  I'm looking for a one off education session about...\n"
+                        "  I want a running partner.\n"
+                        "  I'm looking for someone to play chess with.",
+                        maxLength=2000,
                     )
                 ]
             ),

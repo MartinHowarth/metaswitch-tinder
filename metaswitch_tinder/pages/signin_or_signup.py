@@ -8,6 +8,8 @@ from metaswitch_tinder.app import app
 from metaswitch_tinder.app_structure import href
 from metaswitch_tinder.components import session
 from metaswitch_tinder.components.grid import create_equal_row
+from metaswitch_tinder.pages import user_menu
+from metaswitch_tinder.tabs import mentor
 
 log = logging.getLogger(__name__)
 
@@ -50,4 +52,9 @@ def layout():
 )
 def submit_signup_information():
     log.info("%s - Signin clicked", NAME)
+
+    # Make the default tab the mentor skills tab when signing in
+    # as a mentor.
+    session.set_last_tab_on(user_menu.NAME, "mentor")
+    session.set_last_tab_on(mentor.NAME, "mentor_skills")
     session.set_post_login_redirect(href(__name__, signin))

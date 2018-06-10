@@ -30,7 +30,7 @@ def tags_dropdown_with_add_new_entry_box(
         html.Br(),
         create_equal_row(
             [
-                html.Label("Create a new tag:"),
+                html.Label("Can't find the right tag? Create a new one:"),
                 dcc.Input(value="", type="text", id=new_tag_id),
                 html.Button("Ok", id=ok_id, className="btn btn-success btn-block"),
             ]

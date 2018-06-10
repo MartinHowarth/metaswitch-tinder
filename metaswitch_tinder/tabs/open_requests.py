@@ -96,7 +96,7 @@ def layout():
     else:
         return html.Div([html.Br(), html.H1("You must be logged in to do this")])
 
-    requests = user.get_requests()  # type: List[Request]
+    requests = user.get_requests_as_mentee()  # type: List[Request]
 
     if not requests:
         children = children_no_requests()
@@ -153,7 +153,7 @@ def edit_request_layout(request: Request):
 
 def get_request_id_by_index(index: int) -> str:
     """Get the request of the current user by numerical index."""
-    return get_current_user().requests[index]
+    return get_current_user().get_requests_as_mentee()[index]
 
 
 states = [State(edit_id.format(n), "id") for n in range(MAX_REQUESTS)]
