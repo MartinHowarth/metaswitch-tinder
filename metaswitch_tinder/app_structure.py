@@ -81,6 +81,7 @@ def generate_structure():
                 home.im_a_mentor: if_logged_in_else(
                     module_href(user_menu), module_href(signin_or_signup)
                 ),
+                home.signin: module_href(user_menu),
             },
         },
         module_href(mentee_landing_page): {
