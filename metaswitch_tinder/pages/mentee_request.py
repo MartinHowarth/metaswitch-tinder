@@ -68,10 +68,10 @@ def layout():
                         id=details_id,
                         rows=6,
                         placeholder="I'd like a code review of...\n"
-                                    "I'd like weekly mentoring sessions...\n"
-                                    "I'm looking for a one off education session about...\n"
-                                    "I want a running partner.\n"
-                                    "I'm looking for someone to play chess with.",
+                        "I'd like weekly mentoring sessions...\n"
+                        "I'm looking for a one off education session about...\n"
+                        "I want a running partner.\n"
+                        "I'm looking for someone to play chess with.",
                     )
                 ]
             ),
