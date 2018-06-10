@@ -102,4 +102,4 @@ if __name__ == "__main__":
 else:
     # The `server` is imported here so that gunicorn's entry point is this file.
     # That forces load of all the layouts and callbacks in this file.
-    pass
+    from metaswitch_tinder.app import server  # noqa
