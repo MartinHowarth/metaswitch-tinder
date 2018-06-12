@@ -33,12 +33,15 @@ def href(module_name: str, ref: str = None) -> str:
     if app_globals.structure is None:
         raise RuntimeError("`generate_structure` has not been called.")
 
-    log.debug("Getting href for module: %s with ref: %s", _module_href, ref)
     href_or_func = app_globals.structure[_module_href]["links"][ref]
 
     if callable(href_or_func):
-        return href_or_func()
-    return href_or_func
+        result = href_or_func()
+    else:
+        result = href_or_func
+
+    log.debug("Got href for module: %s with ref %s: %s", _module_href, ref, result)
+    return result
 
 
 def generate_structure():
@@ -102,13 +105,6 @@ def generate_structure():
                 open_requests.save_id: module_href(user_menu),
             },
         },
-        # module_href(manage_request): {
-        #     "module": manage_request,
-        #     "links": {
-        #         manage_request.delete_id: module_href(user_menu),
-        #         manage_request.save_id: module_href(user_menu),
-        #     },
-        # },
         module_href(signin_or_signup): {
             "module": signin_or_signup,
             "links": {

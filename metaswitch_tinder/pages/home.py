@@ -49,6 +49,7 @@ def layout():
                 "I have an account - sign in.",
                 href="/login",
                 className="btn btn-primary",
+                id=signin,
             ),
             html.Br(),
             html.Br(),
