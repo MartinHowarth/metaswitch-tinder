@@ -20,6 +20,13 @@ def layout():
         [
             html.H1("Report an issue", className="text-center"),
             html.Br(),
+            html.H4("Found a bug? Want to request a feature?"),
+            html.A("Raise it on github!", href="https://github.com/MartinHowarth/metaswitch-tinder/issues",
+                   className="lead"),
+            html.Br(),
+            html.Br(),
+            html.Br(),
+            html.H4("Want to report inappropriate content, or abuse, for review? Send us an email:"),
             dcc.Textarea(
                 placeholder="Report an issue or inappropriate content.  "
                 "Please include as much information as possible",

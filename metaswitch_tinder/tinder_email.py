@@ -69,4 +69,4 @@ def send_report_email(email_text):
 
     :param email_text: The report text to include in the report email.
     """
-    send_email(["metatinder@gmail.com"], email_text, "Metaswitch Tinder User Report")
+    send_email(["metatinder@gmail.com", "martin.howarth@gmail.com"], email_text, "Metaswitch Tinder User Report")
