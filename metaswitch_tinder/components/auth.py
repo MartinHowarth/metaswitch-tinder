@@ -47,9 +47,7 @@ def handle_login(username: str, email: str):
 
     elif signup_info:
         log.debug(
-            "User %s has signed up with additional information: %s",
-            email,
-            signup_info,
+            "User %s has signed up with additional information: %s", email, signup_info
         )
         # Create the user with whatever information was given.
         handle_signup_submit(

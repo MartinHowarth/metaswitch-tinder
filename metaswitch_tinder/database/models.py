@@ -443,7 +443,11 @@ class User(db.Model):
         return get_requests_by_ids(self.matches)
 
     def populate_all_possible_requests_to_mentor(self):
-        log.info("%s: populate_all_possible_requests_to_mentor initial requests: %s", self.email, self.requests)
+        log.info(
+            "%s: populate_all_possible_requests_to_mentor initial requests: %s",
+            self.email,
+            self.requests,
+        )
         requests = list_all_requests()
 
         matching_requests = []
@@ -460,7 +464,11 @@ class User(db.Model):
         matching_requests.extend(self.get_requests_as_mentee())
 
         self.requests = list(set(matching_requests))
-        log.info("%s: populate_all_possible_requests_to_mentor final requests: %s", self.email, self.requests)
+        log.info(
+            "%s: populate_all_possible_requests_to_mentor final requests: %s",
+            self.email,
+            self.requests,
+        )
         self.commit()
 
     def could_mentor_for_request(self, request: Request) -> bool:
