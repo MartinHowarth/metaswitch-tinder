@@ -19,7 +19,7 @@ def layout():
     if session.is_logged_in():
         is_signed_in_fields = [
             html.H3(
-                "Welcome {}!".format(session.current_username()),
+                "Welcome {}!".format(session.get_current_user().name),
                 className="text-center",
             ),
             html.Br(),

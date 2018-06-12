@@ -8,7 +8,7 @@ from dash.dependencies import Event, Output, State
 from metaswitch_tinder.app import app
 from metaswitch_tinder.components.grid import create_equal_row
 from metaswitch_tinder.database.models import Tag, list_all_tags
-from metaswitch_tinder.components.session import current_username
+from metaswitch_tinder.components.session import current_user_email
 
 log = logging.getLogger(__name__)
 
@@ -47,7 +47,7 @@ def handle_new_tag_creation(new_tag_str: str):
 
     Return value of this sets the text on the Ok button.
     """
-    log.debug("User %s creating new tag: %s", current_username(), new_tag_str)
+    log.debug("User %s creating new tag: %s", current_user_email(), new_tag_str)
 
     if not new_tag_str:
         # If the user didn't enter anything, do nothing.

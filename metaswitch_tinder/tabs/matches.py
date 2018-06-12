@@ -47,7 +47,7 @@ def children_no_matches():
 
 def children_for_match(match: PossibleMatch, skipped_requests: List[str]):
     if on_mentee_tab():
-        other_user_name = match.mentor.name
+        other_user_email = match.mentor.email
         table_rows = [
             html.Tr(
                 [html.Td("Name"), html.Td(match.mentor.name)], className="table-success"
@@ -66,7 +66,7 @@ def children_for_match(match: PossibleMatch, skipped_requests: List[str]):
             ),
         ]
     else:
-        other_user_name = match.mentee.name
+        other_user_email = match.mentee.email
         table_rows = [
             html.Tr(
                 [html.Td("Name"), html.Td(match.mentee.name)], className="table-success"
@@ -106,7 +106,7 @@ def children_for_match(match: PossibleMatch, skipped_requests: List[str]):
         html.Br(),
         html.Table([*table_rows], className="table table-condensed"),
         html.Button(html.H1("Skip"), id="skip-match", className="btn btn-lg btn-info"),
-        html.Div(other_user_name, id="current-other-user", hidden=True),
+        html.Div(other_user_email, id="current-other-user", hidden=True),
         html.Div(skipped_requests, id="skipped-requests", hidden=True),
         html.Div(match.request.id, id="matched-request-id", hidden=True),
     ]
@@ -137,7 +137,7 @@ def get_matches_for_mentor(
             continue
 
         # Don't show matches where this mentor hasn't been accepted by the mentee yet.
-        if mentor.name not in request.accepted_mentors:
+        if mentor.email not in request.accepted_mentors:
             continue
 
         _matches.append(PossibleMatch(request.get_maker(), mentor, request))
@@ -151,19 +151,19 @@ def get_matches_for_mentee(
 
     _matches = []
     for request in requests:
-        for mentor_name in request.possible_mentors:
+        for mentor_email in request.possible_mentors:
             # Don't show skipped matches.
             # For mentees, skipped_matches is a list of mentor names.
-            if mentor_name in skipped_matches:
+            if mentor_email in skipped_matches:
                 continue
 
             # Don't show mentors who have previously been rejected or accepted.
-            if mentor_name in itertools.chain(
+            if mentor_email in itertools.chain(
                 request.rejected_mentors, request.accepted_mentors
             ):
                 continue
 
-            _matches.append(PossibleMatch(mentee, get_user(mentor_name), request))
+            _matches.append(PossibleMatch(mentee, get_user(mentor_email), request))
     return _matches
 
 
@@ -188,12 +188,12 @@ def layout():
     )
 
 
-def handle_submit(match_request_id: str, other_user_name: str, accepted: bool):
+def handle_submit(match_request_id: str, other_user_email: str, accepted: bool):
     request = get_request_by_id(match_request_id)
-    other_user = get_user(other_user_name)
+    other_user = get_user(other_user_email)
 
     if other_user is None:
-        raise AssertionError("Could not get other user by name: %s" % other_user_name)
+        raise AssertionError("Could not get other user by email: %s" % other_user_email)
 
     if request is None:
         raise AssertionError("Could not get request by id: %s" % match_request_id)
@@ -211,11 +211,11 @@ def handle_submit(match_request_id: str, other_user_name: str, accepted: bool):
 
 
 def handle_skipped(
-    user_name: str, request_id: str, skipped_matches: List[str]
+    user_email: str, request_id: str, skipped_matches: List[str]
 ) -> List[str]:
     if on_mentee_tab():
         # For mentees, skipped_matches is a list of mentor names.
-        skipped_matches.append(user_name)
+        skipped_matches.append(user_email)
     else:
         # For mentors, skipped_matches is a list of mentee request IDs
         skipped_matches.append(request_id)
@@ -240,7 +240,7 @@ def handle_skipped(
     ],
 )
 def submit_mentee_information(
-    other_user,
+    other_user_email,
     n_accept_clicked,
     n_reject_clicked,
     n_skip_clicked,
@@ -251,8 +251,8 @@ def submit_mentee_information(
     skipped = True if n_skip_clicked else False
     if skipped:
         skipped_requests = handle_skipped(
-            other_user, match_request_id, skipped_requests
+            other_user_email, match_request_id, skipped_requests
         )
     else:
-        handle_submit(match_request_id, other_user, accepted)
+        handle_submit(match_request_id, other_user_email, accepted)
     return get_matches_children(skipped_requests)

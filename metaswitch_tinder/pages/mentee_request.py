@@ -95,7 +95,7 @@ def submit_mentee_information(categories: List[str], details: str):
     print("mentee request", categories, details)
 
     if session.is_logged_in():
-        database.models.create_request(session.current_username(), categories, details)
+        database.models.create_request(session.current_user_email(), categories, details)
     else:
         session.store_signup_information(
             "", request_categories=categories, request_details=details

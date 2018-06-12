@@ -21,31 +21,31 @@ SignupInformation = namedtuple(
 )
 
 
-def current_username() -> str:
-    username = flask.session.get("username", None)
-    if username is None:
+def current_user_email() -> str:
+    user_email = flask.session.get("user_email", None)
+    if user_email is None:
         raise AssertionError("Could not get current user as they are not logged in.")
-    return username
+    return user_email
 
 
 def get_current_user() -> User:
-    user_name = current_username()
+    user_email = current_user_email()
 
-    user = get_user(user_name)
+    user = get_user(user_email)
     if user is None:
         raise AssertionError(
-            "Could not get current user from database by name: %s" % user_name
+            "Could not get current user from database by name: %s" % user_email
         )
     return user
 
 
-def set_current_usename(username: str):
-    flask.session["username"] = username
+def set_current_user_email(email: str):
+    flask.session["user_email"] = email
 
 
-def login(username: str):
-    set_current_usename(username)
-    log.info("%s has logged in.", username)
+def login(email: str):
+    set_current_user_email(email)
+    log.info("%s has logged in.", email)
 
 
 def logout():
@@ -57,7 +57,7 @@ def logout():
 
 def is_logged_in() -> bool:
     log.debug("is_logged_in: Flask session is: %s", flask.session)
-    return "username" in flask.session
+    return "user_email" in flask.session
 
 
 def set_post_login_redirect(href: str):
@@ -118,7 +118,7 @@ def set_last_tab_on(page: str, last_tab: str):
 
 
 def set_current_request(request_id: str):
-    log.debug("User %s storing current request: %s", current_username(), request_id)
+    log.debug("User %s storing current request: %s", current_user_email(), request_id)
     flask.session["current_request"] = request_id
 
 

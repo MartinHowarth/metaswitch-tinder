@@ -8,7 +8,7 @@ from dash.dependencies import Input, Output
 from metaswitch_tinder.app import app
 from metaswitch_tinder.components.grid import create_equal_row
 from metaswitch_tinder.components.inputs import tags_dropdown_with_add_new_entry_box
-from metaswitch_tinder.components.session import current_username, get_current_user
+from metaswitch_tinder.components.session import current_user_email, get_current_user
 
 log = logging.getLogger(__name__)
 
@@ -46,5 +46,5 @@ def set_mentor_tags(tags: List[str]):
 
     :param tags: List of tags, comma separated.
     """
-    log.info("User %s set mentor tags: %s", current_username(), tags)
+    log.info("User %s set mentor tags: %s", current_user_email(), tags)
     get_current_user().set_tags(tags)

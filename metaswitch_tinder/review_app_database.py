@@ -34,7 +34,7 @@ def populate():
 
     for i in range(5):
         metaswitch_tinder.database.models.create_request(
-            "user{}".format(i),
+            "user{}@email.com".format(i),
             [random.choice(["Coding", "Design", "Testing"])],
             "Teach me a random thing.",
         )

@@ -17,7 +17,7 @@ class TestModels:
         return user
 
     def create_request(self, user: User, tags: List[str]) -> Request:
-        request = Request(user.name, tags)
+        request = Request(user, tags)
         request.add()
         return request
 
@@ -62,16 +62,16 @@ class TestModels:
         # Request 1 should match both mentors
         request1 = self.create_request(mentee, request_tags)
 
-        assert mentor1.name in request1.possible_mentors
-        assert mentor2.name in request1.possible_mentors
+        assert mentor1.email in request1.possible_mentors
+        assert mentor2.email in request1.possible_mentors
         assert request1.id in mentor1.requests
         assert request1.id in mentor2.requests
 
         # Request 2 should only match one mentor
         request2 = self.create_request(mentee, request2_tags)
 
-        assert mentor1.name not in request2.possible_mentors
-        assert mentor2.name in request2.possible_mentors
+        assert mentor1.email not in request2.possible_mentors
+        assert mentor2.email in request2.possible_mentors
         assert request2.id not in mentor1.requests
         assert request2.id in mentor2.requests
 
@@ -97,16 +97,16 @@ class TestModels:
 
         assert request1.id in mentor1.requests
         assert request2.id not in mentor1.requests
-        assert mentor1.name in request1.possible_mentors
-        assert mentor1.name not in request2.possible_mentors
+        assert mentor1.email in request1.possible_mentors
+        assert mentor1.email not in request2.possible_mentors
 
         # Mentor 2 should match both requests.
         mentor2 = self.create_user("mentor2", tags=mentor2_tags)
 
         assert request1.id in mentor2.requests
         assert request2.id in mentor2.requests
-        assert mentor2.name in request1.possible_mentors
-        assert mentor2.name in request2.possible_mentors
+        assert mentor2.email in request1.possible_mentors
+        assert mentor2.email in request2.possible_mentors
 
     def test_match_requests_when_mentor_updates_tags(self):
         request1_tags = ["tag1"]
@@ -124,24 +124,24 @@ class TestModels:
 
         assert request1.id in mentor.requests
         assert request2.id not in mentor.requests
-        assert mentor.name in request1.possible_mentors
-        assert mentor.name not in request2.possible_mentors
+        assert mentor.email in request1.possible_mentors
+        assert mentor.email not in request2.possible_mentors
 
         # Setting these tags should match both requests
         mentor.set_tags(request1_tags + request2_tags)
 
         assert request1.id in mentor.requests
         assert request2.id in mentor.requests
-        assert mentor.name in request1.possible_mentors
-        assert mentor.name in request2.possible_mentors
+        assert mentor.email in request1.possible_mentors
+        assert mentor.email in request2.possible_mentors
 
         # Removing all tags should match no requests
         mentor.set_tags([])
 
         assert request1.id not in mentor.requests
         assert request2.id not in mentor.requests
-        assert mentor.name not in request1.possible_mentors
-        assert mentor.name not in request2.possible_mentors
+        assert mentor.email not in request1.possible_mentors
+        assert mentor.email not in request2.possible_mentors
 
     def test_get_requests_as_mentee(self):
         request1_tags = ["tag1"]
@@ -203,10 +203,10 @@ class TestModels:
         mentee.delete()
 
         # Ensure that the mentee isn't in the database of users
-        assert mentee.name not in [user.name for user in list_all_users()]
+        assert mentee.email not in [user.email for user in list_all_users()]
 
         # Ensure that the mentee has been purged from all requests
-        assert mentee.name not in [
+        assert mentee.email not in [
             req.all_involved_users for req in list_all_requests()
         ]
 

@@ -74,17 +74,17 @@ class Request(db.Model):
 
     def __init__(
         self,
-        maker: Union[str, "User"],
+        maker_email_or_user: Union[str, "User"],
         tags: Union[str, List[str]],
         comment: str = None,
     ) -> None:
         if not isinstance(tags, list) and tags is not None:
             tags = [tags]
-        if isinstance(maker, User):
-            maker = maker.name
+        if isinstance(maker_email_or_user, User):
+            maker_email_or_user = maker_email_or_user.email
 
         self.id = str(time.time()) + str(randint(1, 100))
-        self._maker = maker
+        self._maker = maker_email_or_user
         self.tags = tags or []
         self.comment = comment or ""
         self._accepted_mentors = []
@@ -127,22 +127,22 @@ class Request(db.Model):
         for involved_user in self.get_all_involved_users():
             involved_user.handle_request_deletion(self)
 
-        if user.name in self.accepted_mentors:
+        if user.email in self.accepted_mentors:
             users = self.accepted_mentors
-            users.remove(user.name)
+            users.remove(user.email)
             self.accepted_mentors = users
 
-        if user.name in self.possible_mentors:
+        if user.email in self.possible_mentors:
             users = self.possible_mentors
-            users.remove(user.name)
+            users.remove(user.email)
             self.possible_mentors = users
 
-        if user.name in self.rejected_mentors:
+        if user.email in self.rejected_mentors:
             users = self.rejected_mentors
-            users.remove(user.name)
+            users.remove(user.email)
             self.rejected_mentors = users
 
-        if user.name == self.maker:
+        if user.email == self.maker:
             log.info("Deleting request: %s", self)
             db.session.delete(self)
             self.commit()
@@ -154,7 +154,7 @@ class Request(db.Model):
     @maker.setter
     def maker(self, value: Union[str, "User"]):
         if isinstance(value, User):
-            self.maker = value.name
+            self.maker = value.email
         else:
             self.maker = value
 
@@ -162,7 +162,7 @@ class Request(db.Model):
         maker = get_user(self.maker)
         if maker is None:
             raise AssertionError(
-                "Could not get maker from database with name: %s" % self.maker
+                "Could not get maker from database with email: %s" % self.maker
             )
         return maker
 
@@ -175,7 +175,7 @@ class Request(db.Model):
         mentors = []
         for mentor in value:
             if isinstance(mentor, User):
-                mentors.append(mentor.name)
+                mentors.append(mentor.email)
             else:
                 mentors.append(mentor)
 
@@ -194,7 +194,7 @@ class Request(db.Model):
         mentors = []
         for mentor in value:
             if isinstance(mentor, User):
-                mentors.append(mentor.name)
+                mentors.append(mentor.email)
             else:
                 mentors.append(mentor)
 
@@ -206,13 +206,13 @@ class Request(db.Model):
 
     def remove_possible_mentor(self, mentor: Union["User", str]):
         if isinstance(mentor, User):
-            name = mentor.name
+            email = mentor.email
         else:
-            name = mentor
+            email = mentor
 
-        if name in self.possible_mentors:
+        if email in self.possible_mentors:
             mentors = self.possible_mentors
-            mentors.remove(name)
+            mentors.remove(email)
             self.possible_mentors = mentors
         self.commit()
 
@@ -225,7 +225,7 @@ class Request(db.Model):
         mentors = []
         for mentor in value:
             if isinstance(mentor, User):
-                mentors.append(mentor.name)
+                mentors.append(mentor.email)
             else:
                 mentors.append(mentor)
 
@@ -283,7 +283,7 @@ class Request(db.Model):
     def handle_mentor_accept_mentee(self, mentor: "User"):
         """Called when a mentor accepts a mentee. This can only be called once."""
         print("mentor %s accepted request: %s", mentor, self)
-        self.mentor = mentor.name
+        self.mentor = mentor.email
         self.possible_mentors = []
         self.accepted_mentors = []
         self.rejected_mentors = []
@@ -413,14 +413,14 @@ class User(db.Model):
 
     def get_requests_as_mentee(self):
         # Filter to only the requests made by this user.
-        return [req for req in self.get_requests() if req.maker == self.name]
+        return [req for req in self.get_requests() if req.maker == self.email]
 
     def get_requests_as_mentor(self):
         # Filter to only the requests that this user didn't make.
-        requests = [req for req in self.get_requests() if req.maker != self.name]
+        requests = [req for req in self.get_requests() if req.maker != self.email]
 
         # Filter out all the requests this mentor has rejected already
-        requests = [req for req in requests if self.name not in req.rejected_mentors]
+        requests = [req for req in requests if self.email not in req.rejected_mentors]
         return requests
 
     @property
@@ -443,6 +443,7 @@ class User(db.Model):
         return get_requests_by_ids(self.matches)
 
     def populate_all_possible_requests_to_mentor(self):
+        log.info("%s: populate_all_possible_requests_to_mentor initial requests: %s", self.email, self.requests)
         requests = list_all_requests()
 
         matching_requests = []
@@ -459,13 +460,14 @@ class User(db.Model):
         matching_requests.extend(self.get_requests_as_mentee())
 
         self.requests = list(set(matching_requests))
+        log.info("%s: populate_all_possible_requests_to_mentor final requests: %s", self.email, self.requests)
         self.commit()
 
     def could_mentor_for_request(self, request: Request) -> bool:
         """Returns True if this user could be the mentor for a request."""
         return (
             any((tag in self.tags for tag in request.tags))
-            and request.maker != self.name
+            and request.maker != self.email
         )
 
 
@@ -487,14 +489,14 @@ def list_all_users() -> List[User]:
     return User.query.all()
 
 
-def get_user(user_name: str) -> Optional[User]:
-    return User.query.filter_by(name=user_name).first()
+def get_user(user_email: str) -> Optional[User]:
+    return User.query.filter_by(email=user_email).first()
 
 
-def get_users(names: List[str]) -> List[User]:
-    if not names:
+def get_users(emails: List[str]) -> List[User]:
+    if not emails:
         return []
-    return User.query.filter(User.name.in_(names)).all()
+    return User.query.filter(User.email.in_(emails)).all()
 
 
 def list_all_tags() -> List[Tag]:
@@ -513,17 +515,17 @@ def handle_signup_submit(
     new_user.add()
 
 
-def username_already_exists(username: str) -> bool:
-    print("signin submitted:", username)
+def user_already_exists(user_email: str) -> bool:
+    print("signin submitted:", user_email)
     all_users = list_all_users()
-    all_usernames = [user.name for user in all_users]
-    print("all users:", all_usernames)
-    if username not in all_usernames:
+    all_user_emails = [user.email for user in all_users]
+    print("all users:", all_user_emails)
+    if user_email not in all_user_emails:
         return False
     return True
 
 
-def create_request(username: str, categories: List[str], details: str):
-    log.info("Creating request for %s: %s, %s", username, categories, details)
-    request = Request(username, categories, details)
+def create_request(user_email: str, categories: List[str], details: str):
+    log.info("Creating request for %s: %s, %s", user_email, categories, details)
+    request = Request(user_email, categories, details)
     request.add()

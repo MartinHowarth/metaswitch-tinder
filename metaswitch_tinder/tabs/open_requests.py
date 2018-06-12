@@ -10,7 +10,7 @@ from metaswitch_tinder.app import app
 from metaswitch_tinder.components.inputs import tags_dropdown_with_add_new_entry_box
 from metaswitch_tinder.components.grid import create_equal_row
 from metaswitch_tinder.components.session import (
-    current_username,
+    current_user_email,
     get_current_user,
     is_logged_in,
 )
@@ -211,7 +211,7 @@ def handle_save_and_delete(
         current_request.tags = tags
         current_request.comment = details
         current_request.commit()
-        log.info("User %s updated request: %s", current_username(), current_request)
+        log.info("User %s updated request: %s", current_user_email(), current_request)
     elif n_delete_clicked:
-        log.info("User %s deleted request: %s", current_username(), current_request)
+        log.info("User %s deleted request: %s", current_user_email(), current_request)
         current_request.delete()

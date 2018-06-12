@@ -10,7 +10,7 @@ from metaswitch_tinder.components import session
 from metaswitch_tinder.database.models import (
     create_request,
     handle_signup_submit,
-    username_already_exists,
+    user_already_exists,
 )
 
 log = logging.getLogger(__name__)
@@ -33,22 +33,22 @@ def handle_login(username: str, email: str):
     # then we will have stored that information.
     signup_info = session.get_signup_information()
 
-    if username_already_exists(username):
+    if user_already_exists(email):
         # User already exists - handle the login and make a request if necessary.
-        log.debug("User %s has already signed up.", username)
+        log.debug("User %s has already signed up.", email)
 
-        session.login(username)
+        session.login(email)
 
         # If we stored request info, then make a request according to that.
         if signup_info and signup_info.request_categories:
             create_request(
-                username, signup_info.request_categories, signup_info.request_details
+                email, signup_info.request_categories, signup_info.request_details
             )
 
     elif signup_info:
         log.debug(
             "User %s has signed up with additional information: %s",
-            username,
+            email,
             signup_info,
         )
         # Create the user with whatever information was given.
@@ -64,7 +64,7 @@ def handle_login(username: str, email: str):
         # then make a request according to that.
         if signup_info.request_categories:
             create_request(
-                username, signup_info.request_categories, signup_info.request_details
+                email, signup_info.request_categories, signup_info.request_details
             )
     else:
         log.debug("User %s has signed up with no additional information.", username)
@@ -72,7 +72,7 @@ def handle_login(username: str, email: str):
         handle_signup_submit(username, email)
 
     session.clear_signup_information()
-    session.login(username)
+    session.login(email)
 
 
 @app.server.route(OAUTH_REDIRECT_URI)

@@ -42,7 +42,7 @@ def layout():
             create_equal_row([html.Label("Biography:")]),
             dcc.Textarea(
                 placeholder="Enter a biography",
-                value="Loves ducks",
+                value="",
                 id="biography-{}".format(NAME),
                 style={"width": "100%"},
             ),
