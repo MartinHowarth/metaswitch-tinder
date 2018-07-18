@@ -1,7 +1,7 @@
 from typing import List
 
-from metaswitch_tinder.app import db
-from metaswitch_tinder.database import User, Request, list_all_users, list_all_requests
+from melinda.app import db
+from melinda.database import User, Request, list_all_users, list_all_requests
 
 
 class TestModels:

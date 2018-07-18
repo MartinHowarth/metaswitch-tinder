@@ -42,7 +42,7 @@ jobs:
             python3 -m venv venv
             . venv/bin/activate
             pip install black
-            black --check metaswitch_tinder
+            black --check melinda
 
   flake8:
     docker:
@@ -56,7 +56,7 @@ jobs:
             python3 -m venv venv
             . venv/bin/activate
             pip install flake8
-            flake8 metaswitch_tinder
+            flake8 melinda
 
   mypy:
     docker:
@@ -70,7 +70,7 @@ jobs:
             python3 -m venv venv
             . venv/bin/activate
             pip install mypy
-            mypy metaswitch_tinder --ignore-missing-imports
+            mypy melinda --ignore-missing-imports
 
 workflows:
   version: 2

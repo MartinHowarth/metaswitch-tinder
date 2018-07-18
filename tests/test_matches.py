@@ -1,8 +1,8 @@
 from typing import List, Tuple
 
-from metaswitch_tinder.app import db
-from metaswitch_tinder.database import User, Request
-from metaswitch_tinder.tabs.matches import (
+from melinda.app import db
+from melinda.database import User, Request
+from melinda.tabs.matches import (
     get_matches_for_mentee,
     get_matches_for_mentor,
 )

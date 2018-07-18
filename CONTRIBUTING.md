@@ -1,4 +1,4 @@
-# Contributing to Metaswitch Tinder
+# Contributing to Melinda
 ## Did you find a bug?
 Check the github issue list - if you don't see it already, open a new one. Be sure to include as much detail about the problem as you can.
 

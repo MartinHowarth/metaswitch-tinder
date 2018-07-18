@@ -1,1 +1,1 @@
-web: gunicorn -w 4 metaswitch_tinder.index:server
+web: gunicorn -w 4 melinda.index:server
