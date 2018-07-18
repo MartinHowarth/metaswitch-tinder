@@ -7,10 +7,7 @@ from dash.dependencies import Event, Output, State
 from melinda.app import app
 from melinda.app_structure import href
 from melinda.components import session
-from melinda.components.auth import (
-    authenticated_login_is_enabled,
-    handle_login,
-)
+from melinda.components.auth import authenticated_login_is_enabled, handle_login
 from melinda.components.grid import create_equal_row
 
 log = logging.getLogger(__name__)

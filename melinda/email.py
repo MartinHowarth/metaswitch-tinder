@@ -69,8 +69,4 @@ def send_report_email(email_text):
 
     :param email_text: The report text to include in the report email.
     """
-    send_email(
-        ["howarth.martin@gmail.com"],
-        email_text,
-        "Melinda User Report",
-    )
+    send_email(["howarth.martin@gmail.com"], email_text, "Melinda User Report")

@@ -10,11 +10,7 @@ from dash.dependencies import Event, Output, State
 from melinda import matches
 from melinda.app import app, config
 from melinda.components.grid import create_magic_three_row
-from melinda.components.session import (
-    get_current_user,
-    is_logged_in,
-    on_mentee_tab,
-)
+from melinda.components.session import get_current_user, is_logged_in, on_mentee_tab
 from melinda.database import User, get_request_by_id, get_user
 
 log = logging.getLogger(__name__)
