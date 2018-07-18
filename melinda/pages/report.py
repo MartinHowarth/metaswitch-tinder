@@ -4,7 +4,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Event, Output, State
 
-from melinda import email
+from melinda import melinda_email
 from melinda.app import app
 from melinda.app_structure import href
 
@@ -62,7 +62,7 @@ def layout():
 )
 def report_email(report_text):
     log.info("Report submitted with text: %s", report_text)
-    email.send_report_email(report_text)
+    melinda_email.send_report_email(report_text)
 
 
 def report_button():

@@ -1,5 +1,5 @@
 """Handle generating matches and handling match requests from mentors and mentees."""
-from melinda import email
+from melinda import melinda_email
 from melinda.components.session import get_current_user
 from melinda.database import Request, User
 
@@ -29,4 +29,4 @@ def handle_mentor_accept_match(matched_user: User, request: Request):
     email_text += "\n\n"
     email_text += request.comment
 
-    email.send_match_email([mentor.email, mentee.email], email_text)
+    melinda_email.send_match_email([mentor.email, mentee.email], email_text)
