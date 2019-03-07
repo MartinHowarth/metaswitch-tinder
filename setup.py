@@ -35,8 +35,8 @@ setup(
         "munch",
         "plotly==2.6.0",
         "psycopg2",
-        "requests",
-        "requests_oauthlib==1.0.0",  # Not directly required, included to resolve a downstream dependency clash...
+        "requests==2.18.4",
+        # "requests_oauthlib==1.0.0",  # Not directly required, included to resolve a downstream dependency clash...
         "schematics",
         "sendgrid",
         "sqlalchemy-utils",
