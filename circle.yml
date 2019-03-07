@@ -17,7 +17,6 @@ jobs:
           command: |
             python3 -m venv venv
             . venv/bin/activate
-            pip install oauthlib==2.1.0
             python setup.py install
       - save_cache: # special step to save dependency cache
           key: deps1-{{ .Branch }}-{{ checksum "setup.py" }}
