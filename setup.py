@@ -5,10 +5,10 @@ from os import path
 here = path.abspath(path.dirname(__file__))
 
 setup(
-    name="melinda",
+    name="metaswitch_tinder",
     version="0.0.1",
-    description="Melinda",
-    url="https://github.com/MartinHowarth/melinda",
+    description="Metaswitch Tinder",
+    url="https://github.com/MartinHowarth/metaswitch-tinder",
     author="Martin Howarth",
     author_email="howarth.martin@gmail.com",
     license="MIT",
