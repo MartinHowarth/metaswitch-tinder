@@ -33,6 +33,7 @@ setup(
         "Flask-SQLAlchemy",
         "gunicorn",
         "munch",
+        "oauthlib>=3.0.0",  # Not directly required, included to resolve a downstream dependency clash...
         "plotly==2.6.0",
         "psycopg2",
         "requests",
